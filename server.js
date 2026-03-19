@@ -154,8 +154,29 @@ app.get('/api/submissions', (req, res) => {
     });
 });
 
-// ─── Catch-all: serve index.html ────────────────────────────────────────────
+// ─── Catch-all: serve HTML pages or fallback to index.html ─────────────────
 app.get('*', (req, res) => {
+    // Check if the path corresponds to an existing HTML file
+    const requestedPath = req.path;
+    const cleanPath = requestedPath.replace(/^\//, ''); // Remove leading slash
+    
+    // If requesting a specific .html file that exists, serve it
+    if (cleanPath.endsWith('.html')) {
+        const filePath = path.join(__dirname, cleanPath);
+        if (fs.existsSync(filePath)) {
+            return res.sendFile(filePath);
+        }
+    }
+    
+    // If requesting a page without extension (e.g., /about), check for .html version
+    if (!cleanPath.includes('.') && cleanPath.length > 0) {
+        const htmlPath = path.join(__dirname, cleanPath + '.html');
+        if (fs.existsSync(htmlPath)) {
+            return res.sendFile(htmlPath);
+        }
+    }
+    
+    // Otherwise serve index.html (for SPA routing or root path)
     res.sendFile(path.join(__dirname, 'index.html'));
 });
 
