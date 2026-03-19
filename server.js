@@ -4,10 +4,18 @@ const fs = require('fs');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-const DATA_DIR = path.join(__dirname, 'data');
+const DATA_DIR = process.env.VERCEL
+    ? path.join('/tmp', 'forever-family-data')
+    : path.join(__dirname, 'data');
 
 // Ensure data directory exists
-if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
+if (!fs.existsSync(DATA_DIR)) {
+    try {
+        fs.mkdirSync(DATA_DIR, { recursive: true });
+    } catch (err) {
+        console.error('Failed to create data directory:', err.message);
+    }
+}
 
 app.use(express.json());
 app.use(express.static(__dirname));
@@ -151,7 +159,11 @@ app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
 });
 
-app.listen(PORT, () => {
-    console.log(`\n  Forever Family — Server running`);
-    console.log(`  Local: http://localhost:${PORT}\n`);
-});
+if (require.main === module) {
+    app.listen(PORT, () => {
+        console.log(`\n  Forever Family — Server running`);
+        console.log(`  Local: http://localhost:${PORT}\n`);
+    });
+}
+
+module.exports = app;
