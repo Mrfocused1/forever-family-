@@ -156,9 +156,15 @@ app.get('/api/submissions', (req, res) => {
 
 // ─── Catch-all: serve HTML pages or fallback to index.html ─────────────────
 app.get('*', (req, res) => {
-    // Check if the path corresponds to an existing HTML file
     const requestedPath = req.path;
     const cleanPath = requestedPath.replace(/^\//, ''); // Remove leading slash
+    
+    // Skip API routes and static files (images, css, js, etc.)
+    if (cleanPath.startsWith('api/') || 
+        cleanPath.startsWith('images/') ||
+        cleanPath.match(/\.(jpg|jpeg|png|gif|svg|webp|css|js|ico|woff|woff2|ttf|eot)$/i)) {
+        return res.status(404).send('Not found');
+    }
     
     // If requesting a specific .html file that exists, serve it
     if (cleanPath.endsWith('.html')) {
