@@ -305,7 +305,23 @@
         }
         menuBtn.addEventListener('click', () => menuOpen ? closeMenu() : openMenu());
         menuClose.addEventListener('click', closeMenu);
-        document.querySelectorAll('.mob-link').forEach(l => { if (l.tagName === 'A') l.addEventListener('click', closeMenu); });
+        document.querySelectorAll('.mob-link').forEach(link => {
+            if (link.tagName === 'A') {
+                link.addEventListener('click', (e) => {
+                    const href = link.getAttribute('href');
+                    if (href && href.startsWith('#')) {
+                        e.preventDefault();
+                        closeMenu();
+                        setTimeout(() => {
+                            const target = document.querySelector(href);
+                            if (target) target.scrollIntoView({ behavior: 'smooth' });
+                        }, 300);
+                    } else {
+                        closeMenu();
+                    }
+                });
+            }
+        });
 
         // ─── FOOTER ───────────────────────────────────────────────────────────
         gsap.to(".final-line", { x: "0%", duration: 1.5, ease: "power2.out", scrollTrigger: { trigger: "footer", start: "top 80%" } });
