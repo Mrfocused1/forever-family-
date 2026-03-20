@@ -308,37 +308,73 @@
         </div>
     </section>
 
-    <!-- SEC 03: PINNED CHAPTER - THE PROBLEM -->
-    <section id="sec03-pin" class="h-screen w-full bg-[#111] relative flex items-center overflow-hidden">
-        <div class="absolute top-12 left-6 md:left-12 z-20 text-xs text-stone tracking-widest uppercase border-b border-stone pb-2">THE PROBLEM</div>
+    <!-- SEC 03: THE PROBLEM - REDESIGNED -->
+    <section id="sec03-pin" class="min-h-screen w-full bg-[#0a0a0a] relative flex flex-col justify-center overflow-hidden py-24 md:py-0">
+        <div class="absolute top-12 left-6 md:left-12 z-20">
+            <span class="text-xs text-gold tracking-widest uppercase border-b border-gold pb-2">THE PROBLEM</span>
+        </div>
 
-        <div class="w-full max-w-7xl mx-auto px-6 md:px-12 flex flex-col md:flex-row items-center justify-between relative z-10 h-full py-24">
-
-            <div class="w-full md:w-1/2 flex flex-col justify-center h-full relative space-y-12 problem-text-container">
-                <div class="problem-point opacity-0" data-index="0">
-                    <h3 class="font-condensed text-5xl mb-2">YOUTH VIOLENCE.</h3>
-                    <p class="text-gray-400">Young people caught in cycles of harm with no trained presence to intervene.</p>
-                </div>
-                <div class="problem-point opacity-0" data-index="1">
-                    <h3 class="font-condensed text-5xl mb-2">EXPLOITATION.</h3>
-                    <p class="text-gray-400">Grooming, abuse, and predatory behaviour going unchallenged in our communities.</p>
-                </div>
-                <div class="problem-point opacity-0" data-index="2">
-                    <h3 class="font-condensed text-5xl mb-2">BROKEN FOUNDATIONS.</h3>
-                    <p class="text-gray-400">Individuals and families in crisis with nowhere to turn and no one equipped to help.</p>
-                </div>
-
-                <svg class="absolute top-0 left-0 w-full h-full pointer-events-none z-0" viewBox="0 0 500 500" preserveAspectRatio="none">
-                    <path id="problem-path" d="M 50,50 C 200,50 300,250 450,250 C 300,250 200,450 50,450" fill="none" stroke="#2A2A2A" stroke-width="2"/>
-                    <circle id="problem-dot" cx="0" cy="0" r="6" fill="#D4AF37" class="opacity-0"/>
-                </svg>
+        <div class="w-full max-w-7xl mx-auto px-6 md:px-12 relative z-10">
+            <!-- Section Header -->
+            <div class="mb-16 md:mb-24 mt-16">
+                <h2 class="font-condensed text-[15vw] md:text-[10vw] leading-[0.9] text-white tracking-tight">
+                    THREE<br><span class="text-stone">CRISES.</span>
+                </h2>
+                <p class="mt-6 text-gray-400 text-lg md:text-xl max-w-xl">Our communities are facing urgent challenges that demand immediate, trained intervention.</p>
             </div>
 
-            <div class="w-full md:w-5/12 h-[50vh] md:h-[70vh] relative mt-12 md:mt-0 problem-image-container overflow-hidden border border-stone">
-                <img src="images/youth-violence.png" class="w-full h-full object-cover doc-style problem-img absolute inset-0 transform scale-110" alt="Youth Violence">
-                <img src="images/about-2.jpg" class="w-full h-full object-cover doc-style problem-img absolute inset-0 transform scale-110 opacity-0" alt="Exploitation">
-                <img src="images/contact.jpg" class="w-full h-full object-cover doc-style problem-img absolute inset-0 transform scale-110 opacity-0" alt="Broken Foundations">
-                <div class="absolute inset-0 border-4 border-[#0d0d0d] pointer-events-none z-10"></div>
+            <!-- Problem Cards Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+                <!-- Card 1 -->
+                <div class="problem-card group relative bg-[#111] border border-stone hover:border-gold transition-all duration-500 overflow-hidden">
+                    <div class="aspect-[4/5] relative overflow-hidden">
+                        <img src="images/youth-violence.png" class="w-full h-full object-cover doc-style group-hover:scale-105 transition-transform duration-700" alt="Youth Violence">
+                        <div class="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-transparent to-transparent"></div>
+                        <div class="absolute top-4 left-4">
+                            <span class="text-gold font-condensed text-6xl md:text-7xl opacity-30">01</span>
+                        </div>
+                    </div>
+                    <div class="p-6 relative">
+                        <h3 class="font-condensed text-3xl md:text-4xl text-white mb-3 group-hover:text-gold transition-colors">YOUTH VIOLENCE</h3>
+                        <p class="text-gray-400 text-sm leading-relaxed">Young people caught in cycles of harm with no trained presence to intervene.</p>
+                    </div>
+                </div>
+
+                <!-- Card 2 -->
+                <div class="problem-card group relative bg-[#111] border border-stone hover:border-gold transition-all duration-500 overflow-hidden">
+                    <div class="aspect-[4/5] relative overflow-hidden">
+                        <img src="images/about-2.jpg" class="w-full h-full object-cover doc-style group-hover:scale-105 transition-transform duration-700" alt="Exploitation">
+                        <div class="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-transparent to-transparent"></div>
+                        <div class="absolute top-4 left-4">
+                            <span class="text-gold font-condensed text-6xl md:text-7xl opacity-30">02</span>
+                        </div>
+                    </div>
+                    <div class="p-6 relative">
+                        <h3 class="font-condensed text-3xl md:text-4xl text-white mb-3 group-hover:text-gold transition-colors">EXPLOITATION</h3>
+                        <p class="text-gray-400 text-sm leading-relaxed">Grooming, abuse, and predatory behaviour going unchallenged in our communities.</p>
+                    </div>
+                </div>
+
+                <!-- Card 3 -->
+                <div class="problem-card group relative bg-[#111] border border-stone hover:border-gold transition-all duration-500 overflow-hidden">
+                    <div class="aspect-[4/5] relative overflow-hidden">
+                        <img src="images/contact.jpg" class="w-full h-full object-cover doc-style group-hover:scale-105 transition-transform duration-700" alt="Broken Foundations">
+                        <div class="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-transparent to-transparent"></div>
+                        <div class="absolute top-4 left-4">
+                            <span class="text-gold font-condensed text-6xl md:text-7xl opacity-30">03</span>
+                        </div>
+                    </div>
+                    <div class="p-6 relative">
+                        <h3 class="font-condensed text-3xl md:text-4xl text-white mb-3 group-hover:text-gold transition-colors">BROKEN FOUNDATIONS</h3>
+                        <p class="text-gray-400 text-sm leading-relaxed">Individuals and families in crisis with nowhere to turn and no one equipped to help.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bottom CTA -->
+            <div class="mt-16 md:mt-24 text-center">
+                <p class="text-gray-500 text-sm tracking-widest uppercase mb-6">This is why we exist</p>
+                <div class="w-24 h-[1px] bg-gold mx-auto"></div>
             </div>
         </div>
     </section>
@@ -822,24 +858,23 @@
                 gsap.to(".type-target-2", { text: "Every Stepper earns their place through 60 assessments across 6 disciplines — First Aid, Legal Rights, Tactical Movement and more. This is not symbolic. It is real.", duration: 2.5, ease: "none", scrollTrigger: { trigger: ".type-target-2", start: "top 85%" }});
                 gsap.to(".type-target-3", { text: "We don't choose family by blood. We choose it by showing up — night after night — in the moments that matter most and the places others won't go.", duration: 2.5, ease: "none", scrollTrigger: { trigger: ".type-target-3", start: "top 85%" }});
 
-                let tlProblem = gsap.timeline({
-                    scrollTrigger: { trigger: "#sec03-pin", pin: true, scrub: 1, start: "top top", end: "+=2000" }
-                });
-
-                let problemPoints = gsap.utils.toArray('.problem-point');
-                let problemImgs = gsap.utils.toArray('.problem-img');
-
-                problemPoints.forEach((point, i) => {
-                    tlProblem.to(point, { opacity: 1, x: 20, duration: 1 })
-                             .to("#problem-dot", {
-                                motionPath: { path: "#problem-path", align: "#problem-path", alignOrigin: [0.5, 0.5], start: i * 0.33, end: (i + 1) * 0.33 },
-                                opacity: 1, duration: 1, ease: "power1.inOut"
-                             }, "<");
-                    if (i > 0) {
-                        tlProblem.to(problemImgs[i], { opacity: 1, duration: 1 }, "<")
-                                 .to(problemImgs[i-1], { opacity: 0, duration: 1 }, "<");
-                    }
-                    tlProblem.to({}, { duration: 0.5 });
+                // Problem section card reveals
+                gsap.utils.toArray('.problem-card').forEach((card, i) => {
+                    gsap.fromTo(card, 
+                        { opacity: 0, y: 50 },
+                        { 
+                            opacity: 1, 
+                            y: 0, 
+                            duration: 0.8, 
+                            ease: 'power3.out',
+                            scrollTrigger: { 
+                                trigger: card, 
+                                start: 'top 85%',
+                                toggleActions: 'play none none reverse'
+                            },
+                            delay: i * 0.15
+                        }
+                    );
                 });
 
                 let tlImpact = gsap.timeline({
