@@ -498,6 +498,21 @@
 
     <script>
         document.addEventListener("DOMContentLoaded", () => {
+            // Handle hash navigation on page load with offset
+            const handleHashOnLoad = () => {
+                if (window.location.hash) {
+                    const target = document.querySelector(window.location.hash);
+                    if (target) {
+                        setTimeout(() => {
+                            const headerOffset = 80;
+                            const elementPosition = target.getBoundingClientRect().top;
+                            const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+                            window.scrollTo({ top: offsetPosition, behavior: smooth });
+                        }, 100);
+                    }
+                }
+            };
+            handleHashOnLoad();
             gsap.registerPlugin(ScrollTrigger);
 
             // ─── MOBILE MENU ─────────────────────────────────────────────────
@@ -537,7 +552,12 @@
                             closeMenu();
                             setTimeout(() => {
                                 const target = document.querySelector(href);
-                                if (target) target.scrollIntoView({ behavior: 'smooth' });
+                                if (target) {
+                                    const headerOffset = 80;
+                                    const elementPosition = target.getBoundingClientRect().top;
+                                    const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+                                    window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
+                                }
                             }, 300);
                         } else {
                             closeMenu();
