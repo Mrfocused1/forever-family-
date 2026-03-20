@@ -529,17 +529,20 @@
                 if (link.tagName === 'A') {
                     link.addEventListener('click', (e) => {
                         const href = link.getAttribute('href');
-                        if (href.startsWith('#')) {
+                        const text = link.textContent.trim();
+                        // JOIN goes to top of page
+                        if (text === 'JOIN') {
+                            e.preventDefault();
+                            closeMenu();
+                            setTimeout(() => {
+                                window.scrollTo({ top: 0, behavior: 'smooth' });
+                            }, 300);
+                        } else if (href.startsWith('#')) {
                             e.preventDefault();
                             closeMenu();
                             setTimeout(() => {
                                 const target = document.querySelector(href);
-                                if (target) {
-                                    const headerOffset = 80;
-                                    const elementPosition = target.getBoundingClientRect().top;
-                                    const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
-                                    window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
-                                }
+                                if (target) target.scrollIntoView({ behavior: 'smooth' });
                             }, 300);
                         } else {
                             closeMenu();
