@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Membership | FOREVER FAMILY</title>
+    <meta name="description" content="Join Forever Family with Bronze, Silver, Gold, or Platinum membership tiers. Get access to training, events, and community protection initiatives.">
+    <link rel="icon" type="image/svg+xml" href="images/favicon.svg">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -53,7 +55,7 @@
             <a href="#join-form" class="hover:text-gold transition-colors">Join</a>
         </div>
         <a href="portal.html" class="hidden md:block text-sm font-medium tracking-widest uppercase hover:text-gold transition-colors border border-stone px-3 py-1 hover:border-gold">Member Portal</a>
-        <button id="mobile-menu-btn" class="flex md:hidden self-center flex-col justify-center items-center w-10 h-10 !p-0 z-50" style="padding: 0 !important; height: 40px !important; position: static !important;" aria-label="Open navigation">
+        <button type="button" id="mobile-menu-btn" class="flex md:hidden self-center flex-col justify-center items-center w-10 h-10 !p-0 z-50" style="padding: 0 !important; height: 40px !important; position: static !important;" aria-label="Open navigation">
             <span class="ham-line block bg-white h-[1.5px] w-6 origin-center"></span>
             <span class="ham-line block bg-white h-[1.5px] w-6 origin-center"></span>
             <span class="ham-line block bg-white h-[1.5px] w-4 origin-center"></span>
@@ -64,7 +66,7 @@
     <div id="mobile-menu" class="fixed inset-0 z-[9996] bg-[#0d0d0d] flex flex-col px-8 pt-7 pb-10 pointer-events-none overflow-y-auto" style="opacity:0">
         <div class="flex justify-between items-center mb-12">
             <img src="images/logo.svg" alt="Forever Family" class="h-12 w-auto" style="filter: brightness(0) invert(1);">
-            <button id="mobile-menu-close" class="flex flex-col justify-center items-center w-8 h-8" aria-label="Close navigation">
+            <button type="button" id="mobile-menu-close" class="flex flex-col justify-center items-center w-8 h-8" aria-label="Close navigation">
                 <span class="block bg-white h-[1.5px] w-6 origin-center" style="transform:rotate(45deg) translateY(0.75px)"></span>
                 <span class="block bg-white h-[1.5px] w-6 origin-center" style="transform:rotate(-45deg) translateY(-0.75px)"></span>
             </button>
@@ -423,10 +425,10 @@
         <img src="images/logo.svg" alt="Forever Family" class="h-20 w-auto mb-12" style="filter: brightness(0) invert(1);">
         <h2 class="font-condensed text-[8vw] md:text-[6vw] text-stone opacity-30 text-center leading-none mb-12 footer-promise">FOREVER MEANS WE STAY.</h2>
         <div class="flex gap-8 text-xs tracking-widest uppercase text-gray-500 mb-12 z-10 relative">
-            <a href="#" class="hover:text-gold transition-colors">Instagram</a>
-            <a href="#" class="hover:text-gold transition-colors">Patreon</a>
+            <a href="https://www.instagram.com/foreverfamilyuk/" target="_blank" rel="noopener" class="hover:text-gold transition-colors">Instagram</a>
+            <a href="https://www.patreon.com/posts/forever-family-4-108978781" target="_blank" rel="noopener" class="hover:text-gold transition-colors">Patreon</a>
             <a href="#join-form" class="hover:text-gold transition-colors">Join</a>
-            <a href="#" class="hover:text-gold transition-colors">Privacy</a>
+            <a href="#" class="hover:text-gold transition-colors" onclick="event.preventDefault(); alert('Coming soon')">Privacy</a>
         </div>
         <div class="text-xs tracking-widest text-stone uppercase mb-8 z-10 relative text-center">
             PIA — Public &nbsp;|&nbsp; FFCA — Confidential &nbsp;|&nbsp; SOS — Classified
@@ -443,7 +445,7 @@
             <div class="absolute top-0 right-0 w-8 h-8 border-t-2 border-r-2 border-gold m-4 pointer-events-none"></div>
             <div class="absolute bottom-0 left-0 w-8 h-8 border-b-2 border-l-2 border-gold m-4 pointer-events-none"></div>
             <div class="absolute bottom-0 right-0 w-8 h-8 border-b-2 border-r-2 border-gold m-4 pointer-events-none"></div>
-            <button id="gline-close" class="absolute top-6 right-6 text-stone hover:text-gold transition-colors text-xs tracking-widest uppercase z-10">✕ CLOSE</button>
+            <button type="button" id="gline-close" class="absolute top-6 right-6 text-stone hover:text-gold transition-colors text-xs tracking-widest uppercase z-10">✕ CLOSE</button>
             <div class="text-xs text-gold tracking-widest uppercase mb-2">EMERGENCY REFERRAL</div>
             <h2 class="font-condensed text-4xl md:text-5xl mb-2">THE <span class="text-gold">G-LINE</span></h2>
             <p class="text-gray-400 text-sm mb-8 max-w-lg">Know someone who needs help? This is how you reach us. We respond within 24 hours. For immediate life-threatening situations, always call 999 first.</p>
@@ -490,7 +492,7 @@
                     </div>
                     <h3 class="font-condensed text-3xl text-gold mb-2">REFERRAL RECEIVED.</h3>
                     <p class="text-gray-400 text-sm tracking-widest uppercase mt-2">We respond within 24 hours.<br>For emergencies, call 999.</p>
-                    <button class="mt-8 text-xs tracking-widest text-gold uppercase hover:text-white transition-colors gline-close-trigger">CLOSE</button>
+                    <button type="button" class="mt-8 text-xs tracking-widest text-gold uppercase hover:text-white transition-colors gline-close-trigger">CLOSE</button>
                 </div>
             </div>
         </div>

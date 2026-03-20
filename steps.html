@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Steps Tracker | FOREVER FAMILY</title>
+    <meta name="description" content="Track Forever Family's community patrol operations and emergency response activities in real-time.">
+    <link rel="icon" type="image/svg+xml" href="images/favicon.svg">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -100,7 +102,7 @@
             <a href="steps.html" class="text-gold">Tracker</a>
         </div>
         <a href="portal.html" class="hidden md:block text-sm font-medium tracking-widest uppercase hover:text-gold transition-colors border border-stone px-3 py-1 hover:border-gold">Member Portal</a>
-        <button id="mobile-menu-btn" class="flex md:hidden self-center flex-col justify-center items-center w-10 h-10 !p-0 z-50" style="padding: 0 !important; height: 40px !important; position: static !important;" aria-label="Open navigation">
+        <button type="button" id="mobile-menu-btn" class="flex md:hidden self-center flex-col justify-center items-center w-10 h-10 !p-0 z-50" style="padding: 0 !important; height: 40px !important; position: static !important;" aria-label="Open navigation">
             <span class="ham-line block bg-white h-[1.5px] w-6 origin-center"></span>
             <span class="ham-line block bg-white h-[1.5px] w-6 origin-center"></span>
             <span class="ham-line block bg-white h-[1.5px] w-4 origin-center"></span>
@@ -111,7 +113,7 @@
     <div id="mobile-menu" class="fixed inset-0 z-[9996] bg-[#0d0d0d] flex flex-col px-8 pt-7 pb-10 pointer-events-none overflow-y-auto" style="opacity:0">
         <div class="flex justify-between items-center mb-12">
             <img src="images/logo.svg" alt="Forever Family" class="h-12 w-auto" style="filter: brightness(0) invert(1);">
-            <button id="mobile-menu-close" class="flex flex-col justify-center items-center w-8 h-8" aria-label="Close navigation">
+            <button type="button" id="mobile-menu-close" class="flex flex-col justify-center items-center w-8 h-8" aria-label="Close navigation">
                 <span class="block bg-white h-[1.5px] w-6 origin-center" style="transform:rotate(45deg) translateY(0.75px)"></span>
                 <span class="block bg-white h-[1.5px] w-6 origin-center" style="transform:rotate(-45deg) translateY(-0.75px)"></span>
             </button>
@@ -174,10 +176,10 @@
     <!-- FILTER TABS -->
     <div class="sticky top-[72px] z-40 bg-[#0d0d0d] border-b border-stone px-6 md:px-12">
         <div class="max-w-7xl mx-auto flex gap-0">
-            <button data-filter="all"       class="filter-tab active font-condensed text-sm tracking-widest uppercase px-6 py-4 border-b-2 border-transparent text-white">ALL</button>
-            <button data-filter="active"    class="filter-tab font-condensed text-sm tracking-widest uppercase px-6 py-4 border-b-2 border-transparent text-stone hover:text-white">ACTIVE</button>
-            <button data-filter="upcoming"  class="filter-tab font-condensed text-sm tracking-widest uppercase px-6 py-4 border-b-2 border-transparent text-stone hover:text-white">UPCOMING</button>
-            <button data-filter="completed" class="filter-tab font-condensed text-sm tracking-widest uppercase px-6 py-4 border-b-2 border-transparent text-stone hover:text-white">COMPLETED</button>
+            <button type="button" data-filter="all"       class="filter-tab active font-condensed text-sm tracking-widest uppercase px-6 py-4 border-b-2 border-transparent text-white">ALL</button>
+            <button type="button" data-filter="active"    class="filter-tab font-condensed text-sm tracking-widest uppercase px-6 py-4 border-b-2 border-transparent text-stone hover:text-white">ACTIVE</button>
+            <button type="button" data-filter="upcoming"  class="filter-tab font-condensed text-sm tracking-widest uppercase px-6 py-4 border-b-2 border-transparent text-stone hover:text-white">UPCOMING</button>
+            <button type="button" data-filter="completed" class="filter-tab font-condensed text-sm tracking-widest uppercase px-6 py-4 border-b-2 border-transparent text-stone hover:text-white">COMPLETED</button>
         </div>
     </div>
 
@@ -249,7 +251,7 @@
                 <div class="scan-line"></div>
             </div>
 
-            <button id="modal-close" class="absolute top-5 right-5 text-stone hover:text-gold transition-colors text-xs tracking-widest uppercase z-10">✕ CLOSE</button>
+            <button type="button" id="modal-close" class="absolute top-5 right-5 text-stone hover:text-gold transition-colors text-xs tracking-widest uppercase z-10">✕ CLOSE</button>
 
             <div id="modal-body" class="relative z-10">
                 <!-- Filled by JS -->
@@ -260,12 +262,12 @@
     <!-- FOOTER -->
     <footer class="py-24 px-6 md:px-12 bg-[#050505] relative overflow-hidden border-t border-stone flex flex-col items-center mt-16">
         <img src="images/logo.svg" alt="Forever Family" class="h-20 w-auto mb-12" style="filter: brightness(0) invert(1);">
-        <h2 class="font-condensed text-[8vw] md:text-[6vw] text-stone opacity-30 text-center leading-none mb-12">FOREVER MEANS WE STAY.</h2>
+        <h2 class="font-condensed text-[8vw] md:text-[6vw] text-stone opacity-30 text-center leading-none mb-12 footer-promise">FOREVER MEANS WE STAY.</h2>
         <div class="flex gap-8 text-xs tracking-widest uppercase text-gray-500 mb-12 z-10 relative">
-            <a href="#" class="hover:text-gold transition-colors">Instagram</a>
-            <a href="#" class="hover:text-gold transition-colors">Patreon</a>
+            <a href="https://www.instagram.com/foreverfamilyuk/" target="_blank" rel="noopener" class="hover:text-gold transition-colors">Instagram</a>
+            <a href="https://www.patreon.com/posts/forever-family-4-108978781" target="_blank" rel="noopener" class="hover:text-gold transition-colors">Patreon</a>
             <a href="membership.html#join-form" class="hover:text-gold transition-colors">Join</a>
-            <a href="#" class="hover:text-gold transition-colors">Privacy</a>
+            <a href="#" class="hover:text-gold transition-colors" onclick="event.preventDefault(); alert('Coming soon')">Privacy</a>
         </div>
         <div class="text-xs tracking-widest text-stone uppercase mb-8 z-10 relative text-center">
             PIA — Public &nbsp;|&nbsp; FFCA — Confidential &nbsp;|&nbsp; SOS — Classified
@@ -449,7 +451,7 @@
                         <div class="text-sm ${isActive ? 'text-gold' : isCompleted ? 'text-stone' : 'text-gray-400'}">${relativeTime(step.startTime)}</div>
                         <div class="text-[9px] tracking-widest text-stone uppercase mt-0.5">${formatDateTime(step.startTime).split(' · ')[1]}</div>
                     </div>
-                    <button class="more-btn flex-shrink-0 text-[10px] tracking-widest uppercase border border-stone px-4 py-2 hover:border-gold hover:text-gold transition-colors whitespace-nowrap" data-id="${step.id}">MORE →</button>
+                    <button type="button" class="more-btn flex-shrink-0 text-[10px] tracking-widest uppercase border border-stone px-4 py-2 hover:border-gold hover:text-gold transition-colors whitespace-nowrap" data-id="${step.id}">MORE →</button>
                 </div>
             `;
 
