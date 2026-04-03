@@ -168,14 +168,10 @@
         <p class="text-gray-400 max-w-2xl leading-relaxed mb-12">Stepping is marching to support a vulnerable person anywhere in the UK. This tracker shows every active, completed, and upcoming step in real time.</p>
 
         <!-- Stats bar -->
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-0 border border-stone">
+        <div class="grid grid-cols-3 gap-0 border border-stone">
             <div class="stat-box border-r border-stone p-6 text-center">
                 <div class="font-condensed text-4xl text-gold" id="stat-total">0</div>
                 <div class="text-[10px] tracking-widest text-stone uppercase mt-1">Total Operations</div>
-            </div>
-            <div class="stat-box border-r border-stone p-6 text-center">
-                <div class="font-condensed text-4xl text-gold" id="stat-completed">0</div>
-                <div class="text-[10px] tracking-widest text-stone uppercase mt-1">Completed</div>
             </div>
             <div class="stat-box border-r border-stone p-6 text-center">
                 <div class="font-condensed text-4xl text-gold" id="stat-steppers">0</div>
@@ -821,22 +817,18 @@
             // Include past activities in totals
             const activityCount = document.querySelectorAll('.activity-card').length;
             const totalOps = steps.length + activityCount;
-            const totalCompleted = completed.length + activityCount; // all past activities are completed
-
             // Unique cities from steps + activity locations
             const activityCities = ['Leicester', 'London', 'Glasgow'];
             const allCities = [...new Set([...steps.map(s => s.city), ...activityCities])].length;
 
             // Set values directly first, then animate
             document.getElementById('stat-total').textContent = '0';
-            document.getElementById('stat-completed').textContent = '0';
             document.getElementById('stat-steppers').textContent = '0';
             document.getElementById('stat-cities').textContent = '0';
 
-            gsap.to('#stat-total',     { innerText: totalOps,       snap: { innerText: 1 }, duration: 1.2, ease: 'power2.out' });
-            gsap.to('#stat-completed', { innerText: totalCompleted, snap: { innerText: 1 }, duration: 1.2, ease: 'power2.out', delay: 0.1 });
-            gsap.to('#stat-steppers',  { innerText: steppers,       snap: { innerText: 1 }, duration: 1.4, ease: 'power2.out', delay: 0.2 });
-            gsap.to('#stat-cities',    { innerText: allCities,      snap: { innerText: 1 }, duration: 1,   ease: 'power2.out', delay: 0.15 });
+            gsap.to('#stat-total',     { innerText: totalOps,  snap: { innerText: 1 }, duration: 1.2, ease: 'power2.out' });
+            gsap.to('#stat-steppers',  { innerText: steppers,  snap: { innerText: 1 }, duration: 1.4, ease: 'power2.out', delay: 0.1 });
+            gsap.to('#stat-cities',    { innerText: allCities, snap: { innerText: 1 }, duration: 1,   ease: 'power2.out', delay: 0.15 });
         }
 
         function renderSteps(steps, filter) {
