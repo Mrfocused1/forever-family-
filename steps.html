@@ -70,6 +70,23 @@
             animation: scanLine 4s linear infinite;
         }
 
+        /* Activity cards */
+        .line-clamp-3 {
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        .activity-card { transition: border-color 0.3s, transform 0.3s; }
+        .activity-card:hover { transform: translateY(-4px); }
+        .activity-card img { transition: filter 0.4s, transform 0.4s; }
+        .activity-card:hover img { filter: grayscale(30%) contrast(110%) brightness(95%); transform: scale(1.05); }
+
+        /* Activity modal gallery */
+        .gallery-scroll { display: flex; gap: 0.5rem; overflow-x: auto; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+        .gallery-scroll::-webkit-scrollbar { display: none; }
+        .gallery-scroll > * { scroll-snap-align: start; flex-shrink: 0; }
+
         /* Scrollbar */
         ::-webkit-scrollbar { width: 4px; }
         ::-webkit-scrollbar-track { background: #0d0d0d; }
@@ -239,6 +256,320 @@
 
         </div>
     </main>
+
+    <!-- PAST ACTIVITIES -->
+    <section id="past-activities" class="px-6 md:px-12 max-w-7xl mx-auto py-16 mt-8 border-t border-stone">
+        <div class="flex items-center gap-4 mb-4">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6.5" stroke="#D4AF37"/><path d="M7 3.5V7.5L9.5 9" stroke="#D4AF37" stroke-width="1.2" stroke-linecap="round"/></svg>
+            <span class="text-xs text-gold tracking-widest uppercase">Activity Log</span>
+        </div>
+        <h2 class="font-condensed text-[10vw] md:text-[5vw] leading-none text-white mb-3">PAST<br><span class="text-gold">ACTIVITIES.</span></h2>
+        <p class="text-gray-400 max-w-2xl leading-relaxed mb-12">A record of Forever Family's community actions — patrols, outreach, marches, and initiatives that have made a tangible difference.</p>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="activities-grid">
+
+            <!-- 1. Leicester University Safety Campaign -->
+            <div class="activity-card group bg-[#111] border border-stone hover:border-gold transition-all cursor-pointer" data-activity="0">
+                <div class="relative aspect-[4/3] overflow-hidden">
+                    <img src="images/activities/DSLPaTBCBOi_slide1.jpg" alt="Leicester University Safety Campaign" class="w-full h-full object-cover" style="filter: grayscale(80%) contrast(120%) brightness(90%);" loading="lazy">
+                    <div class="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-transparent to-transparent"></div>
+                    <div class="absolute top-4 left-4 bg-gold text-[#0d0d0d] text-[10px] tracking-widest uppercase font-medium px-3 py-1">Dec 2025</div>
+                    <div class="absolute top-4 right-4 flex gap-1">
+                        <span class="bg-[#0d0d0d] bg-opacity-70 text-[9px] tracking-widest uppercase text-gold px-2 py-0.5 border border-stone">12 Photos</span>
+                    </div>
+                </div>
+                <div class="p-6">
+                    <h3 class="font-condensed text-xl text-white group-hover:text-gold transition-colors mb-2">Leicester University Safety Campaign</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed line-clamp-3">Facilitated community meetings in Leicester to support young people affected by a campus incident. Developing a scalable safeguarding model for universities nationwide.</p>
+                    <div class="flex items-center justify-between mt-4 pt-4 border-t border-stone">
+                        <span class="text-[10px] tracking-widest text-stone uppercase">Leicester</span>
+                        <span class="text-[10px] tracking-widest text-gold uppercase group-hover:text-white transition-colors">View Details →</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. Community Protection During Unrest -->
+            <div class="activity-card group bg-[#111] border border-stone hover:border-gold transition-all cursor-pointer" data-activity="1">
+                <div class="relative aspect-[4/3] overflow-hidden">
+                    <img src="images/activities/C-dgtIuoMUq_slide1.jpg" alt="Community Protection During Unrest" class="w-full h-full object-cover" style="filter: grayscale(80%) contrast(120%) brightness(90%);" loading="lazy">
+                    <div class="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-transparent to-transparent"></div>
+                    <div class="absolute top-4 left-4 bg-gold text-[#0d0d0d] text-[10px] tracking-widest uppercase font-medium px-3 py-1">Aug 2024</div>
+                    <div class="absolute top-4 right-4 flex gap-1">
+                        <span class="bg-[#0d0d0d] bg-opacity-70 text-[9px] tracking-widest uppercase text-gold px-2 py-0.5 border border-stone">5 Videos</span>
+                        <span class="bg-[#0d0d0d] bg-opacity-70 text-[9px] tracking-widest uppercase text-white px-2 py-0.5 border border-stone">10 Slides</span>
+                    </div>
+                </div>
+                <div class="p-6">
+                    <h3 class="font-condensed text-xl text-white group-hover:text-gold transition-colors mb-2">Community Protection During Unrest</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed line-clamp-3">FF and SOS operatives deployed across Walthamstow, Lewisham and Croydon to ensure community safety and shut down threats of violence. A collective effort preserving the peace.</p>
+                    <div class="flex items-center justify-between mt-4 pt-4 border-t border-stone">
+                        <span class="text-[10px] tracking-widest text-stone uppercase">London — Multi-Borough</span>
+                        <span class="text-[10px] tracking-widest text-gold uppercase group-hover:text-white transition-colors">View Details →</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. BBC Documentary Feature -->
+            <div class="activity-card group bg-[#111] border border-stone hover:border-gold transition-all cursor-pointer" data-activity="2">
+                <div class="relative aspect-[4/3] overflow-hidden">
+                    <img src="images/activities/Cae3R9nI4yF_thumb.jpg" alt="BBC Documentary - We Are Black and British" class="w-full h-full object-cover" style="filter: grayscale(80%) contrast(120%) brightness(90%);" loading="lazy">
+                    <div class="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-transparent to-transparent"></div>
+                    <div class="absolute top-4 left-4 bg-gold text-[#0d0d0d] text-[10px] tracking-widest uppercase font-medium px-3 py-1">Feb 2022</div>
+                    <div class="absolute top-4 right-4 flex gap-1">
+                        <span class="bg-[#0d0d0d] bg-opacity-70 text-[9px] tracking-widest uppercase text-gold px-2 py-0.5 border border-stone">Video</span>
+                    </div>
+                </div>
+                <div class="p-6">
+                    <h3 class="font-condensed text-xl text-white group-hover:text-gold transition-colors mb-2">BBC Documentary — "We Are Black and British"</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed line-clamp-3">Forever Family featured in BBC's documentary highlighting community patrol initiatives and the work being done to protect and uplift communities across the UK.</p>
+                    <div class="flex items-center justify-between mt-4 pt-4 border-t border-stone">
+                        <span class="text-[10px] tracking-widest text-stone uppercase">National</span>
+                        <span class="text-[10px] tracking-widest text-gold uppercase group-hover:text-white transition-colors">View Details →</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4. Homeless Outreach — London & Scotland -->
+            <div class="activity-card group bg-[#111] border border-stone hover:border-gold transition-all cursor-pointer" data-activity="3">
+                <div class="relative aspect-[4/3] overflow-hidden">
+                    <img src="images/activities/CYYjm8pI3hK_thumb.jpg" alt="Homeless Outreach London and Scotland" class="w-full h-full object-cover" style="filter: grayscale(80%) contrast(120%) brightness(90%);" loading="lazy">
+                    <div class="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-transparent to-transparent"></div>
+                    <div class="absolute top-4 left-4 bg-gold text-[#0d0d0d] text-[10px] tracking-widest uppercase font-medium px-3 py-1">Jan 2022</div>
+                    <div class="absolute top-4 right-4 flex gap-1">
+                        <span class="bg-[#0d0d0d] bg-opacity-70 text-[9px] tracking-widest uppercase text-gold px-2 py-0.5 border border-stone">Video</span>
+                    </div>
+                </div>
+                <div class="p-6">
+                    <h3 class="font-condensed text-xl text-white group-hover:text-gold transition-colors mb-2">Homeless Outreach — London & Scotland</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed line-clamp-3">Direct outreach to people sleeping rough across London and Scotland during national lockdown. Donated four barrels of clothing to communities in Grenada through international charity partnerships.</p>
+                    <div class="flex items-center justify-between mt-4 pt-4 border-t border-stone">
+                        <span class="text-[10px] tracking-widest text-stone uppercase">London & Glasgow</span>
+                        <span class="text-[10px] tracking-widest text-gold uppercase group-hover:text-white transition-colors">View Details →</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 5. One Year Anniversary -->
+            <div class="activity-card group bg-[#111] border border-stone hover:border-gold transition-all cursor-pointer" data-activity="4">
+                <div class="relative aspect-[4/3] overflow-hidden">
+                    <img src="images/activities/CQEmNzHh8dv.jpg" alt="Forever Family One Year Anniversary" class="w-full h-full object-cover" style="filter: grayscale(80%) contrast(120%) brightness(90%);" loading="lazy">
+                    <div class="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-transparent to-transparent"></div>
+                    <div class="absolute top-4 left-4 bg-gold text-[#0d0d0d] text-[10px] tracking-widest uppercase font-medium px-3 py-1">Jun 2021</div>
+                </div>
+                <div class="p-6">
+                    <h3 class="font-condensed text-xl text-white group-hover:text-gold transition-colors mb-2">One Year Anniversary</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed line-clamp-3">Celebrating 12 months since founding. From providing food and clothing to people in need, nationwide patrols in response to missing children, to guiding youth onto a better path.</p>
+                    <div class="flex items-center justify-between mt-4 pt-4 border-t border-stone">
+                        <span class="text-[10px] tracking-widest text-stone uppercase">Nationwide</span>
+                        <span class="text-[10px] tracking-widest text-gold uppercase group-hover:text-white transition-colors">View Details →</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 6. The People's Patrol -->
+            <div class="activity-card group bg-[#111] border border-stone hover:border-gold transition-all cursor-pointer" data-activity="5">
+                <div class="relative aspect-[4/3] overflow-hidden">
+                    <img src="images/activities/CPD-4ILgpRH_slide1.jpg" alt="The People's Patrol" class="w-full h-full object-cover" style="filter: grayscale(80%) contrast(120%) brightness(90%);" loading="lazy">
+                    <div class="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-transparent to-transparent"></div>
+                    <div class="absolute top-4 left-4 bg-gold text-[#0d0d0d] text-[10px] tracking-widest uppercase font-medium px-3 py-1">May 2021</div>
+                    <div class="absolute top-4 right-4 flex gap-1">
+                        <span class="bg-[#0d0d0d] bg-opacity-70 text-[9px] tracking-widest uppercase text-white px-2 py-0.5 border border-stone">4 Slides</span>
+                    </div>
+                </div>
+                <div class="p-6">
+                    <h3 class="font-condensed text-xl text-white group-hover:text-gold transition-colors mb-2">The People's Patrol — London-Wide</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed line-clamp-3">A city-wide community patrol across North, South, East and West London. Everyone has the right to feel safe and heard in their neighbourhood. It takes a village and we are the village.</p>
+                    <div class="flex items-center justify-between mt-4 pt-4 border-t border-stone">
+                        <span class="text-[10px] tracking-widest text-stone uppercase">London — City-Wide</span>
+                        <span class="text-[10px] tracking-widest text-gold uppercase group-hover:text-white transition-colors">View Details →</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 7. Glasgow Homeless Outreach -->
+            <div class="activity-card group bg-[#111] border border-stone hover:border-gold transition-all cursor-pointer" data-activity="6">
+                <div class="relative aspect-[4/3] overflow-hidden">
+                    <img src="images/activities/CLxmhUEBgtN.jpg" alt="Glasgow City Centre Outreach" class="w-full h-full object-cover" style="filter: grayscale(80%) contrast(120%) brightness(90%);" loading="lazy">
+                    <div class="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-transparent to-transparent"></div>
+                    <div class="absolute top-4 left-4 bg-gold text-[#0d0d0d] text-[10px] tracking-widest uppercase font-medium px-3 py-1">Mar 2021</div>
+                </div>
+                <div class="p-6">
+                    <h3 class="font-condensed text-xl text-white group-hover:text-gold transition-colors mb-2">Glasgow City Centre Outreach</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed line-clamp-3">Forever Family Scotland deployed to Glasgow City Centre with meals, snacks, essentials and warm clothing for those in need during lockdown.</p>
+                    <div class="flex items-center justify-between mt-4 pt-4 border-t border-stone">
+                        <span class="text-[10px] tracking-widest text-stone uppercase">Glasgow</span>
+                        <span class="text-[10px] tracking-widest text-gold uppercase group-hover:text-white transition-colors">View Details →</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 8. Winter Collection Drive -->
+            <div class="activity-card group bg-[#111] border border-stone hover:border-gold transition-all cursor-pointer" data-activity="7">
+                <div class="relative aspect-[4/3] overflow-hidden">
+                    <img src="images/activities/CJzCjcpBDWk_slide1.jpg" alt="Winter Collection Drive" class="w-full h-full object-cover" style="filter: grayscale(80%) contrast(120%) brightness(90%);" loading="lazy">
+                    <div class="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-transparent to-transparent"></div>
+                    <div class="absolute top-4 left-4 bg-gold text-[#0d0d0d] text-[10px] tracking-widest uppercase font-medium px-3 py-1">Dec 2020</div>
+                </div>
+                <div class="p-6">
+                    <h3 class="font-condensed text-xl text-white group-hover:text-gold transition-colors mb-2">Winter Essentials Collection Drive</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed line-clamp-3">Collecting warm clothing, food and essentials across London for redistribution to the homeless, vulnerable and elderly in the community during the winter months.</p>
+                    <div class="flex items-center justify-between mt-4 pt-4 border-t border-stone">
+                        <span class="text-[10px] tracking-widest text-stone uppercase">London — Multiple Sites</span>
+                        <span class="text-[10px] tracking-widest text-gold uppercase group-hover:text-white transition-colors">View Details →</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 9. Clapham Junction Patrol -->
+            <div class="activity-card group bg-[#111] border border-stone hover:border-gold transition-all cursor-pointer" data-activity="8">
+                <div class="relative aspect-[4/3] overflow-hidden">
+                    <img src="images/activities/CIYyd2vgVve_slide1.jpg" alt="Clapham Junction Community Patrol" class="w-full h-full object-cover" style="filter: grayscale(80%) contrast(120%) brightness(90%);" loading="lazy">
+                    <div class="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-transparent to-transparent"></div>
+                    <div class="absolute top-4 left-4 bg-gold text-[#0d0d0d] text-[10px] tracking-widest uppercase font-medium px-3 py-1">Nov 2020</div>
+                    <div class="absolute top-4 right-4 flex gap-1">
+                        <span class="bg-[#0d0d0d] bg-opacity-70 text-[9px] tracking-widest uppercase text-white px-2 py-0.5 border border-stone">5 Photos</span>
+                    </div>
+                </div>
+                <div class="p-6">
+                    <h3 class="font-condensed text-xl text-white group-hover:text-gold transition-colors mb-2">Clapham Junction Community Patrol</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed line-clamp-3">Patrol overseeing children travelling to school. Met Labour MP Marsha De Cordova and Conservative Councillor Piers McCausland. Purchased meals for homeless community members.</p>
+                    <div class="flex items-center justify-between mt-4 pt-4 border-t border-stone">
+                        <span class="text-[10px] tracking-widest text-stone uppercase">Clapham Junction</span>
+                        <span class="text-[10px] tracking-widest text-gold uppercase group-hover:text-white transition-colors">View Details →</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 10. Stockwell Safeguarding Patrol -->
+            <div class="activity-card group bg-[#111] border border-stone hover:border-gold transition-all cursor-pointer" data-activity="9">
+                <div class="relative aspect-[4/3] overflow-hidden">
+                    <img src="images/activities/CIS6l2uh9T9_slide1.jpg" alt="Stockwell Safeguarding Patrol" class="w-full h-full object-cover" style="filter: grayscale(80%) contrast(120%) brightness(90%);" loading="lazy">
+                    <div class="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-transparent to-transparent"></div>
+                    <div class="absolute top-4 left-4 bg-gold text-[#0d0d0d] text-[10px] tracking-widest uppercase font-medium px-3 py-1">Nov 2020</div>
+                    <div class="absolute top-4 right-4 flex gap-1">
+                        <span class="bg-[#0d0d0d] bg-opacity-70 text-[9px] tracking-widest uppercase text-white px-2 py-0.5 border border-stone">5 Photos</span>
+                    </div>
+                </div>
+                <div class="p-6">
+                    <h3 class="font-condensed text-xl text-white group-hover:text-gold transition-colors mb-2">Stockwell Safeguarding Patrol</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed line-clamp-3">Response to safeguarding concerns from parents — a resident photographing children near a primary school. Patrol from Stockwell to Brixton engaging students on Stop and Search rights.</p>
+                    <div class="flex items-center justify-between mt-4 pt-4 border-t border-stone">
+                        <span class="text-[10px] tracking-widest text-stone uppercase">Stockwell — Brixton</span>
+                        <span class="text-[10px] tracking-widest text-gold uppercase group-hover:text-white transition-colors">View Details →</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 11. Shepherd's Bush Patrol -->
+            <div class="activity-card group bg-[#111] border border-stone hover:border-gold transition-all cursor-pointer" data-activity="10">
+                <div class="relative aspect-[4/3] overflow-hidden">
+                    <img src="images/activities/CHqb2ZVBRKw_slide1.jpg" alt="Shepherd's Bush Community Patrol" class="w-full h-full object-cover" style="filter: grayscale(80%) contrast(120%) brightness(90%);" loading="lazy">
+                    <div class="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-transparent to-transparent"></div>
+                    <div class="absolute top-4 left-4 bg-gold text-[#0d0d0d] text-[10px] tracking-widest uppercase font-medium px-3 py-1">Nov 2020</div>
+                    <div class="absolute top-4 right-4 flex gap-1">
+                        <span class="bg-[#0d0d0d] bg-opacity-70 text-[9px] tracking-widest uppercase text-white px-2 py-0.5 border border-stone">5 Photos</span>
+                    </div>
+                </div>
+                <div class="p-6">
+                    <h3 class="font-condensed text-xl text-white group-hover:text-gold transition-colors mb-2">Shepherd's Bush Community Patrol</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed line-clamp-3">Outreach from Shepherd's Bush to Hammersmith. Discussed County Lines issues with station security, demonstrated knife defence techniques to college students, and supported Ankh Wellbeing Centre.</p>
+                    <div class="flex items-center justify-between mt-4 pt-4 border-t border-stone">
+                        <span class="text-[10px] tracking-widest text-stone uppercase">Shepherd's Bush — Hammersmith</span>
+                        <span class="text-[10px] tracking-widest text-gold uppercase group-hover:text-white transition-colors">View Details →</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 12. Tottenham Patrol -->
+            <div class="activity-card group bg-[#111] border border-stone hover:border-gold transition-all cursor-pointer" data-activity="11">
+                <div class="relative aspect-[4/3] overflow-hidden">
+                    <img src="images/activities/CHp_Chsgo1f_slide1.jpg" alt="Tottenham Community Patrol" class="w-full h-full object-cover" style="filter: grayscale(80%) contrast(120%) brightness(90%);" loading="lazy">
+                    <div class="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-transparent to-transparent"></div>
+                    <div class="absolute top-4 left-4 bg-gold text-[#0d0d0d] text-[10px] tracking-widest uppercase font-medium px-3 py-1">Nov 2020</div>
+                    <div class="absolute top-4 right-4 flex gap-1">
+                        <span class="bg-[#0d0d0d] bg-opacity-70 text-[9px] tracking-widest uppercase text-white px-2 py-0.5 border border-stone">5 Photos</span>
+                    </div>
+                </div>
+                <div class="p-6">
+                    <h3 class="font-condensed text-xl text-white group-hover:text-gold transition-colors mb-2">Tottenham Patrol with Faz Amnesty</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed line-clamp-3">Joint patrol with Faron Alex Paul of Faz Amnesty. Engaged youth about knife and gang crime, met BikeStormz founder, and responded to a family safeguarding call in Stratford.</p>
+                    <div class="flex items-center justify-between mt-4 pt-4 border-t border-stone">
+                        <span class="text-[10px] tracking-widest text-stone uppercase">Tottenham — Stratford</span>
+                        <span class="text-[10px] tracking-widest text-gold uppercase group-hover:text-white transition-colors">View Details →</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 13. Thornton Heath Patrol -->
+            <div class="activity-card group bg-[#111] border border-stone hover:border-gold transition-all cursor-pointer" data-activity="12">
+                <div class="relative aspect-[4/3] overflow-hidden">
+                    <img src="images/activities/CHpkyg7AE6f_slide1.jpg" alt="Thornton Heath Community Patrol" class="w-full h-full object-cover" style="filter: grayscale(80%) contrast(120%) brightness(90%);" loading="lazy">
+                    <div class="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-transparent to-transparent"></div>
+                    <div class="absolute top-4 left-4 bg-gold text-[#0d0d0d] text-[10px] tracking-widest uppercase font-medium px-3 py-1">Nov 2020</div>
+                    <div class="absolute top-4 right-4 flex gap-1">
+                        <span class="bg-[#0d0d0d] bg-opacity-70 text-[9px] tracking-widest uppercase text-white px-2 py-0.5 border border-stone">5 Photos</span>
+                    </div>
+                </div>
+                <div class="p-6">
+                    <h3 class="font-condensed text-xl text-white group-hover:text-gold transition-colors mb-2">Thornton Heath — Knife Crime Response</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed line-clamp-3">Emergency patrol in response to stabbings of two local schoolgirls. Provided security support, demonstrated self-defence techniques, and joined forces with Brixton Soup Kitchen for outreach.</p>
+                    <div class="flex items-center justify-between mt-4 pt-4 border-t border-stone">
+                        <span class="text-[10px] tracking-widest text-stone uppercase">Thornton Heath — Croydon</span>
+                        <span class="text-[10px] tracking-widest text-gold uppercase group-hover:text-white transition-colors">View Details →</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 14. Back to School Outreach -->
+            <div class="activity-card group bg-[#111] border border-stone hover:border-gold transition-all cursor-pointer" data-activity="13">
+                <div class="relative aspect-[4/3] overflow-hidden">
+                    <img src="images/activities/CFfVuhvg0O_.jpg" alt="Back to School Outreach" class="w-full h-full object-cover" style="filter: grayscale(80%) contrast(120%) brightness(90%);" loading="lazy">
+                    <div class="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-transparent to-transparent"></div>
+                    <div class="absolute top-4 left-4 bg-gold text-[#0d0d0d] text-[10px] tracking-widest uppercase font-medium px-3 py-1">Sep 2020</div>
+                </div>
+                <div class="p-6">
+                    <h3 class="font-condensed text-xl text-white group-hover:text-gold transition-colors mb-2">Back to School Outreach</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed line-clamp-3">Raised funds and distributed school equipment — pens, books, pencil cases — to families in Brixton. Conducted community surveys and extended support across the school year for low-income families.</p>
+                    <div class="flex items-center justify-between mt-4 pt-4 border-t border-stone">
+                        <span class="text-[10px] tracking-widest text-stone uppercase">Brixton</span>
+                        <span class="text-[10px] tracking-widest text-gold uppercase group-hover:text-white transition-colors">View Details →</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 15. Emancipation Day March -->
+            <div class="activity-card group bg-[#111] border border-stone hover:border-gold transition-all cursor-pointer" data-activity="14">
+                <div class="relative aspect-[4/3] overflow-hidden">
+                    <img src="images/activities/CDVCGPlgobq_thumb.jpg" alt="Emancipation Day March" class="w-full h-full object-cover" style="filter: grayscale(80%) contrast(120%) brightness(90%);" loading="lazy">
+                    <div class="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-transparent to-transparent"></div>
+                    <div class="absolute top-4 left-4 bg-gold text-[#0d0d0d] text-[10px] tracking-widest uppercase font-medium px-3 py-1">Aug 2020</div>
+                    <div class="absolute top-4 right-4 flex gap-1">
+                        <span class="bg-[#0d0d0d] bg-opacity-70 text-[9px] tracking-widest uppercase text-gold px-2 py-0.5 border border-stone">Video</span>
+                    </div>
+                </div>
+                <div class="p-6">
+                    <h3 class="font-condensed text-xl text-white group-hover:text-gold transition-colors mb-2">Emancipation Day March — Brixton Blackout</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed line-clamp-3">Forever Family's founding moment. Marched from Clapham Common to Windrush Square on the anniversary of the Slavery Abolition Act, uniting generations in solidarity.</p>
+                    <div class="flex items-center justify-between mt-4 pt-4 border-t border-stone">
+                        <span class="text-[10px] tracking-widest text-stone uppercase">Brixton — Clapham Common</span>
+                        <span class="text-[10px] tracking-widest text-gold uppercase group-hover:text-white transition-colors">View Details →</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- ACTIVITY DETAIL MODAL -->
+    <div id="activity-modal" class="fixed inset-0 z-[9998] bg-[#0d0d0d] bg-opacity-90 flex items-center justify-center p-4 md:p-6 opacity-0 pointer-events-none" style="transition: opacity 0.25s;">
+        <div id="activity-modal-panel" class="w-full max-w-4xl bg-[#0d0d0d] border border-gold relative overflow-hidden max-h-[90vh] overflow-y-auto" style="transform: translateY(20px) scale(0.96)">
+            <div class="absolute top-0 left-0 w-6 h-6 border-t-2 border-l-2 border-gold m-3 pointer-events-none z-20"></div>
+            <div class="absolute top-0 right-0 w-6 h-6 border-t-2 border-r-2 border-gold m-3 pointer-events-none z-20"></div>
+            <div class="absolute inset-0 overflow-hidden pointer-events-none"><div class="scan-line"></div></div>
+            <button type="button" id="activity-modal-close" class="absolute top-5 right-5 text-stone hover:text-gold transition-colors text-xs tracking-widest uppercase z-20">✕ CLOSE</button>
+            <div id="activity-modal-body" class="relative z-10"></div>
+        </div>
+    </div>
 
     <!-- DETAIL MODAL -->
     <div id="detail-modal" class="fixed inset-0 z-[9998] bg-[#0d0d0d] bg-opacity-90 flex items-center justify-center p-6 opacity-0 pointer-events-none">
@@ -612,7 +943,7 @@
 
         document.getElementById('modal-close').addEventListener('click', closeModal);
         modal.addEventListener('click', e => { if (e.target === modal) closeModal(); });
-        document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+        document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeModal(); closeActivityModal(); } });
 
         // ─── FILTER TABS ─────────────────────────────────────────────────────
         let currentFilter = 'all';
@@ -646,6 +977,268 @@
 
         loadSteps();
         setInterval(loadSteps, 30000); // refresh every 30s
+
+        // ─── PAST ACTIVITIES ─────────────────────────────────────────────────
+        const ACTIVITIES = [
+            {
+                title: "Leicester University Safety Campaign",
+                date: "December 2025",
+                location: "Leicester",
+                description: "Universities must remain safe spaces for young people pursuing education. Since the incident, Forever Family and SOS Protection Limited facilitated two community meetings in Leicester, with a primary focus on directly supporting the young people most affected and working with families, professionals, and local partners to build a tangible, long-term support structure. The model being developed in Leicester is designed to be scalable — not only for Leicester University but for other universities and communities facing similar realities.",
+                media: [
+                    {type:"image",src:"images/activities/DSLPaTBCBOi_slide1.jpg"},
+                    {type:"image",src:"images/activities/DSLPaTBCBOi_slide2.jpg"},
+                    {type:"image",src:"images/activities/DSLPaTBCBOi_slide3.jpg"},
+                    {type:"image",src:"images/activities/DSLPaTBCBOi_slide4.jpg"},
+                    {type:"image",src:"images/activities/DSLPaTBCBOi_slide5.jpg"},
+                    {type:"image",src:"images/activities/DSLPaTBCBOi_slide6.jpg"},
+                    {type:"image",src:"images/activities/DSLPaTBCBOi_slide7.jpg"},
+                    {type:"image",src:"images/activities/DSLPaTBCBOi_slide8.jpg"},
+                    {type:"image",src:"images/activities/DSLPaTBCBOi_slide9.jpg"},
+                    {type:"image",src:"images/activities/DSLPaTBCBOi_slide10.jpg"},
+                    {type:"image",src:"images/activities/DSLPaTBCBOi_slide11.jpg"},
+                    {type:"image",src:"images/activities/DSLPaTBCBOi_slide12.jpg"}
+                ]
+            },
+            {
+                title: "Community Protection During Unrest",
+                date: "August 2024",
+                location: "London — Walthamstow, Lewisham, Croydon",
+                description: "Forever Family communicated with local people, community organisations and institutions and had FF and SOS operatives in every area to ensure protection and safety across the community. Collective security was provided for peace, unity, safety and protection of the community in areas under threat. Speeches were delivered in Walthamstow, Lewisham and Croydon, and interfaith solidarity was demonstrated with Lewisham Mosque facilitating community unity.",
+                media: [
+                    {type:"image",src:"images/activities/C-dgtIuoMUq_slide1.jpg"},
+                    {type:"video",src:"images/activities/C-dgtIuoMUq_slide2.mp4",thumb:"images/activities/C-dgtIuoMUq_slide2.jpg"},
+                    {type:"video",src:"images/activities/C-dgtIuoMUq_slide3.mp4",thumb:"images/activities/C-dgtIuoMUq_slide3.jpg"},
+                    {type:"video",src:"images/activities/C-dgtIuoMUq_slide4.mp4",thumb:"images/activities/C-dgtIuoMUq_slide4.jpg"},
+                    {type:"video",src:"images/activities/C-dgtIuoMUq_slide5.mp4",thumb:"images/activities/C-dgtIuoMUq_slide5.jpg"},
+                    {type:"video",src:"images/activities/C-dgtIuoMUq_slide6.mp4",thumb:"images/activities/C-dgtIuoMUq_slide6.jpg"},
+                    {type:"image",src:"images/activities/C-dgtIuoMUq_slide7.jpg"},
+                    {type:"image",src:"images/activities/C-dgtIuoMUq_slide8.jpg"},
+                    {type:"image",src:"images/activities/C-dgtIuoMUq_slide9.jpg"},
+                    {type:"image",src:"images/activities/C-dgtIuoMUq_slide10.jpg"}
+                ]
+            },
+            {
+                title: 'BBC Documentary — "We Are Black and British"',
+                date: "February 2022",
+                location: "National",
+                description: "Forever Family was featured in a controversial documentary called 'We are Black and British' aired on BBC. The documentary showcased community patrol initiatives and the work being done to protect and uplift communities across the UK. Following the broadcast, the doors were opened for recruitment and training.",
+                media: [
+                    {type:"video",src:"images/activities/Cae3R9nI4yF.mp4",thumb:"images/activities/Cae3R9nI4yF_thumb.jpg"}
+                ]
+            },
+            {
+                title: "Homeless Outreach — London & Scotland",
+                date: "January — March 2021",
+                location: "London & Glasgow",
+                description: "Forever Family delivered a direct outreach service from January to March 2021 to people sleeping rough on the streets of London and Scotland. Delivering this service helped people in need during a once-in-a-lifetime, world changing experience of living in a National lockdown. Forever Family also worked with UK and international charities serving communities in Grenada, donating four barrels of clothing, sorted, sterilised, washed, dried, filled and shipped to new owners in need.",
+                media: [
+                    {type:"video",src:"images/activities/CYYjm8pI3hK.mp4",thumb:"images/activities/CYYjm8pI3hK_thumb.jpg"}
+                ]
+            },
+            {
+                title: "One Year Anniversary",
+                date: "June 2021",
+                location: "Nationwide",
+                description: "Forever Family's one year anniversary. 12 months since 'The Battle Of Trafalgar' where Forever Family was born to serve and protect communities in the battle against racism, inequality and injustice. Over the first year: providing food and clothing to people in need, handing out school supplies to children, nationwide patrols in response to reports of missing children and kidnappings, and helping guide youth out of trouble and on to a better path.",
+                media: [
+                    {type:"image",src:"images/activities/CQEmNzHh8dv.jpg"}
+                ]
+            },
+            {
+                title: "The People's Patrol — London-Wide",
+                date: "28 May 2021",
+                location: "London — North, South, East & West",
+                description: "A city-wide community patrol across all of London. Everyone has the right to feel safe and heard in their neighbourhood. It takes a village and we are the village. Community members were called to patrol their neighbourhoods with friends, walk about with family, and link up with FF Force — staying vigilant and looking out for one another, especially those who are vulnerable.",
+                media: [
+                    {type:"image",src:"images/activities/CPD-4ILgpRH_slide1.jpg"},
+                    {type:"image",src:"images/activities/CPD-4ILgpRH_slide2.jpg"},
+                    {type:"image",src:"images/activities/CPD-4ILgpRH_slide3.jpg"},
+                    {type:"image",src:"images/activities/CPD-4ILgpRH_slide4.jpg"}
+                ]
+            },
+            {
+                title: "Glasgow City Centre Outreach",
+                date: "March 2021",
+                location: "Glasgow",
+                description: "Forever Family Scotland deployed to Glasgow City Centre with meals, snacks, essentials and warm clothing. Supporting those in need during lockdown, connecting with vulnerable people and providing direct assistance on the ground.",
+                media: [
+                    {type:"image",src:"images/activities/CLxmhUEBgtN.jpg"}
+                ]
+            },
+            {
+                title: "Winter Essentials Collection Drive",
+                date: "December 2020 — January 2021",
+                location: "London — Multiple Sites",
+                description: "Forever Family collected warm clothing, food and essential items across London for redistribution to the homeless, vulnerable and elderly. Teams were positioned at various locations to receive donations from the public. Together, building a self-sufficient stock for the community through co-operative economics.",
+                media: [
+                    {type:"image",src:"images/activities/CJzCjcpBDWk_slide1.jpg"},
+                    {type:"image",src:"images/activities/CJzCjcpBDWk_slide2.jpg"},
+                    {type:"image",src:"images/activities/CJ0gANXBbL6_slide1.jpg"},
+                    {type:"image",src:"images/activities/CJ0gANXBbL6_slide2.jpg"},
+                    {type:"image",src:"images/activities/CJ0gANXBbL6_slide3.jpg"}
+                ]
+            },
+            {
+                title: "Clapham Junction Community Patrol",
+                date: "18 November 2020",
+                location: "Clapham Junction",
+                description: "Patrol began at Clapham Junction train station overseeing children travelling to school. Met Labour MP Marsha De Cordova who praised the community engagement, and Conservative Councillor Piers McCausland. Engaged with residents along St John's Hill, purchased meals for homeless community members, and gifted warm clothing to a man with no shoes during the cold, wet day.",
+                media: [
+                    {type:"image",src:"images/activities/CIYyd2vgVve_slide1.jpg"},
+                    {type:"image",src:"images/activities/CIYyd2vgVve_slide2.jpg"},
+                    {type:"image",src:"images/activities/CIYyd2vgVve_slide3.jpg"},
+                    {type:"image",src:"images/activities/CIYyd2vgVve_slide4.jpg"},
+                    {type:"image",src:"images/activities/CIYyd2vgVve_slide5.jpg"}
+                ]
+            },
+            {
+                title: "Stockwell Safeguarding Patrol",
+                date: "16 November 2020",
+                location: "Stockwell — Brixton",
+                description: "Response to safeguarding concerns from parents in Stockwell. A resident had been observed photographing and video recording children on their way to school, and tried to solicit schoolgirls. FF Force patrolled the estate, spoke with the accused, and can report that since the patrol the behaviour ceased. At lunchtime, the team distributed Stop and Search rights information to college students in Brixton.",
+                media: [
+                    {type:"image",src:"images/activities/CIS6l2uh9T9_slide1.jpg"},
+                    {type:"image",src:"images/activities/CIS6l2uh9T9_slide2.jpg"},
+                    {type:"image",src:"images/activities/CIS6l2uh9T9_slide3.jpg"},
+                    {type:"image",src:"images/activities/CIS6l2uh9T9_slide4.jpg"},
+                    {type:"image",src:"images/activities/CIS6l2uh9T9_slide5.jpg"}
+                ]
+            },
+            {
+                title: "Shepherd's Bush Community Patrol",
+                date: "13 November 2020",
+                location: "Shepherd's Bush — Hammersmith",
+                description: "Outreach from Shepherd's Bush Station through to Hammersmith. Station security informed the team about local County Lines issues. Spoke with Metropolitan Police, engaged with local businesses, purchased lunches for people experiencing homelessness, and demonstrated knife disarming self-defence techniques to college students. Ended the day supporting the Ankh Wellbeing Centre in Willesden.",
+                media: [
+                    {type:"image",src:"images/activities/CHqb2ZVBRKw_slide1.jpg"},
+                    {type:"image",src:"images/activities/CHqb2ZVBRKw_slide2.jpg"},
+                    {type:"image",src:"images/activities/CHqb2ZVBRKw_slide3.jpg"},
+                    {type:"image",src:"images/activities/CHqb2ZVBRKw_slide4.jpg"},
+                    {type:"image",src:"images/activities/CHqb2ZVBRKw_slide5.jpg"}
+                ]
+            },
+            {
+                title: "Tottenham Patrol with Faz Amnesty",
+                date: "11 November 2020",
+                location: "Tottenham — Stratford",
+                description: "Joint patrol from Seven Sisters with Faron Alex Paul of Faz Amnesty, a confidential initiative that has seen hundreds of dangerous weapons removed from communities. Met BikeStormz founder Mac Impact. Patrolled to Tottenham College engaging students on the importance of qualifications. Called to Stratford in the evening to support a family whose young daughter was harassed by an older man.",
+                media: [
+                    {type:"image",src:"images/activities/CHp_Chsgo1f_slide1.jpg"},
+                    {type:"image",src:"images/activities/CHp_Chsgo1f_slide2.jpg"},
+                    {type:"image",src:"images/activities/CHp_Chsgo1f_slide3.jpg"},
+                    {type:"image",src:"images/activities/CHp_Chsgo1f_slide4.jpg"},
+                    {type:"image",src:"images/activities/CHp_Chsgo1f_slide5.jpg"}
+                ]
+            },
+            {
+                title: "Thornton Heath — Knife Crime Response",
+                date: "9 November 2020",
+                location: "Thornton Heath — Croydon",
+                description: "Emergency patrol in response to the stabbings of two local schoolgirls. Provided security support and assistance before school. Met Mahamed Hashi of Brixton Soup Kitchen who provided Stop and Search rights leaflets. Demonstrated self-defence techniques to students. Diffused an escalating situation between community members. The community showed overwhelming support throughout the day.",
+                media: [
+                    {type:"image",src:"images/activities/CHpkyg7AE6f_slide1.jpg"},
+                    {type:"image",src:"images/activities/CHpkyg7AE6f_slide2.jpg"},
+                    {type:"image",src:"images/activities/CHpkyg7AE6f_slide3.jpg"},
+                    {type:"image",src:"images/activities/CHpkyg7AE6f_slide4.jpg"},
+                    {type:"image",src:"images/activities/CHpkyg7AE6f_slide5.jpg"}
+                ]
+            },
+            {
+                title: "Back to School Outreach",
+                date: "September 2020",
+                location: "Brixton",
+                description: "Initiated by FF member Sian, the team raised funds for school equipment — pens, books, pencil cases — and took to the streets of Brixton to distribute them. The engagement was also used to conduct surveys on key areas of need within the community. A perfect example of co-operative economics, demonstrating what can be achieved when communities focus their resources and work together.",
+                media: [
+                    {type:"image",src:"images/activities/CFfVuhvg0O_.jpg"},
+                    {type:"image",src:"images/activities/CFfH_tngWd0.jpg"},
+                    {type:"image",src:"images/activities/CGCo8s5AdPX.jpg"}
+                ]
+            },
+            {
+                title: "Emancipation Day March — Brixton Blackout",
+                date: "1 August 2020",
+                location: "Brixton — Clapham Common to Windrush Square",
+                description: "Forever Family's founding moment. Members marched from Clapham Common to Windrush Square in Brixton on the anniversary of the Slavery Abolition Act 1833, meeting with other groups unified in the stance to protect senior and junior generations. The work behind the scenes spans social and mental health care, legal, financial, educational and political support — designed to bolster communities left to fend for themselves during the most challenging times.",
+                media: [
+                    {type:"video",src:"images/activities/CDVCGPlgobq.mp4",thumb:"images/activities/CDVCGPlgobq_thumb.jpg"},
+                    {type:"image",src:"images/activities/CC_nYW5gN2q_slide1.jpg"},
+                    {type:"image",src:"images/activities/CC_nYW5gN2q_slide2.jpg"},
+                    {type:"image",src:"images/activities/CC_nYW5gN2q_slide3.jpg"}
+                ]
+            }
+        ];
+
+        // Activity modal
+        const activityModal = document.getElementById('activity-modal');
+        const activityModalPanel = document.getElementById('activity-modal-panel');
+
+        function openActivityModal(index) {
+            const a = ACTIVITIES[index];
+            const galleryItems = a.media.map((m, i) => {
+                if (m.type === 'video') {
+                    return `<div class="relative w-72 md:w-96 h-52 md:h-64 flex-shrink-0 bg-[#111] border border-stone">
+                        <video src="${m.src}" poster="${m.thumb || ''}" controls playsinline class="w-full h-full object-cover"></video>
+                    </div>`;
+                }
+                return `<div class="w-72 md:w-96 h-52 md:h-64 flex-shrink-0">
+                    <img src="${m.src}" alt="${a.title} — ${i+1}" class="w-full h-full object-cover" style="filter: grayscale(40%) contrast(110%) brightness(95%);">
+                </div>`;
+            }).join('');
+
+            document.getElementById('activity-modal-body').innerHTML = `
+                <div class="gallery-scroll border-b border-stone">${galleryItems}</div>
+                <div class="p-8 md:p-12">
+                    <div class="flex items-center gap-3 mb-6">
+                        <span class="text-xs text-gold tracking-widest uppercase">${a.date}</span>
+                        <span class="text-stone">—</span>
+                        <span class="text-xs text-stone tracking-widest uppercase">${a.location}</span>
+                    </div>
+                    <h2 class="font-condensed text-3xl md:text-5xl text-white mb-6">${a.title}</h2>
+                    <div class="border-t border-stone pt-6">
+                        <div class="text-[10px] tracking-widest text-gold uppercase mb-3">Activity Report</div>
+                        <p class="text-gray-400 leading-relaxed">${a.description}</p>
+                    </div>
+                    <div class="flex items-center gap-4 mt-8 pt-6 border-t border-stone">
+                        <span class="text-[10px] tracking-widest text-stone uppercase">${a.media.length} Media File${a.media.length > 1 ? 's' : ''}</span>
+                        <span class="text-stone">·</span>
+                        <span class="text-[10px] tracking-widest text-stone uppercase">${a.media.filter(m => m.type === 'video').length > 0 ? a.media.filter(m => m.type === 'video').length + ' Video' + (a.media.filter(m => m.type === 'video').length > 1 ? 's' : '') : 'Photos Only'}</span>
+                    </div>
+                </div>
+            `;
+
+            document.body.style.overflow = 'hidden';
+            gsap.set(activityModal, { pointerEvents: 'auto' });
+            gsap.to(activityModal, { opacity: 1, duration: 0.25, ease: 'power2.out' });
+            gsap.to(activityModalPanel, { y: 0, scale: 1, duration: 0.35, ease: 'back.out(1.4)' });
+        }
+
+        function closeActivityModal() {
+            // Pause any playing videos
+            activityModalPanel.querySelectorAll('video').forEach(v => v.pause());
+            gsap.to(activityModal, { opacity: 0, duration: 0.2, ease: 'power2.in', onComplete: () => {
+                gsap.set(activityModal, { pointerEvents: 'none' });
+                gsap.set(activityModalPanel, { y: 20, scale: 0.96 });
+                document.body.style.overflow = '';
+            }});
+        }
+
+        document.getElementById('activity-modal-close').addEventListener('click', closeActivityModal);
+        activityModal.addEventListener('click', e => { if (e.target === activityModal) closeActivityModal(); });
+
+        // Bind activity cards
+        document.querySelectorAll('.activity-card').forEach(card => {
+            card.addEventListener('click', () => {
+                const idx = parseInt(card.dataset.activity);
+                openActivityModal(idx);
+            });
+        });
+
+        // Animate activity cards on scroll
+        gsap.fromTo('.activity-card', { opacity: 0, y: 30 }, {
+            opacity: 1, y: 0, duration: 0.6, stagger: 0.08, ease: 'power2.out',
+            scrollTrigger: { trigger: '#activities-grid', start: 'top 85%' }
+        });
     });
     </script>
 </body>
