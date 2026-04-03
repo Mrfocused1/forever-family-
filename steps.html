@@ -170,21 +170,19 @@
         <!-- Stats bar -->
         <div class="grid grid-cols-2 md:grid-cols-4 gap-0 border border-stone">
             <div class="stat-box border-r border-stone p-6 text-center">
-                <div class="font-condensed text-4xl text-gold" id="stat-total">—</div>
-                <div class="text-[10px] tracking-widest text-stone uppercase mt-1">Total Steps</div>
+                <div class="font-condensed text-4xl text-gold" id="stat-total">0</div>
+                <div class="text-[10px] tracking-widest text-stone uppercase mt-1">Total Operations</div>
             </div>
             <div class="stat-box border-r border-stone p-6 text-center">
-                <div class="font-condensed text-4xl text-gold flex items-center justify-center gap-2" id="stat-active">
-                    <span>—</span>
-                </div>
-                <div class="text-[10px] tracking-widest text-stone uppercase mt-1">Active Now</div>
+                <div class="font-condensed text-4xl text-gold" id="stat-completed">0</div>
+                <div class="text-[10px] tracking-widest text-stone uppercase mt-1">Completed</div>
             </div>
             <div class="stat-box border-r border-stone p-6 text-center">
-                <div class="font-condensed text-4xl text-gold" id="stat-steppers">—</div>
+                <div class="font-condensed text-4xl text-gold" id="stat-steppers">0</div>
                 <div class="text-[10px] tracking-widest text-stone uppercase mt-1">Steppers Deployed</div>
             </div>
             <div class="stat-box p-6 text-center">
-                <div class="font-condensed text-4xl text-gold" id="stat-cities">—</div>
+                <div class="font-condensed text-4xl text-gold" id="stat-cities">0</div>
                 <div class="text-[10px] tracking-widest text-stone uppercase mt-1">Cities Covered</div>
             </div>
         </div>
@@ -264,12 +262,37 @@
             <span class="text-xs text-gold tracking-widest uppercase">Activity Log</span>
         </div>
         <h2 class="font-condensed text-[10vw] md:text-[5vw] leading-none text-white mb-3">PAST<br><span class="text-gold">ACTIVITIES.</span></h2>
-        <p class="text-gray-400 max-w-2xl leading-relaxed mb-12">A record of Forever Family's community actions — patrols, outreach, marches, and initiatives that have made a tangible difference.</p>
+        <p class="text-gray-400 max-w-2xl leading-relaxed mb-8">A record of Forever Family's community actions — patrols, outreach, marches, and initiatives that have made a tangible difference.</p>
+
+        <!-- Search & Date Filter -->
+        <div class="flex flex-col md:flex-row gap-4 mb-8">
+            <div class="relative flex-grow">
+                <svg class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-stone pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35" stroke-linecap="round"/></svg>
+                <input type="text" id="activity-search" placeholder="Search activities..." class="w-full bg-transparent border border-stone py-3 pl-11 pr-4 text-white text-sm tracking-wide focus:outline-none focus:border-gold transition-colors placeholder:text-stone placeholder:uppercase placeholder:tracking-widest placeholder:text-[11px]">
+            </div>
+            <div class="flex gap-3 flex-shrink-0">
+                <select id="activity-year" class="bg-[#111] border border-stone text-white text-sm tracking-widest uppercase py-3 px-4 focus:outline-none focus:border-gold transition-colors cursor-pointer appearance-none" style="background-image: url(&quot;data:image/svg+xml,%3Csvg fill='%232A2A2A' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E&quot;); background-repeat: no-repeat; background-position: right 8px center; background-size: 20px; padding-right: 32px;">
+                    <option value="all">All Years</option>
+                    <option value="2025">2025</option>
+                    <option value="2024">2024</option>
+                    <option value="2022">2022</option>
+                    <option value="2021">2021</option>
+                    <option value="2020">2020</option>
+                </select>
+                <button type="button" id="activity-clear-filters" class="border border-stone text-stone text-[10px] tracking-widest uppercase px-4 py-3 hover:border-gold hover:text-gold transition-colors hidden">Clear</button>
+            </div>
+        </div>
+
+        <!-- No results message -->
+        <div id="no-activity-results" class="hidden py-16 text-center border border-stone mb-6">
+            <p class="font-condensed text-2xl text-stone mb-2">NO ACTIVITIES FOUND</p>
+            <p class="text-xs text-stone tracking-widest uppercase">Try different search terms or filters</p>
+        </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="activities-grid">
 
             <!-- 1. Leicester University Safety Campaign -->
-            <div class="activity-card group bg-[#111] border border-stone hover:border-gold transition-all cursor-pointer" data-activity="0">
+            <div class="activity-card group bg-[#111] border border-stone hover:border-gold transition-all cursor-pointer" data-activity="0" data-year="2025" data-keywords="leicester university safety campaign safeguarding young people education campus meetings support">
                 <div class="relative aspect-[4/3] overflow-hidden">
                     <img src="images/activities/DSLPaTBCBOi_slide1.jpg" alt="Leicester University Safety Campaign" class="w-full h-full object-cover" style="filter: grayscale(80%) contrast(120%) brightness(90%);" loading="lazy">
                     <div class="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-transparent to-transparent"></div>
@@ -289,7 +312,7 @@
             </div>
 
             <!-- 2. Community Protection During Unrest -->
-            <div class="activity-card group bg-[#111] border border-stone hover:border-gold transition-all cursor-pointer" data-activity="1">
+            <div class="activity-card group bg-[#111] border border-stone hover:border-gold transition-all cursor-pointer" data-activity="1" data-year="2024" data-keywords="community protection unrest riots walthamstow lewisham croydon security peace unity safety operatives london">
                 <div class="relative aspect-[4/3] overflow-hidden">
                     <img src="images/activities/C-dgtIuoMUq_slide1.jpg" alt="Community Protection During Unrest" class="w-full h-full object-cover" style="filter: grayscale(80%) contrast(120%) brightness(90%);" loading="lazy">
                     <div class="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-transparent to-transparent"></div>
@@ -310,7 +333,7 @@
             </div>
 
             <!-- 3. BBC Documentary Feature -->
-            <div class="activity-card group bg-[#111] border border-stone hover:border-gold transition-all cursor-pointer" data-activity="2">
+            <div class="activity-card group bg-[#111] border border-stone hover:border-gold transition-all cursor-pointer" data-activity="2" data-year="2022" data-keywords="bbc documentary black british film media patrol training recruitment">
                 <div class="relative aspect-[4/3] overflow-hidden">
                     <img src="images/activities/Cae3R9nI4yF_thumb.jpg" alt="BBC Documentary - We Are Black and British" class="w-full h-full object-cover" style="filter: grayscale(80%) contrast(120%) brightness(90%);" loading="lazy">
                     <div class="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-transparent to-transparent"></div>
@@ -330,7 +353,7 @@
             </div>
 
             <!-- 4. Homeless Outreach — London & Scotland -->
-            <div class="activity-card group bg-[#111] border border-stone hover:border-gold transition-all cursor-pointer" data-activity="3">
+            <div class="activity-card group bg-[#111] border border-stone hover:border-gold transition-all cursor-pointer" data-activity="3" data-year="2022" data-keywords="homeless outreach london scotland glasgow grenada lockdown rough sleeping clothing donation charity international">
                 <div class="relative aspect-[4/3] overflow-hidden">
                     <img src="images/activities/CYYjm8pI3hK_thumb.jpg" alt="Homeless Outreach London and Scotland" class="w-full h-full object-cover" style="filter: grayscale(80%) contrast(120%) brightness(90%);" loading="lazy">
                     <div class="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-transparent to-transparent"></div>
@@ -350,7 +373,7 @@
             </div>
 
             <!-- 5. One Year Anniversary -->
-            <div class="activity-card group bg-[#111] border border-stone hover:border-gold transition-all cursor-pointer" data-activity="4">
+            <div class="activity-card group bg-[#111] border border-stone hover:border-gold transition-all cursor-pointer" data-activity="4" data-year="2021" data-keywords="anniversary one year birthday founding trafalgar food clothing patrols missing children youth">
                 <div class="relative aspect-[4/3] overflow-hidden">
                     <img src="images/activities/CQEmNzHh8dv.jpg" alt="Forever Family One Year Anniversary" class="w-full h-full object-cover" style="filter: grayscale(80%) contrast(120%) brightness(90%);" loading="lazy">
                     <div class="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-transparent to-transparent"></div>
@@ -367,7 +390,7 @@
             </div>
 
             <!-- 6. The People's Patrol -->
-            <div class="activity-card group bg-[#111] border border-stone hover:border-gold transition-all cursor-pointer" data-activity="5">
+            <div class="activity-card group bg-[#111] border border-stone hover:border-gold transition-all cursor-pointer" data-activity="5" data-year="2021" data-keywords="peoples patrol london city wide north south east west community safety vigilant vulnerable neighbourhood">
                 <div class="relative aspect-[4/3] overflow-hidden">
                     <img src="images/activities/CPD-4ILgpRH_slide1.jpg" alt="The People's Patrol" class="w-full h-full object-cover" style="filter: grayscale(80%) contrast(120%) brightness(90%);" loading="lazy">
                     <div class="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-transparent to-transparent"></div>
@@ -387,7 +410,7 @@
             </div>
 
             <!-- 7. Glasgow Homeless Outreach -->
-            <div class="activity-card group bg-[#111] border border-stone hover:border-gold transition-all cursor-pointer" data-activity="6">
+            <div class="activity-card group bg-[#111] border border-stone hover:border-gold transition-all cursor-pointer" data-activity="6" data-year="2021" data-keywords="glasgow scotland city centre outreach meals snacks essentials warm clothing homeless lockdown support">
                 <div class="relative aspect-[4/3] overflow-hidden">
                     <img src="images/activities/CLxmhUEBgtN.jpg" alt="Glasgow City Centre Outreach" class="w-full h-full object-cover" style="filter: grayscale(80%) contrast(120%) brightness(90%);" loading="lazy">
                     <div class="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-transparent to-transparent"></div>
@@ -404,7 +427,7 @@
             </div>
 
             <!-- 8. Winter Collection Drive -->
-            <div class="activity-card group bg-[#111] border border-stone hover:border-gold transition-all cursor-pointer" data-activity="7">
+            <div class="activity-card group bg-[#111] border border-stone hover:border-gold transition-all cursor-pointer" data-activity="7" data-year="2020" data-keywords="winter essentials collection drive clothing food donation homeless vulnerable elderly london warm redistribute">
                 <div class="relative aspect-[4/3] overflow-hidden">
                     <img src="images/activities/CJzCjcpBDWk_slide1.jpg" alt="Winter Collection Drive" class="w-full h-full object-cover" style="filter: grayscale(80%) contrast(120%) brightness(90%);" loading="lazy">
                     <div class="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-transparent to-transparent"></div>
@@ -421,7 +444,7 @@
             </div>
 
             <!-- 9. Clapham Junction Patrol -->
-            <div class="activity-card group bg-[#111] border border-stone hover:border-gold transition-all cursor-pointer" data-activity="8">
+            <div class="activity-card group bg-[#111] border border-stone hover:border-gold transition-all cursor-pointer" data-activity="8" data-year="2020" data-keywords="clapham junction patrol school children marsha de cordova mp councillor homeless meals engagement community">
                 <div class="relative aspect-[4/3] overflow-hidden">
                     <img src="images/activities/CIYyd2vgVve_slide1.jpg" alt="Clapham Junction Community Patrol" class="w-full h-full object-cover" style="filter: grayscale(80%) contrast(120%) brightness(90%);" loading="lazy">
                     <div class="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-transparent to-transparent"></div>
@@ -441,7 +464,7 @@
             </div>
 
             <!-- 10. Stockwell Safeguarding Patrol -->
-            <div class="activity-card group bg-[#111] border border-stone hover:border-gold transition-all cursor-pointer" data-activity="9">
+            <div class="activity-card group bg-[#111] border border-stone hover:border-gold transition-all cursor-pointer" data-activity="9" data-year="2020" data-keywords="stockwell safeguarding patrol children school brixton stop search rights college students safety parents">
                 <div class="relative aspect-[4/3] overflow-hidden">
                     <img src="images/activities/CIS6l2uh9T9_slide1.jpg" alt="Stockwell Safeguarding Patrol" class="w-full h-full object-cover" style="filter: grayscale(80%) contrast(120%) brightness(90%);" loading="lazy">
                     <div class="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-transparent to-transparent"></div>
@@ -461,7 +484,7 @@
             </div>
 
             <!-- 11. Shepherd's Bush Patrol -->
-            <div class="activity-card group bg-[#111] border border-stone hover:border-gold transition-all cursor-pointer" data-activity="10">
+            <div class="activity-card group bg-[#111] border border-stone hover:border-gold transition-all cursor-pointer" data-activity="10" data-year="2020" data-keywords="shepherds bush hammersmith patrol county lines knife defence college students ankh wellbeing centre willesden west london">
                 <div class="relative aspect-[4/3] overflow-hidden">
                     <img src="images/activities/CHqb2ZVBRKw_slide1.jpg" alt="Shepherd's Bush Community Patrol" class="w-full h-full object-cover" style="filter: grayscale(80%) contrast(120%) brightness(90%);" loading="lazy">
                     <div class="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-transparent to-transparent"></div>
@@ -481,7 +504,7 @@
             </div>
 
             <!-- 12. Tottenham Patrol -->
-            <div class="activity-card group bg-[#111] border border-stone hover:border-gold transition-all cursor-pointer" data-activity="11">
+            <div class="activity-card group bg-[#111] border border-stone hover:border-gold transition-all cursor-pointer" data-activity="11" data-year="2020" data-keywords="tottenham patrol faz amnesty faron alex paul knife weapons bikestormz college stratford seven sisters north london youth gang crime">
                 <div class="relative aspect-[4/3] overflow-hidden">
                     <img src="images/activities/CHp_Chsgo1f_slide1.jpg" alt="Tottenham Community Patrol" class="w-full h-full object-cover" style="filter: grayscale(80%) contrast(120%) brightness(90%);" loading="lazy">
                     <div class="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-transparent to-transparent"></div>
@@ -501,7 +524,7 @@
             </div>
 
             <!-- 13. Thornton Heath Patrol -->
-            <div class="activity-card group bg-[#111] border border-stone hover:border-gold transition-all cursor-pointer" data-activity="12">
+            <div class="activity-card group bg-[#111] border border-stone hover:border-gold transition-all cursor-pointer" data-activity="12" data-year="2020" data-keywords="thornton heath knife crime response stabbings schoolgirls croydon self defence brixton soup kitchen safety patrol south london">
                 <div class="relative aspect-[4/3] overflow-hidden">
                     <img src="images/activities/CHpkyg7AE6f_slide1.jpg" alt="Thornton Heath Community Patrol" class="w-full h-full object-cover" style="filter: grayscale(80%) contrast(120%) brightness(90%);" loading="lazy">
                     <div class="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-transparent to-transparent"></div>
@@ -521,7 +544,7 @@
             </div>
 
             <!-- 14. Back to School Outreach -->
-            <div class="activity-card group bg-[#111] border border-stone hover:border-gold transition-all cursor-pointer" data-activity="13">
+            <div class="activity-card group bg-[#111] border border-stone hover:border-gold transition-all cursor-pointer" data-activity="13" data-year="2020" data-keywords="back to school outreach brixton education supplies pens books pencil cases families low income children equipment donation">
                 <div class="relative aspect-[4/3] overflow-hidden">
                     <img src="images/activities/CFfVuhvg0O_.jpg" alt="Back to School Outreach" class="w-full h-full object-cover" style="filter: grayscale(80%) contrast(120%) brightness(90%);" loading="lazy">
                     <div class="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-transparent to-transparent"></div>
@@ -538,7 +561,7 @@
             </div>
 
             <!-- 15. Emancipation Day March -->
-            <div class="activity-card group bg-[#111] border border-stone hover:border-gold transition-all cursor-pointer" data-activity="14">
+            <div class="activity-card group bg-[#111] border border-stone hover:border-gold transition-all cursor-pointer" data-activity="14" data-year="2020" data-keywords="emancipation day march brixton blackout clapham common windrush square slavery abolition reparations founding protest">
                 <div class="relative aspect-[4/3] overflow-hidden">
                     <img src="images/activities/CDVCGPlgobq_thumb.jpg" alt="Emancipation Day March" class="w-full h-full object-cover" style="filter: grayscale(80%) contrast(120%) brightness(90%);" loading="lazy">
                     <div class="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-transparent to-transparent"></div>
@@ -792,23 +815,28 @@
         let allSteps = [];
 
         function updateStats(steps) {
-            const active    = steps.filter(s => s.status === 'active');
             const completed = steps.filter(s => s.status === 'completed');
-            const cities    = [...new Set(steps.map(s => s.city))].length;
             const steppers  = steps.reduce((a, s) => a + (s.steppers || 0), 0);
 
             // Include past activities in totals
             const activityCount = document.querySelectorAll('.activity-card').length;
-            const totalSteps = steps.length + activityCount;
+            const totalOps = steps.length + activityCount;
+            const totalCompleted = completed.length + activityCount; // all past activities are completed
 
-            // Count unique cities from steps + activity locations
-            const activityCities = ['Leicester', 'London', 'Glasgow', 'Brixton'];
+            // Unique cities from steps + activity locations
+            const activityCities = ['Leicester', 'London', 'Glasgow'];
             const allCities = [...new Set([...steps.map(s => s.city), ...activityCities])].length;
 
-            gsap.to('#stat-total',    { innerText: totalSteps,      snap: { innerText: 1 }, duration: 1.2, ease: 'power2.out' });
-            gsap.to('#stat-active',   { innerText: active.length,   snap: { innerText: 1 }, duration: 1.2, ease: 'power2.out', delay: 0.1 });
-            gsap.to('#stat-steppers', { innerText: steppers,        snap: { innerText: 1 }, duration: 1.4, ease: 'power2.out', delay: 0.2 });
-            gsap.to('#stat-cities',   { innerText: allCities,       snap: { innerText: 1 }, duration: 1,   ease: 'power2.out', delay: 0.15 });
+            // Set values directly first, then animate
+            document.getElementById('stat-total').textContent = '0';
+            document.getElementById('stat-completed').textContent = '0';
+            document.getElementById('stat-steppers').textContent = '0';
+            document.getElementById('stat-cities').textContent = '0';
+
+            gsap.to('#stat-total',     { innerText: totalOps,       snap: { innerText: 1 }, duration: 1.2, ease: 'power2.out' });
+            gsap.to('#stat-completed', { innerText: totalCompleted, snap: { innerText: 1 }, duration: 1.2, ease: 'power2.out', delay: 0.1 });
+            gsap.to('#stat-steppers',  { innerText: steppers,       snap: { innerText: 1 }, duration: 1.4, ease: 'power2.out', delay: 0.2 });
+            gsap.to('#stat-cities',    { innerText: allCities,      snap: { innerText: 1 }, duration: 1,   ease: 'power2.out', delay: 0.15 });
         }
 
         function renderSteps(steps, filter) {
@@ -1240,6 +1268,48 @@
                 const idx = parseInt(card.dataset.activity);
                 openActivityModal(idx);
             });
+        });
+
+        // ─── ACTIVITY SEARCH & FILTER ─────────────────────────────────────
+        const activitySearch = document.getElementById('activity-search');
+        const activityYear   = document.getElementById('activity-year');
+        const clearBtn       = document.getElementById('activity-clear-filters');
+        const noResults      = document.getElementById('no-activity-results');
+        const activityCards  = document.querySelectorAll('.activity-card');
+
+        function filterActivities() {
+            const query = activitySearch.value.toLowerCase().trim();
+            const year  = activityYear.value;
+            let visible = 0;
+
+            activityCards.forEach(card => {
+                const keywords = (card.dataset.keywords || '').toLowerCase();
+                const cardYear = card.dataset.year;
+                const title    = card.querySelector('h3').textContent.toLowerCase();
+                const desc     = card.querySelector('.line-clamp-3').textContent.toLowerCase();
+                const searchText = keywords + ' ' + title + ' ' + desc;
+
+                const matchesSearch = !query || searchText.includes(query);
+                const matchesYear   = year === 'all' || cardYear === year;
+
+                if (matchesSearch && matchesYear) {
+                    card.style.display = '';
+                    visible++;
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+
+            noResults.classList.toggle('hidden', visible > 0);
+            clearBtn.classList.toggle('hidden', !query && year === 'all');
+        }
+
+        activitySearch.addEventListener('input', filterActivities);
+        activityYear.addEventListener('change', filterActivities);
+        clearBtn.addEventListener('click', () => {
+            activitySearch.value = '';
+            activityYear.value = 'all';
+            filterActivities();
         });
 
         // Animate activity cards on scroll
