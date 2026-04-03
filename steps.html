@@ -185,11 +185,9 @@
     </section>
 
     <!-- FILTER TABS -->
-    <div class="sticky top-[72px] z-40 bg-[#0d0d0d] border-b border-stone px-6 md:px-12">
+    <div class="bg-[#0d0d0d] border-b border-stone px-6 md:px-12">
         <div class="max-w-7xl mx-auto flex gap-0">
             <button type="button" data-filter="all"       class="filter-tab active font-condensed text-sm tracking-widest uppercase px-6 py-4 border-b-2 border-transparent text-white">ALL</button>
-            <button type="button" data-filter="active"    class="filter-tab font-condensed text-sm tracking-widest uppercase px-6 py-4 border-b-2 border-transparent text-stone hover:text-white">ACTIVE</button>
-            <button type="button" data-filter="upcoming"  class="filter-tab font-condensed text-sm tracking-widest uppercase px-6 py-4 border-b-2 border-transparent text-stone hover:text-white">UPCOMING</button>
             <button type="button" data-filter="completed" class="filter-tab font-condensed text-sm tracking-widest uppercase px-6 py-4 border-b-2 border-transparent text-stone hover:text-white">COMPLETED</button>
         </div>
     </div>
@@ -705,18 +703,12 @@
 
         // ─── SEED DATA (fallback if server is offline) ───────────────────────
         const SEED = [
-          { id:1, location:"Birmingham — Handsworth", city:"Birmingham", area:"Handsworth", steppers:12, status:"active", startTime:"2026-02-20T14:30:00", endTime:null, purpose:"Supporting a young person at risk of county lines exploitation. Family requested SOS team presence for a safe escort to temporary accommodation.", outcome:null, coordinatedBy:"SOS Team Alpha" },
-          { id:2, location:"London (North) — Tottenham High Road", city:"London", area:"Tottenham", steppers:8, status:"active", startTime:"2026-02-20T15:00:00", endTime:null, purpose:"Community safety patrol in response to elevated tension following two incidents in the area this week.", outcome:null, coordinatedBy:"SOS Team Bravo" },
           { id:3, location:"Sheffield — Page Hall", city:"Sheffield", area:"Page Hall", steppers:6, status:"completed", startTime:"2026-02-18T18:00:00", endTime:"2026-02-18T21:30:00", purpose:"Welfare check and family support following G-Line referral. Young person at risk of exploitation.", outcome:"Family supported. Young person safely relocated. Referral made to specialist safeguarding service. Follow-up scheduled.", coordinatedBy:"SOS Team Charlie" },
           { id:4, location:"Birmingham — Aston", city:"Birmingham", area:"Aston", steppers:14, status:"completed", startTime:"2026-02-17T19:00:00", endTime:"2026-02-17T22:00:00", purpose:"Preventative patrol following community intelligence. Two groups reported to be planning a confrontation.", outcome:"No incident recorded. Presence deterred potential confrontation. Both groups dispersed peacefully. Intelligence filed.", coordinatedBy:"SOS Team Alpha" },
           { id:5, location:"London (East) — Hackney", city:"London", area:"Hackney", steppers:9, status:"completed", startTime:"2026-02-16T14:00:00", endTime:"2026-02-16T17:00:00", purpose:"Support step for a vulnerable adult experiencing homelessness and mental health crisis.", outcome:"Individual supported to emergency housing. Mental health first response administered. Liaison with council housing team completed.", coordinatedBy:"SOS Team Bravo" },
           { id:6, location:"Birmingham — Winson Green", city:"Birmingham", area:"Winson Green", steppers:7, status:"completed", startTime:"2026-02-14T20:00:00", endTime:"2026-02-14T23:00:00", purpose:"Evening safety patrol. High footfall area, weekly recurring operation.", outcome:"Patrol completed without incident. One welfare check conducted. Two young people signposted to FFCA programme.", coordinatedBy:"SOS Team Alpha" },
           { id:7, location:"Sheffield — Burngreave", city:"Sheffield", area:"Burngreave", steppers:5, status:"completed", startTime:"2026-02-13T17:30:00", endTime:"2026-02-13T20:00:00", purpose:"G-Line response. Mother reported son had not returned home for 3 days. Suspected exploitation situation.", outcome:"Young person located and safely returned home. Family support session conducted. Case referred to social services.", coordinatedBy:"SOS Team Charlie" },
-          { id:8, location:"London (North) — Wood Green", city:"London", area:"Wood Green", steppers:11, status:"completed", startTime:"2026-02-11T18:00:00", endTime:"2026-02-11T21:30:00", purpose:"Community march in solidarity with local family affected by youth violence. Public visibility step.", outcome:"Step completed. 11 certified Steppers deployed. Community received positively. Local press present — media guidance issued.", coordinatedBy:"SOS Team Bravo" },
-          { id:9, location:"Birmingham — Erdington", city:"Birmingham", area:"Erdington", steppers:10, status:"upcoming", startTime:"2026-02-23T17:00:00", endTime:null, purpose:"Planned community safety patrol following intelligence received at February FFCA session.", outcome:null, coordinatedBy:"SOS Team Alpha" },
-          { id:10, location:"London (East) — Stratford", city:"London", area:"Stratford", steppers:8, status:"upcoming", startTime:"2026-02-24T18:30:00", endTime:null, purpose:"Support step requested via G-Line. Young person requiring safe escort to court hearing.", outcome:null, coordinatedBy:"SOS Team Bravo" },
-          { id:11, location:"Sheffield — Firth Park", city:"Sheffield", area:"Firth Park", steppers:6, status:"upcoming", startTime:"2026-02-26T19:00:00", endTime:null, purpose:"Monthly Sheffield patrol. Recurring operation. New Steppers will observe and document.", outcome:null, coordinatedBy:"SOS Team Charlie" },
-          { id:12, location:"Birmingham — Moseley", city:"Birmingham", area:"Moseley", steppers:15, status:"upcoming", startTime:"2026-03-01T14:00:00", endTime:null, purpose:"Community awareness march. Supporting local initiative against knife crime. Open to all certified Steppers and Bronze members.", outcome:null, coordinatedBy:"SOS Team Alpha" }
+          { id:8, location:"London (North) — Wood Green", city:"London", area:"Wood Green", steppers:11, status:"completed", startTime:"2026-02-11T18:00:00", endTime:"2026-02-11T21:30:00", purpose:"Community march in solidarity with local family affected by youth violence. Public visibility step.", outcome:"Step completed. 11 certified Steppers deployed. Community received positively. Local press present — media guidance issued.", coordinatedBy:"SOS Team Bravo" }
         ];
 
         // ─── HELPERS ─────────────────────────────────────────────────────────
@@ -834,38 +826,18 @@
         }
 
         function renderSteps(steps, filter) {
-            const active    = steps.filter(s => s.status === 'active');
-            const upcoming  = steps.filter(s => s.status === 'upcoming').sort((a, b) => new Date(a.startTime) - new Date(b.startTime));
             const completed = steps.filter(s => s.status === 'completed').sort((a, b) => new Date(b.startTime) - new Date(a.startTime));
 
-            const showActive    = filter === 'all' || filter === 'active';
-            const showUpcoming  = filter === 'all' || filter === 'upcoming';
             const showCompleted = filter === 'all' || filter === 'completed';
 
             // Clear containers
-            ['active-rows', 'upcoming-rows', 'completed-rows'].forEach(id => {
-                document.getElementById(id).innerHTML = '';
-            });
+            document.getElementById('completed-rows').innerHTML = '';
+
+            // Always hide active and upcoming sections
+            document.getElementById('section-active').classList.add('hidden');
+            document.getElementById('section-upcoming').classList.add('hidden');
 
             let totalVisible = 0;
-
-            if (showActive && active.length > 0) {
-                document.getElementById('section-active').classList.remove('hidden');
-                document.getElementById('active-count').textContent = `— ${active.length} step${active.length > 1 ? 's' : ''}`;
-                active.forEach(s => document.getElementById('active-rows').appendChild(renderRow(s)));
-                totalVisible += active.length;
-            } else {
-                document.getElementById('section-active').classList.add('hidden');
-            }
-
-            if (showUpcoming && upcoming.length > 0) {
-                document.getElementById('section-upcoming').classList.remove('hidden');
-                document.getElementById('upcoming-count').textContent = `— ${upcoming.length} scheduled`;
-                upcoming.forEach(s => document.getElementById('upcoming-rows').appendChild(renderRow(s)));
-                totalVisible += upcoming.length;
-            } else {
-                document.getElementById('section-upcoming').classList.add('hidden');
-            }
 
             if (showCompleted && completed.length > 0) {
                 document.getElementById('section-completed').classList.remove('hidden');
