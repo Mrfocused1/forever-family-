@@ -184,13 +184,8 @@
         </div>
     </section>
 
-    <!-- FILTER TABS -->
-    <div class="bg-[#0d0d0d] border-b border-stone px-6 md:px-12">
-        <div class="max-w-7xl mx-auto flex gap-0">
-            <button type="button" data-filter="all"       class="filter-tab active font-condensed text-sm tracking-widest uppercase px-6 py-4 border-b-2 border-transparent text-white">ALL</button>
-            <button type="button" data-filter="completed" class="filter-tab font-condensed text-sm tracking-widest uppercase px-6 py-4 border-b-2 border-transparent text-stone hover:text-white">COMPLETED</button>
-        </div>
-    </div>
+    <!-- Steps section divider -->
+    <div class="border-b border-stone"></div>
 
     <!-- STEPS LIST -->
     <main class="px-6 md:px-12 max-w-7xl mx-auto py-8">
@@ -212,29 +207,6 @@
 
         <!-- Steps container -->
         <div id="steps-list" class="hidden">
-
-            <!-- Active section -->
-            <div id="section-active" class="hidden mb-2">
-                <div class="flex items-center gap-3 py-4 border-b border-stone mb-0">
-                    <div class="relative w-2.5 h-2.5 flex-shrink-0">
-                        <div class="live-ring" style="animation-duration:1.6s"></div>
-                        <div class="live-dot w-2.5 h-2.5 rounded-full bg-gold"></div>
-                    </div>
-                    <span class="font-condensed text-sm tracking-widest text-gold">ACTIVE NOW</span>
-                    <span class="text-xs text-stone" id="active-count"></span>
-                </div>
-                <div id="active-rows"></div>
-            </div>
-
-            <!-- Upcoming section -->
-            <div id="section-upcoming" class="hidden mb-2 mt-8">
-                <div class="flex items-center gap-3 py-4 border-b border-stone mb-0">
-                    <div class="w-2.5 h-2.5 rounded-full border border-stone flex-shrink-0"></div>
-                    <span class="font-condensed text-sm tracking-widest text-white">UPCOMING</span>
-                    <span class="text-xs text-stone" id="upcoming-count"></span>
-                </div>
-                <div id="upcoming-rows"></div>
-            </div>
 
             <!-- Completed section -->
             <div id="section-completed" class="hidden mb-2 mt-8">
@@ -833,10 +805,6 @@
             // Clear containers
             document.getElementById('completed-rows').innerHTML = '';
 
-            // Always hide active and upcoming sections
-            document.getElementById('section-active').classList.add('hidden');
-            document.getElementById('section-upcoming').classList.add('hidden');
-
             let totalVisible = 0;
 
             if (showCompleted && completed.length > 0) {
@@ -947,16 +915,8 @@
         modal.addEventListener('click', e => { if (e.target === modal) closeModal(); });
         document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeModal(); closeActivityModal(); } });
 
-        // ─── FILTER TABS ─────────────────────────────────────────────────────
+        // ─── RENDER MODE ─────────────────────────────────────────────────────
         let currentFilter = 'all';
-        document.querySelectorAll('.filter-tab').forEach(tab => {
-            tab.addEventListener('click', () => {
-                document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
-                tab.classList.add('active');
-                currentFilter = tab.dataset.filter;
-                renderSteps(allSteps, currentFilter);
-            });
-        });
 
         // ─── FETCH & REFRESH ─────────────────────────────────────────────────
         async function loadSteps() {
@@ -964,7 +924,9 @@
                 const res = await fetch('/api/steps');
                 if (!res.ok) throw new Error();
                 const data = await res.json();
-                allSteps = (data.steps && data.steps.length > 0) ? data.steps : SEED;
+                const steps = (data.steps && data.steps.length > 0) ? data.steps : SEED;
+                // Only keep completed steps
+                allSteps = steps.filter(s => s.status === 'completed');
             } catch (_) {
                 allSteps = SEED;
             }
