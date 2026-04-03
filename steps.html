@@ -171,7 +171,7 @@
         <div class="grid grid-cols-2 md:grid-cols-4 gap-0 border border-stone">
             <div class="stat-box border-r border-stone p-6 text-center">
                 <div class="font-condensed text-4xl text-gold" id="stat-total">—</div>
-                <div class="text-[10px] tracking-widest text-stone uppercase mt-1">Steps This Month</div>
+                <div class="text-[10px] tracking-widest text-stone uppercase mt-1">Total Steps</div>
             </div>
             <div class="stat-box border-r border-stone p-6 text-center">
                 <div class="font-condensed text-4xl text-gold flex items-center justify-center gap-2" id="stat-active">
@@ -797,10 +797,18 @@
             const cities    = [...new Set(steps.map(s => s.city))].length;
             const steppers  = steps.reduce((a, s) => a + (s.steppers || 0), 0);
 
-            gsap.to('#stat-total',    { innerText: steps.length,    snap: { innerText: 1 }, duration: 1.2, ease: 'power2.out' });
+            // Include past activities in totals
+            const activityCount = document.querySelectorAll('.activity-card').length;
+            const totalSteps = steps.length + activityCount;
+
+            // Count unique cities from steps + activity locations
+            const activityCities = ['Leicester', 'London', 'Glasgow', 'Brixton'];
+            const allCities = [...new Set([...steps.map(s => s.city), ...activityCities])].length;
+
+            gsap.to('#stat-total',    { innerText: totalSteps,      snap: { innerText: 1 }, duration: 1.2, ease: 'power2.out' });
             gsap.to('#stat-active',   { innerText: active.length,   snap: { innerText: 1 }, duration: 1.2, ease: 'power2.out', delay: 0.1 });
             gsap.to('#stat-steppers', { innerText: steppers,        snap: { innerText: 1 }, duration: 1.4, ease: 'power2.out', delay: 0.2 });
-            gsap.to('#stat-cities',   { innerText: cities,          snap: { innerText: 1 }, duration: 1,   ease: 'power2.out', delay: 0.15 });
+            gsap.to('#stat-cities',   { innerText: allCities,       snap: { innerText: 1 }, duration: 1,   ease: 'power2.out', delay: 0.15 });
         }
 
         function renderSteps(steps, filter) {
@@ -962,7 +970,7 @@
                 const res = await fetch('/api/steps');
                 if (!res.ok) throw new Error();
                 const data = await res.json();
-                allSteps = data.steps || SEED;
+                allSteps = (data.steps && data.steps.length > 0) ? data.steps : SEED;
             } catch (_) {
                 allSteps = SEED;
             }
