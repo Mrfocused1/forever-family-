@@ -176,6 +176,39 @@
         @media (max-width: 767px) {
             .desktop-nav { display: none !important; }
         }
+
+        /* ── Community Partners ── */
+        .partner-logo-img {
+            filter: brightness(0) invert(1);
+            opacity: 0.38;
+            transition: filter 0.55s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                        opacity 0.55s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            will-change: filter, opacity;
+            display: block;
+        }
+
+        .partner-item {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .partner-item:hover {
+            transform: scale(1.06);
+        }
+
+        /* Colored logos → reveal brand colors on hover */
+        .partner-logo-colored:hover .partner-logo-img {
+            filter: none;
+            opacity: 1;
+        }
+
+        /* Mono / light logos → just brighten on hover */
+        .partner-logo-mono:hover .partner-logo-img {
+            filter: brightness(0) invert(1);
+            opacity: 0.88;
+        }
     </style>
 </head>
 <body class="relative">
@@ -278,6 +311,64 @@
             <span class="text-xs tracking-widest uppercase text-stone-400">Scroll to begin</span>
             <div class="w-[1px] h-12 bg-stone relative overflow-hidden">
                 <div class="absolute top-0 left-0 w-full h-full bg-gold scroll-dot transform -translate-y-full"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- COMMUNITY PARTNERS -->
+    <section id="partners" class="py-14 md:py-18 px-6 bg-[#0d0d0d] border-t border-stone">
+        <div class="max-w-6xl mx-auto">
+
+            <!-- Divider label -->
+            <div class="flex items-center gap-6 md:gap-10 mb-12 md:mb-14">
+                <div class="h-px flex-1 bg-stone opacity-40"></div>
+                <span class="text-[9px] md:text-[10px] tracking-[0.45em] uppercase text-stone whitespace-nowrap">Community Partners</span>
+                <div class="h-px flex-1 bg-stone opacity-40"></div>
+            </div>
+
+            <!-- Logo row -->
+            <div class="flex flex-wrap justify-center items-center gap-10 md:gap-14 lg:gap-20">
+
+                <!-- ClearHeart Community (black fills → white inverted, stays white on hover) -->
+                <div class="partner-item partner-logo-mono" title="ClearHeart Community">
+                    <img src="images/partners/clearheart-community.svg"
+                         alt="ClearHeart Community"
+                         class="partner-logo-img h-12 md:h-14 w-auto"
+                         style="max-width:130px">
+                </div>
+
+                <!-- House of Music (yellow/orange → colour on hover) -->
+                <div class="partner-item partner-logo-colored" title="House of Music">
+                    <img src="images/partners/house-of-music.svg"
+                         alt="House of Music"
+                         class="partner-logo-img h-7 md:h-9 w-auto"
+                         style="max-width:190px">
+                </div>
+
+                <!-- Love Literacy (red + maroon → colour on hover) -->
+                <div class="partner-item partner-logo-colored" title="Love Literacy">
+                    <img src="images/partners/love-literacy.svg"
+                         alt="Love Literacy"
+                         class="partner-logo-img h-7 md:h-9 w-auto"
+                         style="max-width:190px">
+                </div>
+
+                <!-- EGA Tech (white fills → stays white, brightens on hover) -->
+                <div class="partner-item partner-logo-mono" title="EGA Tech">
+                    <img src="images/partners/ega-tech.svg"
+                         alt="EGA Tech"
+                         class="partner-logo-img h-9 md:h-11 w-auto"
+                         style="max-width:140px">
+                </div>
+
+                <!-- Woolwich Common Community (teal → colour on hover) -->
+                <div class="partner-item partner-logo-colored" title="Woolwich Common Community">
+                    <img src="images/partners/woolwich-common.svg"
+                         alt="Woolwich Common Community"
+                         class="partner-logo-img h-12 md:h-14 w-auto"
+                         style="max-width:110px">
+                </div>
+
             </div>
         </div>
     </section>
@@ -951,6 +1042,22 @@
                     color: "#D4AF37", opacity: 1, duration: 1,
                     scrollTrigger: { trigger: "#sec13", start: "top 60%" }
                 });
+
+                // Community partners stagger reveal
+                gsap.fromTo('.partner-item',
+                    { opacity: 0, y: 18 },
+                    {
+                        opacity: 1,
+                        y: 0,
+                        duration: 0.7,
+                        ease: 'power2.out',
+                        stagger: 0.1,
+                        scrollTrigger: {
+                            trigger: '#partners',
+                            start: 'top 82%'
+                        }
+                    }
+                );
             });
 
             mm.add("(prefers-reduced-motion: reduce)", () => {
