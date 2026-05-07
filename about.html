@@ -30,6 +30,46 @@
         }
         img.doc-style { filter: grayscale(80%) contrast(120%) brightness(90%); transition: filter 0.5s ease; }
         img.doc-style:hover { filter: grayscale(20%) contrast(110%) brightness(100%); }
+
+        /* ── Operate section loading states ── */
+        @keyframes shimmer {
+            0%   { transform: translateX(-100%); }
+            100% { transform: translateX(250%); }
+        }
+        @keyframes scan-line {
+            0%   { transform: translateY(-10px); opacity: 0; }
+            10%  { opacity: 1; }
+            90%  { opacity: 1; }
+            100% { transform: translateY(490px); opacity: 0; }
+        }
+        @keyframes node-pulse {
+            0%, 100% { opacity: 0.15; r: 5; }
+            50%       { opacity: 0.6;  r: 8; }
+        }
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50%       { opacity: 0; }
+        }
+        .skeleton-row {
+            position: relative; overflow: hidden;
+            background: #111;
+        }
+        .skeleton-row::after {
+            content: '';
+            position: absolute; inset: 0;
+            background: linear-gradient(90deg, transparent 0%, rgba(212,175,55,0.12) 50%, transparent 100%);
+            animation: shimmer 1.6s ease-in-out infinite;
+        }
+        .scan-line {
+            animation: scan-line 2.4s linear infinite;
+        }
+        .map-node-loading {
+            animation: node-pulse 1.8s ease-in-out infinite;
+        }
+        .map-node-loading:nth-child(2) { animation-delay: 0.3s; }
+        .map-node-loading:nth-child(3) { animation-delay: 0.6s; }
+        .map-node-loading:nth-child(4) { animation-delay: 0.9s; }
+        .cursor-blink { animation: blink 1s step-end infinite; }
     </style>
     <style>
       #mobile-menu-btn .ham-line {
@@ -300,13 +340,86 @@
                     <p class="text-gray-400 leading-relaxed mb-12 max-w-lg">Forever Family currently operates across multiple cities in the United Kingdom. Each operational zone is managed by a certified SOS team lead with at least three active Steppers on the ground. We expand only when the training pipeline is ready — not before.</p>
 
                     <div id="city-list" class="space-y-0">
-                        <div class="text-stone text-sm py-6 tracking-widest uppercase">Loading...</div>
+                        <!-- Skeleton rows shown while fetching -->
+                        <div class="skeleton-row flex justify-between items-center py-5 border-b border-stone">
+                            <div class="space-y-2">
+                                <div class="h-6 w-40 rounded bg-stone opacity-60"></div>
+                                <div class="h-2 w-24 rounded bg-stone opacity-30"></div>
+                            </div>
+                            <div class="text-right space-y-2">
+                                <div class="h-3 w-14 rounded bg-stone opacity-40 ml-auto"></div>
+                                <div class="h-2 w-24 rounded bg-stone opacity-20 ml-auto"></div>
+                            </div>
+                        </div>
+                        <div class="skeleton-row flex justify-between items-center py-5 border-b border-stone" style="animation-delay:0.2s">
+                            <div class="space-y-2">
+                                <div class="h-6 w-52 rounded bg-stone opacity-60"></div>
+                                <div class="h-2 w-20 rounded bg-stone opacity-30"></div>
+                            </div>
+                            <div class="text-right space-y-2">
+                                <div class="h-3 w-14 rounded bg-stone opacity-40 ml-auto"></div>
+                                <div class="h-2 w-20 rounded bg-stone opacity-20 ml-auto"></div>
+                            </div>
+                        </div>
+                        <div class="skeleton-row flex justify-between items-center py-5 border-b border-stone" style="animation-delay:0.4s">
+                            <div class="space-y-2">
+                                <div class="h-6 w-36 rounded bg-stone opacity-60"></div>
+                                <div class="h-2 w-28 rounded bg-stone opacity-30"></div>
+                            </div>
+                            <div class="text-right space-y-2">
+                                <div class="h-3 w-14 rounded bg-stone opacity-40 ml-auto"></div>
+                                <div class="h-2 w-28 rounded bg-stone opacity-20 ml-auto"></div>
+                            </div>
+                        </div>
+                        <div class="skeleton-row flex justify-between items-center py-5" style="animation-delay:0.6s">
+                            <div class="space-y-2">
+                                <div class="h-6 w-44 rounded bg-stone opacity-60"></div>
+                                <div class="h-2 w-16 rounded bg-stone opacity-30"></div>
+                            </div>
+                            <div class="text-right space-y-2">
+                                <div class="h-3 w-14 rounded bg-stone opacity-40 ml-auto"></div>
+                                <div class="h-2 w-16 rounded bg-stone opacity-20 ml-auto"></div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
                 <!-- Network Visual -->
                 <div class="hidden md:block relative h-[480px] border border-stone bg-[#0d0d0d] overflow-hidden">
                     <svg id="network-map" viewBox="0 0 400 480" class="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Loading state: scanning animation -->
+                        <g id="map-loading">
+                            <!-- Grid lines -->
+                            <g stroke="#1a1a1a" stroke-width="1" fill="none">
+                                <line x1="0" y1="96"  x2="400" y2="96"/>
+                                <line x1="0" y1="192" x2="400" y2="192"/>
+                                <line x1="0" y1="288" x2="400" y2="288"/>
+                                <line x1="0" y1="384" x2="400" y2="384"/>
+                                <line x1="80"  y1="0" x2="80"  y2="480"/>
+                                <line x1="160" y1="0" x2="160" y2="480"/>
+                                <line x1="240" y1="0" x2="240" y2="480"/>
+                                <line x1="320" y1="0" x2="320" y2="480"/>
+                            </g>
+                            <!-- Scan line -->
+                            <line x1="0" y1="0" x2="400" y2="0" stroke="#D4AF37" stroke-width="1" opacity="0.6" class="scan-line"/>
+                            <!-- Glow under scan line -->
+                            <rect x="0" y="0" width="400" height="20" fill="url(#scanGlow)" class="scan-line" style="animation-delay:0s"/>
+                            <!-- Placeholder nodes pulsing -->
+                            <circle cx="200" cy="255" r="5" fill="#D4AF37" class="map-node-loading"/>
+                            <circle cx="285" cy="355" r="5" fill="#D4AF37" opacity="0.5" class="map-node-loading" style="animation-delay:0.3s"/>
+                            <circle cx="218" cy="148" r="5" fill="#D4AF37" opacity="0.5" class="map-node-loading" style="animation-delay:0.6s"/>
+                            <circle cx="128" cy="135" r="5" fill="#D4AF37" opacity="0.5" class="map-node-loading" style="animation-delay:0.9s"/>
+                            <!-- Status text -->
+                            <text x="200" y="430" text-anchor="middle" fill="#D4AF37" font-size="8" font-family="Oswald,sans-serif" letter-spacing="3" opacity="0.7">SCANNING NETWORK</text>
+                            <text id="scan-cursor" x="310" y="430" fill="#D4AF37" font-size="8" font-family="Oswald,sans-serif" class="cursor-blink">_</text>
+                            <defs>
+                                <linearGradient id="scanGlow" x1="0" y1="0" x2="0" y2="1">
+                                    <stop offset="0%" stop-color="#D4AF37" stop-opacity="0.15"/>
+                                    <stop offset="100%" stop-color="#D4AF37" stop-opacity="0"/>
+                                </linearGradient>
+                            </defs>
+                        </g>
+                        <!-- Live data fills these -->
                         <g id="map-lines"></g>
                         <g id="map-nodes"></g>
                         <text x="20" y="465" fill="#2A2A2A" font-size="7" font-family="Oswald,sans-serif" letter-spacing="2">OPERATIONAL NETWORK</text>
@@ -664,6 +777,10 @@
                             <text x="${tx}" y="${pos.y + 4}" text-anchor="${anchor}" fill="#F5F2EB" font-size="8" font-family="Oswald,sans-serif" letter-spacing="1">${pos.short}</text>`;
                     }
                 });
+
+                // Hide loading state
+                const loadingEl = document.getElementById('map-loading');
+                if (loadingEl) loadingEl.remove();
 
                 linesEl.innerHTML = linesHtml;
                 nodesEl.innerHTML = nodesHtml;
