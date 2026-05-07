@@ -21,9 +21,20 @@ function rateLimit(ip, max = 10, windowMs = 60000) {
     return e.n > max;
 }
 
+const fs = require('fs');
+
 app.use(express.json());
 app.use('/images', express.static(path.join(__dirname, 'images')));
 app.use(express.static(__dirname));
+
+// Explicit route ensures tailwind.css is served with correct MIME type
+// even if express.static can't find it in the Lambda bundle
+app.get('/tailwind.css', (req, res) => {
+    const cssPath = path.join(__dirname, 'tailwind.css');
+    res.setHeader('Content-Type', 'text/css');
+    res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
+    res.sendFile(cssPath);
+});
 
 // ─── POST /api/join ─────────────────────────────────────────────────────────
 app.post('/api/join', async (req, res) => {
@@ -218,7 +229,6 @@ app.post('/api/quiz-results', async (req, res) => {
 });
 
 // ─── Catch-all: serve HTML pages ─────────────────────────────────────────────
-const fs = require('fs');
 app.get('*', (req, res) => {
     const cleanPath = req.path.replace(/^\//, '');
 

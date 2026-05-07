@@ -30,7 +30,7 @@
   ],
   "functions": {
     "api/index.js": {
-      "includeFiles": "tailwind.css"
+      "includeFiles": "../tailwind.css"
     }
   }
 }
