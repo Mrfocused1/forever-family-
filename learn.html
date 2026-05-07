@@ -215,7 +215,7 @@
         LEARN<span class="text-[#D4AF37]">.</span>
     </h1>
     <p class="text-base md:text-lg text-[#6B6B6B] max-w-xl leading-relaxed mb-8">
-        Six modules. Study the material, then sit the quiz. Score 7 or above to complete each module.
+        Six modules. Study the material, then sit the test. Score 7 or above to complete each module.
     </p>
     <div class="flex flex-wrap gap-6 text-sm text-[#6B6B6B]">
         <div class="flex items-center gap-2">
@@ -269,13 +269,13 @@
         <!-- Tabs -->
         <div class="flex border-b border-[#E2DDD4] px-6">
             <button class="modal-tab active" id="tab-study" onclick="switchTab('study')">Study</button>
-            <button class="modal-tab" id="tab-quiz"  onclick="switchTab('quiz')">Quiz</button>
+            <button class="modal-tab" id="tab-quiz"  onclick="switchTab('quiz')">Test</button>
         </div>
         <!-- Study Panel -->
         <div id="panel-study" class="panel-scroll">
             <div id="study-content"></div>
             <div class="pt-6 pb-2">
-                <button class="btn-gold" onclick="switchTab('quiz')">Ready? Take the Quiz →</button>
+                <button class="btn-gold" onclick="switchTab('quiz')">Ready? Take the Test →</button>
             </div>
         </div>
         <!-- Quiz Panel -->
@@ -735,7 +735,7 @@ function renderGrid() {
                 <p class="text-xs text-[#6B6B6B] mb-5 leading-relaxed">${m.description}</p>
                 <div class="flex gap-2">
                     <span class="text-[11px] uppercase tracking-widest text-[#6B6B6B] border border-[#E2DDD4] px-2 py-1">Study</span>
-                    <span class="text-[11px] uppercase tracking-widest text-[#6B6B6B] border border-[#E2DDD4] px-2 py-1">Quiz</span>
+                    <span class="text-[11px] uppercase tracking-widest text-[#6B6B6B] border border-[#E2DDD4] px-2 py-1">Test</span>
                 </div>
             </div>
         </div>`;
