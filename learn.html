@@ -322,25 +322,36 @@ const MODULES = [
     study:[
       { section:'Core Principles', points:[
         'The two primary risks in a major wound scenario are <span class="stat-hl">heavy blood loss</span> and <span class="stat-hl">shock</span> — not infection.',
-        'Always wash hands <span class="stat-hl">immediately before and after</span> providing first aid.',
-        'Wound assessment covers three factors: <span class="stat-hl">Nature</span> (type), <span class="stat-hl">Condition</span> (severity), and <span class="stat-hl">Location</span> (body part).',
-      ]},
-      { section:'Controlling Blood Loss', points:[
+        'Always wash hands <span class="stat-hl">immediately before and after</span> providing first aid to reduce infection risk.',
+        'Wound assessment covers three factors: <span class="stat-hl">Nature</span> (type of wound), <span class="stat-hl">Condition</span> (severity), and <span class="stat-hl">Location</span> (body part affected).',
         '<span class="stat-hl">~60%</span> of first aid situations involve blood loss — the most common emergency you will face.',
-        'The primary method to stop or slow blood flow is applying <span class="stat-hl">direct pressure</span> to the wound.',
-        'If no bandage is available, <span class="stat-hl">pack the wound with clean fabric or clothing</span>.',
+      ]},
+      { section:'Types of Wounds', points:[
+        '<span class="stat-hl">Pierce wounds</span> (e.g. stab wounds) are deep, narrow injuries caused by a pointed object — these require packing rather than surface pressure alone.',
+        'For stab wounds to the <span class="stat-hl">neck or abdomen</span>, gently pack the wound cavity with clean material to manage internal bleeding.',
+        'Assess whether the weapon is still present — <span class="stat-hl">never remove an embedded object</span> as it may be controlling the bleed.',
+      ]},
+      { section:'4-Step Process for Blood Loss Control', points:[
+        '<span class="stat-hl">Step 1 — Direct Pressure:</span> Apply firm, direct pressure to the wound using your hands or a clean cloth. This is always the first action.',
+        '<span class="stat-hl">Step 2 — Pressure Points:</span> If direct pressure is insufficient, apply pressure to the nearest arterial pressure point to reduce blood flow to the area.',
+        '<span class="stat-hl">Step 3 — Cloth Wrapping:</span> Firmly wrap the wound with clean fabric or bandaging to maintain constant pressure and absorb blood.',
+        '<span class="stat-hl">Step 4 — Makeshift Tourniquet:</span> As a last resort, create a tourniquet using a strip of cloth and a rigid object (pen or stick) to twist and tighten. Apply <span class="stat-hl">four fingers above the wound</span> — never directly on it.',
+      ]},
+      { section:'Shock — Recognition & Management', points:[
+        'Signs of shock: <span class="stat-hl">pale skin, rapid breathing, confusion</span>, dizziness, and cold/clammy skin.',
+        'Position a shock patient <span class="stat-hl">lying flat with legs elevated</span> to keep blood flowing to vital organs.',
+        'Keep the patient calm and warm until emergency services arrive — <span class="stat-hl">do not leave them alone</span>.',
+        'Do not give a shocked patient food or drink — they may require surgery.',
       ]},
       { section:'Tourniquets', points:[
-        'Use a tourniquet <span class="stat-hl">only when direct pressure fails</span> to control bleeding.',
-        'Apply <span class="stat-hl">four fingers above the wound</span> — never directly on it.',
-        'Always log the <span class="stat-hl">time of application</span> for paramedics.',
+        'Use a tourniquet <span class="stat-hl">only when direct pressure and wrapping fail</span> to control bleeding.',
+        'Always log the <span class="stat-hl">time of application</span> for paramedics — prolonged application can damage tissue.',
+        'A makeshift tourniquet uses a strip of cloth and a rigid object such as a <span class="stat-hl">pen or stick</span> — twist until the bleed is controlled.',
       ]},
-      { section:'Shock Management', points:[
-        'Position a shock patient <span class="stat-hl">lying flat with legs elevated</span> to keep blood flowing to vital organs.',
-        'Keep the patient calm and warm until emergency services arrive.',
-      ]},
-      { section:'Community Impact', points:[
-        'Community training <span class="stat-hl">empowers people to act quickly</span> in the critical minutes before paramedics arrive.',
+      { section:'Communicating with Emergency Services', points:[
+        'When calling 999, relay three key pieces of information: the <span class="stat-hl">Nature</span> of the injury, the <span class="stat-hl">Steps you have taken</span>, and the <span class="stat-hl">Current condition</span> of the patient.',
+        'Clear, structured communication helps paramedics prepare the right equipment before they arrive.',
+        'Community first aid training <span class="stat-hl">empowers people to act quickly</span> in the critical minutes before paramedics arrive — those minutes save lives.',
       ]},
     ],
     questions:[
@@ -376,23 +387,38 @@ const MODULES = [
         'The goal of self-defence is <span class="stat-hl">control without causing unnecessary harm</span> — not aggression.',
         '<span class="stat-hl">~60%</span> of confrontations can be resolved through verbal de-escalation — always try this first.',
         'Before responding physically, always assess the <span class="stat-hl">aggressor\'s intentions and level of threat</span>.',
+        'If escape is possible, always <span class="stat-hl">choose distance over confrontation</span>.',
       ]},
-      { section:'Joint Locks', points:[
-        'Joint locks work by <span class="stat-hl">controlling and manipulating an attacker\'s movements</span>.',
-        'The FFCA joint lock sequence: <span class="stat-hl">Wrist → Elbow → Shoulder</span>.',
-        'Regular practice develops: <span class="stat-hl">perfect form, coordination, and reflexes</span>.',
+      { section:'The 3 Gates of Control', points:[
+        'The 3 Gates of Control is the FFCA joint lock framework — applied in sequence, escalating only as far as needed.',
+        '<span class="stat-hl">Gate 1 — Wrist:</span> Control and bend the wrist to create immediate discomfort and redirect the aggressor\'s body.',
+        '<span class="stat-hl">Gate 2 — Elbow:</span> Once the wrist is controlled, apply leverage at the elbow to bend the arm and increase compliance.',
+        '<span class="stat-hl">Gate 3 — Shoulder:</span> With elbow control established, apply pressure at the shoulder joint to bring the aggressor fully under control.',
+        'Use the minimum gate required — progress only as far as the situation demands.',
       ]},
-      { section:'Chokehold Escapes', points:[
-        'The <span class="stat-hl">first step is always to identify the type</span> of chokehold — your escape depends on it.',
-        '<span class="stat-hl">~60%</span> of physical confrontations involve a grab or hold.',
+      { section:'Boxing Combinations (1–6)', points:[
+        'Boxing numbers provide shorthand for strikes used in training and drill combinations.',
+        '<span class="stat-hl">1 = Left Jab</span> (fast straight punch with the lead hand), <span class="stat-hl">2 = Right Cross</span> (powerful straight punch with the rear hand).',
+        '<span class="stat-hl">3 = Left Hook</span> (circular punch from the left side), <span class="stat-hl">4 = Right Hook</span> (circular punch from the right side).',
+        '<span class="stat-hl">5 = Left Uppercut</span> (upward punch from below on the left), <span class="stat-hl">6 = Right Uppercut</span> (upward punch from below on the right).',
+        'Combinations such as "1-2" or "1-2-3" are drilled repeatedly to build muscle memory and reflexes.',
       ]},
-      { section:'Pressure Points', points:[
-        'Most effective target areas for escaping a grab: <span class="stat-hl">Eyes, Throat, and Groin</span>.',
-        'These create an immediate pain reflex that disrupts grip strength.',
+      { section:'Defence Techniques', points:[
+        '<span class="stat-hl">Parry:</span> Redirect an incoming punch with the hand — deflect it outward rather than absorbing it, preserving your energy.',
+        '<span class="stat-hl">Slip / Duck:</span> Move your head or upper body to the side or downward to avoid a strike — effective against hooks and straight punches.',
+        '<span class="stat-hl">Answer the Phone:</span> Raise one arm so the forearm shields the side of the head (like holding a phone to your ear) — defends against blows to the side of the head.',
+      ]},
+      { section:'Women\'s Self-Defence', points:[
+        '<span class="stat-hl">Environmental awareness:</span> Continuously scan your surroundings — identify exits, avoid isolated areas, note anyone behaving unusually.',
+        '<span class="stat-hl">Strategic vulnerability:</span> Appear relaxed to accurately assess a threat\'s intent, then transition sharply to a defensive posture when necessary.',
+        'High-value target areas for breaking a grip: <span class="stat-hl">Eyes</span> (temporary blindness), <span class="stat-hl">Throat</span> (disrupts breathing), <span class="stat-hl">Groin</span> (immediate pain reflex).',
+        'These targets create an immediate physiological response that disrupts grip strength and focus — creating the window to escape.',
       ]},
       { section:'Situational Awareness', points:[
         'Best practice: <span class="stat-hl">identify threats and avoid risky situations</span> before they escalate.',
         'Environmental awareness is more powerful than any physical technique.',
+        '<span class="stat-hl">~60%</span> of physical confrontations involve a grab or hold — awareness reduces the chance of being caught off guard.',
+        'Regular practice develops: <span class="stat-hl">perfect form, coordination, and reflexes</span> — preparation is your greatest advantage.',
       ]},
     ],
     questions:[
@@ -425,22 +451,38 @@ const MODULES = [
     description:'Drill-based discipline, group movement, and the power of shared affirmations.',
     study:[
       { section:'Purpose of Formations', points:[
-        'FFCA drill formations develop <span class="stat-hl">teamwork, unity, and discipline</span>.',
-        'The foundational elements are <span class="stat-hl">standing to attention and marching</span>.',
+        'FFCA drill formations develop <span class="stat-hl">teamwork, unity, and discipline</span> — the foundation of community strength.',
+        'The foundational elements are <span class="stat-hl">standing to attention and marching</span> in sync.',
         'Marching together in formation <span class="stat-hl">builds teamwork and allows the group to move as one</span>.',
+        'The most important quality in group formations is <span class="stat-hl">sync and rhythm</span> — individual speed is irrelevant without coordination.',
       ]},
-      { section:'Sync & Rhythm', points:[
-        'The most important quality in group formations is <span class="stat-hl">sync and rhythm</span>.',
-        'Drills allow assessors to measure <span class="stat-hl">concentration and coordination</span>.',
-        'Regular practice improves coordination by <span class="stat-hl">20%</span>.',
+      { section:'The Official FFCA Oath', points:[
+        'All FFCA members take the official oath as a public pledge of commitment to their community.',
+        '"I pledge to use the skills I\'ve gained, to serve and protect, in and out of uniform."',
+        '"I will keep my community safe, resolve conflicts with peace, and defend those in need."',
+        '"I will use first aid to save lives and empower others with their rights."',
+        '"I will stand in formation with my community, for peace, safety, progress, and unity."',
+        '"With this oath, I commit to peace, protection, and the prosperity of all."',
       ]},
-      { section:'Affirmations', points:[
-        'FFCA affirmations represent: <span class="stat-hl">Strength, Safety, Progress, and Unity</span>.',
-        'Group affirmations reinforce <span class="stat-hl">unity, purpose, and mission</span> — they are commitments, not slogans.',
+      { section:'Calls & Responses', points:[
+        'Calls and responses are spoken together as a group — they reinforce shared identity and purpose.',
+        '<span class="stat-hl">"Why are we here?"</span> → <span class="stat-hl">"To rebuild our community!"</span>',
+        '<span class="stat-hl">"Give me some solutions?"</span> → <span class="stat-hl">"Education! Guidance! Opportunity!"</span>',
+        '<span class="stat-hl">"What does it take to be strong?"</span> → <span class="stat-hl">"Strength!"</span>',
+      ]},
+      { section:'The 10 Affirmations', points:[
+        'FFCA members recite 10 affirmations that represent their shared values and identity — they are commitments, not slogans.',
+        '1. <span class="stat-hl">We are royal</span> &nbsp; 2. <span class="stat-hl">We are loyal</span>',
+        '3. <span class="stat-hl">We stand tall</span> &nbsp; 4. <span class="stat-hl">We help all</span>',
+        '5. <span class="stat-hl">We are strong</span> &nbsp; 6. <span class="stat-hl">We right wrong</span>',
+        '7. <span class="stat-hl">We walk with pride</span> &nbsp; 8. <span class="stat-hl">We stand by each side</span>',
+        '9. <span class="stat-hl">We rise together</span> &nbsp; 10. <span class="stat-hl">We strive forever</span>',
       ]},
       { section:'Psychological Benefits', points:[
         'Regular formations provide a <span class="stat-hl">sense of belonging and improved mental well-being</span>.',
+        'Drills allow assessors to measure <span class="stat-hl">concentration and coordination</span> under pressure.',
         'FFCA provides young people with <span class="stat-hl">education, guidance, and opportunity</span> through its programme.',
+        'Affirmations represent: <span class="stat-hl">Strength, Safety, Progress, and Unity</span> — the four pillars of the FFCA identity.',
       ]},
     ],
     questions:[
@@ -473,24 +515,34 @@ const MODULES = [
     description:'Stop & search, right to silence, recording police, and the complaints process.',
     study:[
       { section:'The Challenge', points:[
-        'Many young people in the community face <span class="stat-hl">negative narratives and over-policing</span> — knowledge is protection.',
+        'Many young people in the community face <span class="stat-hl">negative narratives and over-policing</span> — knowledge is your protection.',
         'Legal education reduces reoffending by <span class="stat-hl">25%</span> in communities.',
+        'Understanding your rights shifts the dynamic from intimidation to <span class="stat-hl">informed, confident engagement</span>.',
       ]},
-      { section:'Stop & Search', points:[
-        'The stated legal purpose of stop and search is to <span class="stat-hl">reduce anti-social behaviour</span>.',
-        'Knowing your rights means you can recognise when powers are being used unlawfully.',
+      { section:'Step 1 — Stay Calm', points:[
+        '<span class="stat-hl">Stay calm</span> and encourage those around you to do the same.',
+        'Remaining calm prevents giving police justification to use force — it benefits you <span class="stat-hl">legally and practically</span>.',
+        'A calm, composed demeanour is evidence in your favour if the incident later goes to court.',
       ]},
-      { section:'Right to Silence', points:[
-        'The right to remain silent protects you from <span class="stat-hl">self-incrimination</span>.',
-        'In any police encounter: <span class="stat-hl">stay calm, say less, and request legal representation</span>.',
+      { section:'Step 2 — Start Filming', points:[
+        '<span class="stat-hl">Start filming immediately</span> — filming police officers in public spaces is legal in the UK.',
+        'Video footage creates <span class="stat-hl">accountability and evidence</span> that cannot be disputed.',
+        'Film openly — not covertly — as this signals that you know your rights and creates an accountability dynamic.',
       ]},
-      { section:'Recording & Accountability', points:[
-        'Filming police creates <span class="stat-hl">accountability and evidence</span> — this is its primary legal value.',
-        'Filming must be done <span class="stat-hl">openly and publicly without escalating</span> the situation.',
-        'Understanding the complaints process ensures <span class="stat-hl">correct protocol is followed and officers are held accountable</span>.',
+      { section:'Step 3 — Ask for Details', points:[
+        'Ask the officer for their <span class="stat-hl">name, badge number, and the station</span> they are attached to.',
+        'This creates an accountability dynamic — officers are more likely to act within the law when formally identified.',
+        'It <span class="stat-hl">shifts the control</span> of the interaction — you become an active, informed participant rather than a passive subject.',
       ]},
-      { section:'Legal Rights & Community', points:[
-        'Knowing your rights enables you to <span class="stat-hl">legally challenge unlawful actions</span>.',
+      { section:'Step 4 — Ask Why', points:[
+        'Ask the police <span class="stat-hl">why they are doing what they are doing</span> — this is your legal right.',
+        'Police must provide a reason for stop and search or any other exercise of their powers.',
+        'If they fail to provide a reason, this becomes <span class="stat-hl">evidence of unlawful conduct</span> — critical if a formal complaint is later filed.',
+      ]},
+      { section:'Stop & Search, Silence & Rights', points:[
+        'The stated legal purpose of stop and search is to <span class="stat-hl">reduce anti-social behaviour</span> — knowing this helps you recognise unlawful use.',
+        'The right to remain silent protects you from <span class="stat-hl">self-incrimination</span> — stay calm, say less, and request legal representation.',
+        'Knowing your rights enables you to <span class="stat-hl">legally challenge unlawful actions</span> and build community accountability.',
         'Legal literacy builds <span class="stat-hl">trust, accountability, and cooperation</span> between communities and law enforcement.',
       ]},
     ],
@@ -523,26 +575,34 @@ const MODULES = [
     subtitle:'Emotional Intelligence in Security Roles',
     description:'Duty of care, risk assessment, de-escalation, and the 4 pillars of EQ.',
     study:[
+      { section:'The CDCD Framework', points:[
+        'CDCD is the FFCA Security & EQ framework — four pillars that define professional conduct in a community security role.',
+        '<span class="stat-hl">C — Customer Service:</span> Treat every person with love and respect. Build rapport with the public — this is the foundation of community safety.',
+        '<span class="stat-hl">D — Duty of Care:</span> You hold responsibility for the welfare of those around you. Respond to emergencies, engage vulnerable individuals, and prioritise their safety.',
+        '<span class="stat-hl">C — Conflict Resolution:</span> Use active listening and a neutral stance to understand the root cause of a dispute. Address the cause, not just the surface behaviour.',
+        '<span class="stat-hl">D — De-escalation:</span> Use calm, measured language and non-aggressive body language. Recognise early warning signs and intervene before tension peaks.',
+      ]},
       { section:'Emotional Intelligence (EQ)', points:[
         'Strong EQ in a security context builds <span class="stat-hl">trust, communication, and cooperation</span>.',
-        'EQ enables security professionals to <span class="stat-hl">recognise and manage their own emotions</span> under pressure.',
-        'The <span class="stat-hl">4 Pillars of EQ (CDCD)</span>: Competence, Discipline, Confidence, Dedication.',
+        'EQ enables security professionals to <span class="stat-hl">understand and manage their own emotions</span> under pressure.',
+        '<span class="stat-hl">Empathy and perspective-taking:</span> Seeing a situation from the other person\'s point of view changes the entire interaction.',
+        '<span class="stat-hl">Self-regulation:</span> Staying composed when provoked is the single most powerful tool a security professional has.',
         'People with high EQ are <span class="stat-hl">75% less likely</span> to engage in criminal behaviour.',
       ]},
-      { section:'Duty of Care', points:[
-        'Duty of care means taking <span class="stat-hl">responsibility for the welfare of others</span>.',
-        'Security officers must <span class="stat-hl">recognise and report unsafe conditions</span> — not manage them alone.',
+      { section:'Duty of Care in Practice', points:[
+        'Duty of care means taking <span class="stat-hl">responsibility for the welfare of others</span> — not just yourself.',
+        'Security officers must <span class="stat-hl">recognise and report unsafe conditions</span> — not manage complex situations alone.',
+        'Proactively engaging with <span class="stat-hl">vulnerable individuals</span> (lost, distressed, or impaired) is a core part of the community security role.',
       ]},
-      { section:'Risk Assessment', points:[
+      { section:'Risk Assessment & De-escalation', points:[
         'The primary purpose of a risk assessment is to <span class="stat-hl">identify and address potential hazards</span> before they cause harm.',
-      ]},
-      { section:'De-escalation', points:[
-        'The most critical EQ skill for de-escalation is <span class="stat-hl">active listening</span>.',
+        'The most critical EQ skill for de-escalation is <span class="stat-hl">active listening</span> — people feel heard before they feel calm.',
         'The goal of de-escalation is to <span class="stat-hl">prevent escalation to violence</span>.',
-        'In tense situations, use <span class="stat-hl">calm, measured language</span> — not loud commands.',
+        'In tense situations, use <span class="stat-hl">calm, measured language</span> and non-aggressive body language — never loud commands.',
       ]},
       { section:'Community Impact', points:[
         'High EQ in security roles leads to <span class="stat-hl">resolving conflicts, building empathy, and creating safer communities</span>.',
+        'When communities trust those who protect them, they cooperate — and cooperation is more powerful than enforcement alone.',
       ]},
     ],
     questions:[
@@ -574,22 +634,31 @@ const MODULES = [
     subtitle:'Guiding the Next Generation',
     description:'What defines a mentor, how to communicate, and the lasting impact of guidance.',
     study:[
+      { section:'Badges & Prerequisites', points:[
+        'To become an FFCA Mentor, you must first earn all <span class="stat-hl">5 Foundation Badges</span>: Security & EQ, Self-Defence, First Aid, Law & Legal Rights, and Formations & Affirmations.',
+        'Completing all 5 Foundation Modules earns the <span class="stat-hl">Mentorship Badge</span> — the gateway to teaching and leading others.',
+        'The <span class="stat-hl">Leadership Badge</span> is the Pinnacle Module — earned by demonstrating the ability to <span class="stat-hl">motivate and mobilise a group</span>, not just complete the programme.',
+        'The Leadership Badge is not given — it is earned through observable, consistent leadership in action.',
+      ]},
       { section:'What Defines a Mentor', points:[
-        'A true FFCA mentor is defined by a <span class="stat-hl">commitment to guiding and supporting others</span> — not status or authority.',
-        'The mentor\'s role: <span class="stat-hl">guiding, leading, and embodying the programme\'s values</span>.',
-        'Day-to-day: <span class="stat-hl">guiding, assisting, and evaluating</span> participants in each session.',
+        'A true FFCA mentor is defined by a <span class="stat-hl">commitment to guiding and supporting others</span> — not by status or authority.',
+        'Day-to-day responsibilities: <span class="stat-hl">guiding, assisting, and evaluating</span> participants across each session.',
+        'Mentors must demonstrate <span class="stat-hl">leadership, communication, and patience</span> — these are non-negotiable qualities.',
+        'A mentor serves as a <span class="stat-hl">role model</span> — young people learn far more from what they see than what they are told.',
       ]},
       { section:'Core Mentorship Skills', points:[
-        'The central skill of effective mentorship is <span class="stat-hl">active listening and empathy</span>.',
-        'Mentors model <span class="stat-hl">focus, discipline, and respect</span> — actions matter more than words.',
-        'Communicate using <span class="stat-hl">clear, easy-to-understand instructions</span>.',
+        'The central skill of effective mentorship is <span class="stat-hl">active listening and empathy</span> — understand before you respond.',
+        'Mentors model <span class="stat-hl">focus, discipline, and respect</span> in every session — actions speak louder than words.',
+        'Communicate using <span class="stat-hl">clear, easy-to-understand instructions</span> — complexity creates confusion and disengagement.',
       ]},
-      { section:'Practical Knowledge', points:[
-        'First aid knowledge gives mentors <span class="stat-hl">confidence in emergency situations</span> — a vital part of duty of care.',
+      { section:'Teaching the Core Areas', points:[
+        'A mentor\'s responsibility includes teaching each FFCA area to others: <span class="stat-hl">First Aid, Self-Defence, Formations, Law & Rights, and Security & EQ</span>.',
+        'Effective teaching requires more than knowledge — it requires the ability to <span class="stat-hl">break down concepts and adapt to your audience</span>.',
+        'First aid knowledge gives mentors <span class="stat-hl">confidence in emergency situations</span> — a vital part of their duty of care to participants.',
       ]},
       { section:'Community Impact', points:[
         'Mentored young people are <span class="stat-hl">55% more likely</span> to participate in community activities.',
-        'Long-term: <span class="stat-hl">skills and values are passed to future generations</span>.',
+        'Long-term: <span class="stat-hl">skills and values are passed to future generations</span> — mentorship creates a multiplier effect in the community.',
         'The mentor–mentee relationship builds <span class="stat-hl">mutual respect, accountability, and unity</span>.',
       ]},
     ],
