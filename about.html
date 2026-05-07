@@ -70,6 +70,30 @@
         .map-node-loading:nth-child(3) { animation-delay: 0.6s; }
         .map-node-loading:nth-child(4) { animation-delay: 0.9s; }
         .cursor-blink { animation: blink 1s step-end infinite; }
+
+        /* ── Operate section interactive states ── */
+        .city-row { transition: background-color 0.25s ease, border-color 0.25s ease, padding-left 0.25s ease; }
+        .city-row { padding-left: 0; border-left: 2px solid transparent; }
+        .city-row.is-active { border-left-color: var(--gold); padding-left: 1rem; background: rgba(212,175,55,0.04); }
+        .city-row.is-active .city-name { color: var(--gold); }
+
+        .map-node-group { transition: opacity 0.3s ease; cursor: pointer; }
+        .map-node-group.is-dim { opacity: 0.18; }
+        .map-node-group.is-selected { opacity: 1; }
+        .map-line { transition: opacity 0.3s ease, stroke 0.3s ease; }
+        .map-line.is-dim { opacity: 0.08; }
+        .map-line.is-selected { stroke: #D4AF37; opacity: 1; }
+
+        .map-node-circle { transition: fill 0.25s ease, stroke 0.25s ease, r 0.25s ease; }
+        .map-node-group:hover .map-node-circle { fill: #D4AF37; }
+        .map-node-group:hover .map-node-label { fill: #D4AF37; }
+
+        @keyframes select-pulse {
+            0%   { r: 12; opacity: 0.7; }
+            70%  { r: 30; opacity: 0; }
+            100% { r: 30; opacity: 0; }
+        }
+        .select-ring { animation: select-pulse 1.6s ease-out infinite; transform-origin: center; transform-box: fill-box; }
     </style>
     <style>
       #mobile-menu-btn .ham-line {
@@ -382,24 +406,37 @@
                             </div>
                         </div>
                     </div>
+                    <div id="city-hint" class="hidden mt-6 text-[10px] text-stone tracking-widest uppercase">Tap a city to highlight on map · tap again to reset</div>
                 </div>
 
                 <!-- Network Visual -->
                 <div class="hidden md:block relative h-[480px] border border-stone bg-[#0d0d0d] overflow-hidden">
                     <svg id="network-map" viewBox="0 0 400 480" class="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <linearGradient id="scanGlow" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="0%" stop-color="#D4AF37" stop-opacity="0.15"/>
+                                <stop offset="100%" stop-color="#D4AF37" stop-opacity="0"/>
+                            </linearGradient>
+                            <radialGradient id="nodeGlow" cx="50%" cy="50%" r="50%">
+                                <stop offset="0%" stop-color="#D4AF37" stop-opacity="0.5"/>
+                                <stop offset="100%" stop-color="#D4AF37" stop-opacity="0"/>
+                            </radialGradient>
+                        </defs>
+
+                        <!-- Persistent grid (visible loading + after) -->
+                        <g id="map-grid" stroke="#1a1a1a" stroke-width="1" fill="none">
+                            <line x1="0" y1="96"  x2="400" y2="96"/>
+                            <line x1="0" y1="192" x2="400" y2="192"/>
+                            <line x1="0" y1="288" x2="400" y2="288"/>
+                            <line x1="0" y1="384" x2="400" y2="384"/>
+                            <line x1="80"  y1="0" x2="80"  y2="480"/>
+                            <line x1="160" y1="0" x2="160" y2="480"/>
+                            <line x1="240" y1="0" x2="240" y2="480"/>
+                            <line x1="320" y1="0" x2="320" y2="480"/>
+                        </g>
+
                         <!-- Loading state: scanning animation -->
                         <g id="map-loading">
-                            <!-- Grid lines -->
-                            <g stroke="#1a1a1a" stroke-width="1" fill="none">
-                                <line x1="0" y1="96"  x2="400" y2="96"/>
-                                <line x1="0" y1="192" x2="400" y2="192"/>
-                                <line x1="0" y1="288" x2="400" y2="288"/>
-                                <line x1="0" y1="384" x2="400" y2="384"/>
-                                <line x1="80"  y1="0" x2="80"  y2="480"/>
-                                <line x1="160" y1="0" x2="160" y2="480"/>
-                                <line x1="240" y1="0" x2="240" y2="480"/>
-                                <line x1="320" y1="0" x2="320" y2="480"/>
-                            </g>
                             <!-- Scan line -->
                             <line x1="0" y1="0" x2="400" y2="0" stroke="#D4AF37" stroke-width="1" opacity="0.6" class="scan-line"/>
                             <!-- Glow under scan line -->
@@ -412,16 +449,12 @@
                             <!-- Status text -->
                             <text x="200" y="430" text-anchor="middle" fill="#D4AF37" font-size="8" font-family="Oswald,sans-serif" letter-spacing="3" opacity="0.7">SCANNING NETWORK</text>
                             <text id="scan-cursor" x="310" y="430" fill="#D4AF37" font-size="8" font-family="Oswald,sans-serif" class="cursor-blink">_</text>
-                            <defs>
-                                <linearGradient id="scanGlow" x1="0" y1="0" x2="0" y2="1">
-                                    <stop offset="0%" stop-color="#D4AF37" stop-opacity="0.15"/>
-                                    <stop offset="100%" stop-color="#D4AF37" stop-opacity="0"/>
-                                </linearGradient>
-                            </defs>
                         </g>
+
                         <!-- Live data fills these -->
                         <g id="map-lines"></g>
                         <g id="map-nodes"></g>
+                        <g id="map-highlight"></g>
                         <text x="20" y="465" fill="#2A2A2A" font-size="7" font-family="Oswald,sans-serif" letter-spacing="2">OPERATIONAL NETWORK</text>
                     </svg>
                 </div>
@@ -695,6 +728,7 @@
             // City rows
             // ── Load operational cities from live steps data ──────────────────
             (async function loadOperationalMap() {
+                const SVG_NS = 'http://www.w3.org/2000/svg';
                 const COORDS = {
                     'birmingham':    { x: 200, y: 255, short: 'BIRMINGHAM' },
                     'london':        { x: 285, y: 355, short: 'LONDON' },
@@ -709,13 +743,17 @@
                     'leicester':     { x: 252, y: 252, short: 'LEICESTER' },
                 };
 
+                const removeLoading = () => {
+                    const loadingEl = document.getElementById('map-loading');
+                    if (loadingEl) loadingEl.remove();
+                };
+
                 let steps = [];
                 try {
                     const r = await fetch('/api/steps');
                     steps = (await r.json()).steps || [];
                 } catch(e) {
-                    const loadingEl = document.getElementById('map-loading');
-                    if (loadingEl) loadingEl.remove();
+                    removeLoading();
                     return;
                 }
 
@@ -731,23 +769,34 @@
                 });
 
                 if (!cityMap.size) {
-                    const loadingEl = document.getElementById('map-loading');
-                    if (loadingEl) loadingEl.remove();
+                    removeLoading();
                     const listEl2 = document.getElementById('city-list');
                     if (listEl2) listEl2.innerHTML = '<p class="text-stone text-sm tracking-widest uppercase py-8 text-center">No operations logged yet</p>';
                     return;
                 }
-                const cities = [...cityMap.entries()].sort((a, b) => b[1].count - a[1].count);
+                // Only keep cities we have geographic positions for (for map sync)
+                const cities = [...cityMap.entries()]
+                    .filter(([key]) => COORDS[key])
+                    .sort((a, b) => b[1].count - a[1].count);
 
-                // City list
+                if (!cities.length) {
+                    removeLoading();
+                    return;
+                }
+
+                const hubKey = cities[0][0];
+                const hub = COORDS[hubKey];
+
+                // ── Build city list ──
                 const listEl = document.getElementById('city-list');
+                const hintEl = document.getElementById('city-hint');
                 if (listEl) {
                     listEl.innerHTML = cities.map(([key, d], i) => {
                         const last = i === cities.length - 1;
                         const areas = d.areas.slice(0, 2).join(', ');
-                        return `<div class="city-row flex justify-between items-center py-5 ${last ? '' : 'border-b border-stone'} group opacity-0">
+                        return `<div class="city-row flex justify-between items-center py-5 cursor-pointer ${last ? '' : 'border-b border-stone'} group opacity-0" data-city="${key}" role="button" tabindex="0" aria-label="Highlight ${d.name} on map">
                             <div>
-                                <h4 class="font-condensed text-2xl group-hover:text-gold transition-colors">${d.name}</h4>
+                                <h4 class="city-name font-condensed text-2xl group-hover:text-gold transition-colors">${d.name}</h4>
                                 <p class="text-[10px] text-stone tracking-widest uppercase mt-1">${i === 0 ? 'Primary Hub' : 'Active Zone'}${areas ? ' · ' + areas : ''}</p>
                             </div>
                             <div class="text-right">
@@ -756,49 +805,163 @@
                             </div>
                         </div>`;
                     }).join('');
+                    if (hintEl) hintEl.classList.remove('hidden');
                     gsap.utils.toArray('.city-row').forEach((row, i) => {
                         gsap.fromTo(row, { opacity: 0, x: -20 }, { opacity: 1, x: 0, duration: 0.6, ease: 'power2.out', delay: i * 0.08, scrollTrigger: { trigger: row, start: 'top 88%' } });
                     });
                 }
 
-                // SVG map
-                const linesEl = document.getElementById('map-lines');
-                const nodesEl = document.getElementById('map-nodes');
-                const mapEl   = document.getElementById('network-map');
-                if (!linesEl || !nodesEl) return;
+                // ── SVG map ──
+                const linesEl     = document.getElementById('map-lines');
+                const nodesEl     = document.getElementById('map-nodes');
+                const highlightEl = document.getElementById('map-highlight');
+                const mapEl       = document.getElementById('network-map');
+                if (!linesEl || !nodesEl || !highlightEl) return;
 
-                const hub = COORDS[cities[0][0]] || COORDS['birmingham'];
-                let linesHtml = '', nodesHtml = '';
+                // Build connecting lines hub → other cities
+                let linesHtml = '';
+                cities.forEach(([key], i) => {
+                    if (i === 0) return;
+                    const pos = COORDS[key];
+                    const len = Math.round(Math.hypot(pos.x - hub.x, pos.y - hub.y));
+                    linesHtml += `<line x1="${hub.x}" y1="${hub.y}" x2="${pos.x}" y2="${pos.y}" stroke="#2A2A2A" stroke-width="1" fill="none"/>`;
+                    linesHtml += `<line data-city="${key}" x1="${hub.x}" y1="${hub.y}" x2="${pos.x}" y2="${pos.y}" stroke="#D4AF37" stroke-width="1.5" fill="none" class="net-draw map-line" stroke-dasharray="${len}" stroke-dashoffset="${len}"/>`;
+                });
+                linesEl.innerHTML = linesHtml;
 
+                // Build nodes (each as a <g> so we can dim/highlight as a unit)
+                let nodesHtml = '';
                 cities.forEach(([key, d], i) => {
                     const pos = COORDS[key];
-                    if (!pos) return;
                     if (i === 0) {
-                        nodesHtml += `<circle cx="${pos.x}" cy="${pos.y}" r="10" fill="#D4AF37"/>
+                        nodesHtml += `<g class="map-node-group" data-city="${key}" role="button" tabindex="0" aria-label="${d.name} hub">
                             <circle cx="${pos.x}" cy="${pos.y}" r="22" fill="none" stroke="#D4AF37" stroke-width="1" opacity="0.3" class="hub-pulse"/>
-                            <text x="${pos.x}" y="${pos.y + 20}" text-anchor="middle" fill="#D4AF37" font-size="9" font-family="Oswald,sans-serif" letter-spacing="2">${pos.short}</text>`;
+                            <circle cx="${pos.x}" cy="${pos.y}" r="10" fill="#D4AF37" class="map-node-circle hub-circle"/>
+                            <text x="${pos.x}" y="${pos.y + 22}" text-anchor="middle" fill="#D4AF37" font-size="9" font-family="Oswald,sans-serif" letter-spacing="2" class="map-node-label">${pos.short}</text>
+                        </g>`;
                     } else {
-                        const len = Math.round(Math.hypot(pos.x - hub.x, pos.y - hub.y));
-                        linesHtml += `<line x1="${hub.x}" y1="${hub.y}" x2="${pos.x}" y2="${pos.y}" stroke="#2A2A2A" stroke-width="1" fill="none"/>
-                            <line x1="${hub.x}" y1="${hub.y}" x2="${pos.x}" y2="${pos.y}" stroke="#D4AF37" stroke-width="1.5" fill="none" class="net-draw" stroke-dasharray="${len}" stroke-dashoffset="${len}"/>`;
                         const anchor = pos.x >= hub.x ? 'start' : 'end';
                         const tx = pos.x >= hub.x ? pos.x + 12 : pos.x - 12;
-                        nodesHtml += `<circle cx="${pos.x}" cy="${pos.y}" r="6" fill="#2A2A2A" stroke="#D4AF37" stroke-width="1.5" class="net-node"/>
-                            <text x="${tx}" y="${pos.y + 4}" text-anchor="${anchor}" fill="#F5F2EB" font-size="8" font-family="Oswald,sans-serif" letter-spacing="1">${pos.short}</text>`;
+                        nodesHtml += `<g class="map-node-group net-node-group" data-city="${key}" role="button" tabindex="0" aria-label="${d.name}">
+                            <circle cx="${pos.x}" cy="${pos.y}" r="6" fill="#0d0d0d" stroke="#D4AF37" stroke-width="1.5" class="map-node-circle net-node"/>
+                            <text x="${tx}" y="${pos.y + 4}" text-anchor="${anchor}" fill="#F5F2EB" font-size="8" font-family="Oswald,sans-serif" letter-spacing="1" class="map-node-label">${pos.short}</text>
+                        </g>`;
                     }
                 });
-
-                // Hide loading state
-                const loadingEl = document.getElementById('map-loading');
-                if (loadingEl) loadingEl.remove();
-
-                linesEl.innerHTML = linesHtml;
                 nodesEl.innerHTML = nodesHtml;
 
-                gsap.to('.net-draw', { strokeDashoffset: 0, duration: 1.5, ease: 'power2.inOut', stagger: 0.2, scrollTrigger: { trigger: mapEl, start: 'top 65%' } });
-                gsap.to('.hub-pulse', { r: 30, opacity: 0.1, repeat: -1, yoyo: true, duration: 2, ease: 'sine.inOut' });
-                gsap.utils.toArray('.net-node').forEach((node, i) => {
-                    gsap.fromTo(node, { scale: 0, transformOrigin: '50% 50%' }, { scale: 1, duration: 0.5, ease: 'back.out(1.7)', delay: 0.8 + i * 0.15, scrollTrigger: { trigger: mapEl, start: 'top 65%' } });
+                // Hide loading state (grid stays — it's a sibling element)
+                removeLoading();
+
+                // Animations: line draw, hub pulse, node pop-in
+                gsap.to('.net-draw', { strokeDashoffset: 0, duration: 1.5, ease: 'power2.inOut', stagger: 0.2, scrollTrigger: { trigger: mapEl, start: 'top 75%' } });
+                gsap.to('.hub-pulse', { attr: { r: 30 }, opacity: 0.1, repeat: -1, yoyo: true, duration: 2, ease: 'sine.inOut' });
+                gsap.utils.toArray('.net-node-group').forEach((node, i) => {
+                    gsap.fromTo(node, { opacity: 0, scale: 0, transformOrigin: '50% 50%' }, { opacity: 1, scale: 1, duration: 0.5, ease: 'back.out(1.7)', delay: 0.6 + i * 0.12, scrollTrigger: { trigger: mapEl, start: 'top 75%' } });
+                });
+
+                // ── Click-to-highlight interaction ──
+                let activeCity = null;
+
+                function setHighlight(key) {
+                    // Clear prior highlight ring
+                    highlightEl.innerHTML = '';
+                    if (!key) return;
+                    const pos = COORDS[key];
+                    if (!pos) return;
+                    // Glowing pulse ring + brighter core
+                    const ring = document.createElementNS(SVG_NS, 'circle');
+                    ring.setAttribute('cx', pos.x);
+                    ring.setAttribute('cy', pos.y);
+                    ring.setAttribute('r', 12);
+                    ring.setAttribute('fill', 'none');
+                    ring.setAttribute('stroke', '#D4AF37');
+                    ring.setAttribute('stroke-width', '1.5');
+                    ring.setAttribute('class', 'select-ring');
+                    highlightEl.appendChild(ring);
+                    const ring2 = document.createElementNS(SVG_NS, 'circle');
+                    ring2.setAttribute('cx', pos.x);
+                    ring2.setAttribute('cy', pos.y);
+                    ring2.setAttribute('r', 16);
+                    ring2.setAttribute('fill', 'none');
+                    ring2.setAttribute('stroke', '#D4AF37');
+                    ring2.setAttribute('stroke-width', '1');
+                    ring2.setAttribute('opacity', '0.5');
+                    ring2.setAttribute('class', 'select-ring');
+                    ring2.style.animationDelay = '0.4s';
+                    highlightEl.appendChild(ring2);
+                }
+
+                function applySelection(key) {
+                    activeCity = key;
+                    const rows  = document.querySelectorAll('.city-row');
+                    const groups = document.querySelectorAll('.map-node-group');
+                    const lines  = document.querySelectorAll('.map-line');
+
+                    rows.forEach(r => r.classList.toggle('is-active', r.dataset.city === key));
+
+                    if (!key) {
+                        groups.forEach(g => g.classList.remove('is-dim', 'is-selected'));
+                        lines.forEach(l => l.classList.remove('is-dim', 'is-selected'));
+                        setHighlight(null);
+                        return;
+                    }
+
+                    groups.forEach(g => {
+                        const match = g.dataset.city === key;
+                        g.classList.toggle('is-dim', !match);
+                        g.classList.toggle('is-selected', match);
+                    });
+                    // For hub selection, no spoke line is "the selected one" — dim all spokes
+                    // For leaf selection, light up that spoke and dim others
+                    lines.forEach(l => {
+                        if (key === hubKey) {
+                            l.classList.remove('is-dim', 'is-selected');
+                        } else {
+                            const match = l.dataset.city === key;
+                            l.classList.toggle('is-dim', !match);
+                            l.classList.toggle('is-selected', match);
+                        }
+                    });
+                    setHighlight(key);
+                }
+
+                function toggleCity(key) {
+                    if (!key) return;
+                    if (activeCity === key) applySelection(null);
+                    else applySelection(key);
+                }
+
+                // List clicks
+                document.querySelectorAll('.city-row').forEach(row => {
+                    row.addEventListener('click', () => toggleCity(row.dataset.city));
+                    row.addEventListener('keydown', (e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault();
+                            toggleCity(row.dataset.city);
+                        }
+                    });
+                });
+
+                // Map node clicks
+                document.querySelectorAll('.map-node-group').forEach(g => {
+                    g.addEventListener('click', () => toggleCity(g.dataset.city));
+                    g.addEventListener('keydown', (e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault();
+                            toggleCity(g.dataset.city);
+                        }
+                    });
+                });
+
+                // Click outside list/map clears selection
+                document.addEventListener('click', (e) => {
+                    if (!activeCity) return;
+                    if (e.target.closest('.city-row')) return;
+                    if (e.target.closest('#network-map')) return;
+                    if (e.target.closest('#network')) {
+                        applySelection(null);
+                    }
                 });
             })();
 
