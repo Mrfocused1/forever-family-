@@ -1,98 +1,86 @@
+require('dotenv').config();
 const express = require('express');
 const path = require('path');
-const fs = require('fs');
+const { createClient } = require('@supabase/supabase-js');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-const DATA_DIR = process.env.VERCEL
-    ? path.join('/tmp', 'forever-family-data')
-    : path.join(__dirname, 'data');
 
-// Ensure data directory exists
-if (!fs.existsSync(DATA_DIR)) {
-    try {
-        fs.mkdirSync(DATA_DIR, { recursive: true });
-    } catch (err) {
-        console.error('Failed to create data directory:', err.message);
-    }
-}
+const supabase = createClient(
+    process.env.SUPABASE_URL,
+    process.env.SUPABASE_SERVICE_KEY
+);
 
 app.use(express.json());
-
-// Serve static files - explicit routes for images and other assets
 app.use('/images', express.static(path.join(__dirname, 'images')));
 app.use(express.static(__dirname));
 
-// ─── Helpers ───────────────────────────────────────────────────────────────
-function readJSON(file) {
-    try { return JSON.parse(fs.readFileSync(file, 'utf8')); } catch (_) { return []; }
-}
-function writeJSON(file, data) {
-    fs.writeFileSync(file, JSON.stringify(data, null, 2));
-}
-
 // ─── POST /api/join ─────────────────────────────────────────────────────────
-app.post('/api/join', (req, res) => {
+app.post('/api/join', async (req, res) => {
     const { name, email, phone, city, interest, message } = req.body;
     if (!name || !email || !city || !interest) {
         return res.status(400).json({ error: 'Required fields missing.' });
     }
 
-    const file = path.join(DATA_DIR, 'submissions.json');
-    const submissions = readJSON(file);
-    submissions.push({
-        id: Date.now(),
-        timestamp: new Date().toISOString(),
+    const { error } = await supabase.from('submissions').insert({
         name, email, phone: phone || '', city, interest, message: message || ''
     });
-    writeJSON(file, submissions);
+
+    if (error) {
+        console.error('[JOIN] Supabase error:', error.message);
+        return res.status(500).json({ error: 'Failed to save submission.' });
+    }
 
     console.log(`[JOIN] ${name} <${email}> — ${interest}`);
     res.json({ success: true });
 });
 
 // ─── POST /api/referral ──────────────────────────────────────────────────────
-app.post('/api/referral', (req, res) => {
+app.post('/api/referral', async (req, res) => {
     const { name, referralName, relationship, urgency, situation } = req.body;
     if (!name || !referralName || !situation) {
         return res.status(400).json({ error: 'Required fields missing.' });
     }
 
-    const file = path.join(DATA_DIR, 'referrals.json');
-    const referrals = readJSON(file);
-    referrals.push({
-        id: Date.now(),
-        timestamp: new Date().toISOString(),
-        name, referralName, relationship: relationship || '', urgency: urgency || 'unspecified', situation
+    const { error } = await supabase.from('referrals').insert({
+        name,
+        referral_name: referralName,
+        relationship: relationship || '',
+        urgency: urgency || 'unspecified',
+        situation
     });
-    writeJSON(file, referrals);
+
+    if (error) {
+        console.error('[G-LINE] Supabase error:', error.message);
+        return res.status(500).json({ error: 'Failed to save referral.' });
+    }
 
     console.log(`[G-LINE] ${name} → re: ${referralName} (${urgency})`);
     res.json({ success: true });
 });
 
 // ─── POST /api/portal-login ──────────────────────────────────────────────────
-// In production: generate per-member codes stored in a database.
-// These are demo codes for initial setup — replace with real codes per member.
-const TIER_CODES = {
-    'FF-BRONZE-2025': 'bronze',
-    'FF-SILVER-2025': 'silver',
-    'FF-GOLD-2025': 'gold',
-    'FF-PLATINUM-2025': 'platinum',
-};
-
-app.post('/api/portal-login', (req, res) => {
+app.post('/api/portal-login', async (req, res) => {
     const { email, code } = req.body;
     if (!email || !code) {
         return res.status(400).json({ error: 'Email and access code required.' });
     }
 
-    const tier = TIER_CODES[code.toUpperCase().trim()];
-    if (!tier) {
+    const { data, error } = await supabase
+        .from('members')
+        .select('tier')
+        .eq('code', code.toUpperCase().trim())
+        .single();
+
+    if (error || !data) {
         return res.status(401).json({ error: 'Invalid access code. Check your welcome email.' });
     }
 
-    // Simple base64 token — replace with JWT in production
+    const { tier } = data;
+
+    // Update email on the member record
+    await supabase.from('members').update({ email }).eq('code', code.toUpperCase().trim());
+
     const payload = JSON.stringify({ email, tier, issued: Date.now(), exp: Date.now() + 86400000 });
     const token = Buffer.from(payload).toString('base64');
 
@@ -101,85 +89,126 @@ app.post('/api/portal-login', (req, res) => {
 });
 
 // ─── GET /api/steps ──────────────────────────────────────────────────────────
-app.get('/api/steps', (req, res) => {
-    const steps = readJSON(path.join(DATA_DIR, 'steps.json'));
-    res.json({ steps });
+app.get('/api/steps', async (req, res) => {
+    const { data, error } = await supabase
+        .from('steps')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+    if (error) {
+        console.error('[STEPS] Supabase error:', error.message);
+        return res.status(500).json({ error: 'Failed to fetch steps.' });
+    }
+
+    res.json({ steps: data });
 });
 
 // ─── POST /api/steps (admin only) ────────────────────────────────────────────
-app.post('/api/steps', (req, res) => {
+app.post('/api/steps', async (req, res) => {
     const auth = req.headers['x-admin-key'];
     if (auth !== process.env.ADMIN_KEY && process.env.NODE_ENV !== 'development') {
         return res.status(403).json({ error: 'Forbidden.' });
     }
+
     const { location, city, area, steppers, status, startTime, endTime, purpose, outcome, coordinatedBy } = req.body;
-    const file = path.join(DATA_DIR, 'steps.json');
-    const steps = readJSON(file);
-    const newStep = {
-        id: Date.now(),
+
+    const { data, error } = await supabase.from('steps').insert({
         location, city, area,
         steppers: parseInt(steppers) || 0,
         status: status || 'upcoming',
-        startTime, endTime: endTime || null,
-        purpose, outcome: outcome || null,
-        coordinatedBy: coordinatedBy || 'SOS Team'
-    };
-    steps.push(newStep);
-    writeJSON(file, steps);
+        start_time: startTime,
+        end_time: endTime || null,
+        purpose,
+        outcome: outcome || null,
+        coordinated_by: coordinatedBy || 'SOS Team'
+    }).select().single();
+
+    if (error) {
+        console.error('[STEP] Supabase error:', error.message);
+        return res.status(500).json({ error: 'Failed to save step.' });
+    }
+
     console.log(`[STEP] New step added: ${location} (${status})`);
-    res.json({ success: true, step: newStep });
+    res.json({ success: true, step: data });
 });
 
 // ─── PUT /api/steps/:id (admin only) ─────────────────────────────────────────
-app.put('/api/steps/:id', (req, res) => {
+app.put('/api/steps/:id', async (req, res) => {
     const auth = req.headers['x-admin-key'];
     if (auth !== process.env.ADMIN_KEY && process.env.NODE_ENV !== 'development') {
         return res.status(403).json({ error: 'Forbidden.' });
     }
-    const file = path.join(DATA_DIR, 'steps.json');
-    const steps = readJSON(file);
-    const idx = steps.findIndex(s => String(s.id) === String(req.params.id));
-    if (idx === -1) return res.status(404).json({ error: 'Step not found.' });
-    steps[idx] = { ...steps[idx], ...req.body };
-    writeJSON(file, steps);
-    res.json({ success: true, step: steps[idx] });
+
+    const { data, error } = await supabase
+        .from('steps')
+        .update(req.body)
+        .eq('id', req.params.id)
+        .select()
+        .single();
+
+    if (error) {
+        console.error('[STEP] Supabase update error:', error.message);
+        return res.status(500).json({ error: 'Failed to update step.' });
+    }
+    if (!data) return res.status(404).json({ error: 'Step not found.' });
+
+    res.json({ success: true, step: data });
 });
 
 // ─── GET /api/submissions (admin view) ───────────────────────────────────────
-app.get('/api/submissions', (req, res) => {
+app.get('/api/submissions', async (req, res) => {
     const auth = req.headers['x-admin-key'];
     if (auth !== process.env.ADMIN_KEY && process.env.NODE_ENV !== 'development') {
         return res.status(403).json({ error: 'Forbidden.' });
     }
-    res.json({
-        submissions: readJSON(path.join(DATA_DIR, 'submissions.json')),
-        referrals: readJSON(path.join(DATA_DIR, 'referrals.json'))
-    });
+
+    const [{ data: submissions }, { data: referrals }] = await Promise.all([
+        supabase.from('submissions').select('*').order('created_at', { ascending: false }),
+        supabase.from('referrals').select('*').order('created_at', { ascending: false })
+    ]);
+
+    res.json({ submissions: submissions || [], referrals: referrals || [] });
 });
 
-// ─── Catch-all: serve HTML pages or fallback to index.html ─────────────────
+// ─── POST /api/quiz-results ───────────────────────────────────────────────────
+app.post('/api/quiz-results', async (req, res) => {
+    const { sessionId, module, score, total, label } = req.body;
+    if (!module || score === undefined || !label) {
+        return res.status(400).json({ error: 'Required fields missing.' });
+    }
+
+    const { error } = await supabase.from('quiz_results').insert({
+        session_id: sessionId || null,
+        module,
+        score: parseInt(score) || 0,
+        total: parseInt(total) || 10,
+        label
+    });
+
+    if (error) {
+        console.error('[QUIZ] Supabase error:', error.message);
+        return res.status(500).json({ error: 'Failed to save result.' });
+    }
+
+    console.log(`[QUIZ] ${module}: ${score}/${total} (${label})`);
+    res.json({ success: true });
+});
+
+// ─── Catch-all: serve HTML pages ─────────────────────────────────────────────
+const fs = require('fs');
 app.get('*', (req, res) => {
-    // Check if the path corresponds to an existing HTML file
-    const requestedPath = req.path;
-    const cleanPath = requestedPath.replace(/^\//, ''); // Remove leading slash
-    
-    // If requesting a specific .html file that exists, serve it
+    const cleanPath = req.path.replace(/^\//, '');
+
     if (cleanPath.endsWith('.html')) {
         const filePath = path.join(__dirname, cleanPath);
-        if (fs.existsSync(filePath)) {
-            return res.sendFile(filePath);
-        }
+        if (fs.existsSync(filePath)) return res.sendFile(filePath);
     }
-    
-    // If requesting a page without extension (e.g., /about), check for .html version
+
     if (!cleanPath.includes('.') && cleanPath.length > 0) {
         const htmlPath = path.join(__dirname, cleanPath + '.html');
-        if (fs.existsSync(htmlPath)) {
-            return res.sendFile(htmlPath);
-        }
+        if (fs.existsSync(htmlPath)) return res.sendFile(htmlPath);
     }
-    
-    // Otherwise serve index.html (for SPA routing or root path)
+
     res.sendFile(path.join(__dirname, 'index.html'));
 });
 
