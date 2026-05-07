@@ -1,24 +1,17 @@
 {
   "version": 2,
   "public": true,
-  "routes": [
+  "cleanUrls": true,
+  "headers": [
     {
-      "src": "/images/(.*)",
-      "dest": "/images/$1",
-      "headers": {
-        "Cache-Control": "public, max-age=31536000, immutable"
-      }
-    },
-    {
-      "src": "/api/(.*)",
-      "dest": "/api/index.js"
-    },
-    {
-      "handle": "filesystem"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/api/index.js"
+      "source": "/images/(.*)",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
+      ]
     }
+  ],
+  "rewrites": [
+    { "source": "/api/:path*", "destination": "/api/index.js" },
+    { "source": "/:path*",     "destination": "/api/index.js" }
   ]
 }
