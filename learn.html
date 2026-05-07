@@ -41,7 +41,7 @@
         }
         /* Mobile menu */
         #mobile-menu-btn .ham-line {
-            display:block; height:1.5px; background:white; margin:2.5px 0;
+            display:block; height:1.5px; background:#111111; margin:2.5px 0;
         }
         #mobile-menu-btn .ham-line:nth-child(1) { width:24px; }
         #mobile-menu-btn .ham-line:nth-child(2) { width:24px; }
@@ -162,11 +162,11 @@
 <div class="grain-overlay"></div>
 
 <!-- NAV -->
-<nav class="fixed top-0 left-0 w-full h-20 z-50 flex justify-between items-center mix-blend-difference px-6">
+<nav class="fixed top-0 left-0 w-full h-20 z-50 flex justify-between items-center px-6">
     <div class="flex items-center self-center h-10">
-        <a href="/"><img src="images/logo.svg" alt="Forever Family" class="h-12 w-auto" style="filter:brightness(0) invert(1)"></a>
+        <a href="/"><img src="images/logo.svg" alt="Forever Family" class="h-12 w-auto" style="filter:brightness(0)"></a>
     </div>
-    <div class="desktop-nav hidden md:flex gap-8 text-sm font-medium tracking-widest uppercase mx-auto text-white">
+    <div class="desktop-nav hidden md:flex gap-8 text-sm font-medium tracking-widest uppercase mx-auto text-[#111111]">
         <a href="/"           class="hover:text-[#D4AF37] transition-colors">Home</a>
         <a href="about"           class="hover:text-[#D4AF37] transition-colors">About</a>
         <a href="programmes"      class="hover:text-[#D4AF37] transition-colors">Programmes</a>
@@ -175,7 +175,7 @@
         <a href="learn"           class="text-[#D4AF37]">Learn</a>
         <a href="membership#join-form" class="hover:text-[#D4AF37] transition-colors">Join</a>
     </div>
-    <a href="portal" class="hidden md:block text-sm font-medium tracking-widest uppercase text-white hover:text-[#D4AF37] transition-colors border border-white border-opacity-30 px-3 py-1 hover:border-[#D4AF37]">Member Portal</a>
+    <a href="portal" class="hidden md:block text-sm font-medium tracking-widest uppercase text-[#111111] hover:text-[#D4AF37] transition-colors border border-[#111111] border-opacity-30 px-3 py-1 hover:border-[#D4AF37]">Member Portal</a>
     <button type="button" id="mobile-menu-btn" class="flex md:hidden self-center flex-col justify-center items-center w-10 h-10 z-50" style="padding:0!important;height:40px!important;position:static!important" aria-label="Open navigation">
         <span class="ham-line"></span><span class="ham-line"></span><span class="ham-line"></span>
     </button>
