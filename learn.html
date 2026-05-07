@@ -773,6 +773,7 @@ function switchTab(tab) {
     document.getElementById('panel-quiz').classList.toggle('hidden',  tab !== 'quiz');
     document.getElementById('tab-study').classList.toggle('active',   tab === 'study');
     document.getElementById('tab-quiz').classList.toggle('active',    tab === 'quiz');
+    document.getElementById('panel-' + tab).scrollTop = 0;
 }
 
 // ─── Study panel ─────────────────────────────────────────────────────────────
