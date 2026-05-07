@@ -299,94 +299,17 @@
                 <div>
                     <p class="text-gray-400 leading-relaxed mb-12 max-w-lg">Forever Family currently operates across multiple cities in the United Kingdom. Each operational zone is managed by a certified SOS team lead with at least three active Steppers on the ground. We expand only when the training pipeline is ready — not before.</p>
 
-                    <div class="space-y-0">
-                        <div class="city-row flex justify-between items-center py-5 border-b border-stone group opacity-0">
-                            <div>
-                                <h4 class="font-condensed text-2xl group-hover:text-gold transition-colors">BIRMINGHAM</h4>
-                                <p class="text-[10px] text-stone tracking-widest uppercase mt-1">Primary Hub</p>
-                            </div>
-                            <div class="text-right">
-                                <div class="text-xs text-gold tracking-widest">ACTIVE</div>
-                                <div class="text-[10px] text-stone tracking-widest mt-1">SOS + FFCA + G-LINE</div>
-                            </div>
-                        </div>
-                        <div class="city-row flex justify-between items-center py-5 border-b border-stone group opacity-0">
-                            <div>
-                                <h4 class="font-condensed text-2xl group-hover:text-gold transition-colors">LONDON (NORTH)</h4>
-                                <p class="text-[10px] text-stone tracking-widest uppercase mt-1">Active Zone</p>
-                            </div>
-                            <div class="text-right">
-                                <div class="text-xs text-gold tracking-widest">ACTIVE</div>
-                                <div class="text-[10px] text-stone tracking-widest mt-1">SOS + G-LINE</div>
-                            </div>
-                        </div>
-                        <div class="city-row flex justify-between items-center py-5 border-b border-stone group opacity-0">
-                            <div>
-                                <h4 class="font-condensed text-2xl group-hover:text-gold transition-colors">LONDON (EAST)</h4>
-                                <p class="text-[10px] text-stone tracking-widest uppercase mt-1">Active Zone</p>
-                            </div>
-                            <div class="text-right">
-                                <div class="text-xs text-gold tracking-widest">ACTIVE</div>
-                                <div class="text-[10px] text-stone tracking-widest mt-1">SOS + G-LINE</div>
-                            </div>
-                        </div>
-                        <div class="city-row flex justify-between items-center py-5 border-b border-stone group opacity-0">
-                            <div>
-                                <h4 class="font-condensed text-2xl group-hover:text-gold transition-colors">SHEFFIELD</h4>
-                                <p class="text-[10px] text-stone tracking-widest uppercase mt-1">Active Zone</p>
-                            </div>
-                            <div class="text-right">
-                                <div class="text-xs text-gold tracking-widest">ACTIVE</div>
-                                <div class="text-[10px] text-stone tracking-widest mt-1">G-LINE + FFCA</div>
-                            </div>
-                        </div>
-                        <div class="city-row flex justify-between items-center py-5 group opacity-0">
-                            <div>
-                                <h4 class="font-condensed text-2xl text-stone group-hover:text-white transition-colors">MANCHESTER</h4>
-                                <p class="text-[10px] text-stone tracking-widest uppercase mt-1">In Development</p>
-                            </div>
-                            <div class="text-right">
-                                <div class="text-xs text-stone tracking-widest">RECRUITING</div>
-                                <div class="text-[10px] text-stone tracking-widest mt-1">PIPELINE IN PROGRESS</div>
-                            </div>
-                        </div>
+                    <div id="city-list" class="space-y-0">
+                        <div class="text-stone text-sm py-6 tracking-widest uppercase">Loading...</div>
                     </div>
                 </div>
 
                 <!-- Network Visual -->
                 <div class="hidden md:block relative h-[480px] border border-stone bg-[#0d0d0d] overflow-hidden">
-                    <svg viewBox="0 0 400 480" class="w-full h-full" xmlns="http://www.w3.org/2000/svg">
-                        <!-- Grey base lines -->
-                        <g stroke="#2A2A2A" stroke-width="1" fill="none">
-                            <line x1="200" y1="260" x2="130" y2="110"/>
-                            <line x1="200" y1="260" x2="270" y2="130"/>
-                            <line x1="200" y1="260" x2="310" y2="340"/>
-                            <line x1="200" y1="260" x2="90" y2="390" stroke-dasharray="4 4"/>
-                        </g>
-                        <!-- Gold active lines -->
-                        <g stroke="#D4AF37" stroke-width="1.5" fill="none">
-                            <line x1="200" y1="260" x2="130" y2="110" class="net-draw" stroke-dasharray="250" stroke-dashoffset="250"/>
-                            <line x1="200" y1="260" x2="270" y2="130" class="net-draw" stroke-dasharray="250" stroke-dashoffset="250"/>
-                            <line x1="200" y1="260" x2="310" y2="340" class="net-draw" stroke-dasharray="250" stroke-dashoffset="250"/>
-                        </g>
-                        <!-- Hub: Birmingham -->
-                        <circle cx="200" cy="260" r="10" fill="#D4AF37"/>
-                        <circle cx="200" cy="260" r="22" fill="none" stroke="#D4AF37" stroke-width="1" opacity="0.3" class="hub-pulse"/>
-                        <text x="200" y="285" text-anchor="middle" fill="#D4AF37" font-size="9" font-family="Oswald,sans-serif" letter-spacing="2">BIRMINGHAM</text>
-                        <!-- London N -->
-                        <circle cx="130" cy="110" r="6" fill="#2A2A2A" stroke="#D4AF37" stroke-width="1.5" class="net-node"/>
-                        <text x="130" y="97" text-anchor="middle" fill="#F5F2EB" font-size="8" font-family="Oswald,sans-serif" letter-spacing="1">LONDON N</text>
-                        <!-- London E -->
-                        <circle cx="270" cy="130" r="6" fill="#2A2A2A" stroke="#D4AF37" stroke-width="1.5" class="net-node"/>
-                        <text x="270" y="117" text-anchor="middle" fill="#F5F2EB" font-size="8" font-family="Oswald,sans-serif" letter-spacing="1">LONDON E</text>
-                        <!-- Sheffield -->
-                        <circle cx="310" cy="340" r="6" fill="#2A2A2A" stroke="#D4AF37" stroke-width="1.5" class="net-node"/>
-                        <text x="340" y="344" text-anchor="start" fill="#F5F2EB" font-size="8" font-family="Oswald,sans-serif" letter-spacing="1">SHEFFIELD</text>
-                        <!-- Manchester (dormant) -->
-                        <circle cx="90" cy="390" r="5" fill="#111" stroke="#2A2A2A" stroke-width="1.5"/>
-                        <text x="55" y="394" text-anchor="middle" fill="#2A2A2A" font-size="8" font-family="Oswald,sans-serif" letter-spacing="1">MCR</text>
-                        <!-- Legend -->
-                        <text x="20" y="460" fill="#2A2A2A" font-size="7" font-family="Oswald,sans-serif" letter-spacing="2">OPERATIONAL NETWORK — 2025</text>
+                    <svg id="network-map" viewBox="0 0 400 480" class="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+                        <g id="map-lines"></g>
+                        <g id="map-nodes"></g>
+                        <text x="20" y="465" fill="#2A2A2A" font-size="7" font-family="Oswald,sans-serif" letter-spacing="2">OPERATIONAL NETWORK</text>
                     </svg>
                 </div>
             </div>
@@ -657,27 +580,100 @@
             });
 
             // City rows
-            gsap.utils.toArray('.city-row').forEach((row, i) => {
-                gsap.fromTo(row, { opacity: 0, x: -20 }, {
-                    opacity: 1, x: 0, duration: 0.6, ease: 'power2.out',
-                    scrollTrigger: { trigger: row, start: 'top 88%' },
-                    delay: i * 0.08
-                });
-            });
+            // ── Load operational cities from live steps data ──────────────────
+            (async function loadOperationalMap() {
+                const COORDS = {
+                    'birmingham':    { x: 200, y: 255, short: 'BIRMINGHAM' },
+                    'london':        { x: 285, y: 355, short: 'LONDON' },
+                    'sheffield':     { x: 218, y: 148, short: 'SHEFFIELD' },
+                    'manchester':    { x: 128, y: 135, short: 'MCR' },
+                    'leeds':         { x: 222, y: 105, short: 'LEEDS' },
+                    'bristol':       { x: 118, y: 360, short: 'BRISTOL' },
+                    'nottingham':    { x: 258, y: 218, short: 'NOTTM' },
+                    'coventry':      { x: 228, y: 278, short: 'COVENTRY' },
+                    'wolverhampton': { x: 170, y: 258, short: 'WOLVES' },
+                    'liverpool':     { x: 112, y: 168, short: 'LIVERPOOL' },
+                    'leicester':     { x: 252, y: 252, short: 'LEICESTER' },
+                };
 
-            // Network lines
-            gsap.to('.net-draw', {
-                strokeDashoffset: 0, duration: 1.5, ease: 'power2.inOut', stagger: 0.2,
-                scrollTrigger: { trigger: '#network', start: 'top 65%' }
-            });
-            gsap.to('.hub-pulse', { r: 30, opacity: 0.1, repeat: -1, yoyo: true, duration: 2, ease: 'sine.inOut' });
-            gsap.utils.toArray('.net-node').forEach((node, i) => {
-                gsap.fromTo(node, { scale: 0, transformOrigin: '50% 50%' }, {
-                    scale: 1, duration: 0.5, ease: 'back.out(1.7)',
-                    scrollTrigger: { trigger: '#network', start: 'top 65%' },
-                    delay: 0.8 + i * 0.15
+                let steps = [];
+                try {
+                    const r = await fetch('/api/steps');
+                    steps = (await r.json()).steps || [];
+                } catch(e) { return; }
+
+                const cityMap = new Map();
+                steps.forEach(s => {
+                    const raw = (s.city || '').trim();
+                    if (!raw) return;
+                    const key = raw.toLowerCase().split(/[\s(]/)[0];
+                    if (!cityMap.has(key)) cityMap.set(key, { name: raw.toUpperCase(), count: 0, areas: [] });
+                    const e = cityMap.get(key);
+                    e.count++;
+                    if (s.area && !e.areas.includes(s.area)) e.areas.push(s.area);
                 });
-            });
+
+                if (!cityMap.size) return;
+                const cities = [...cityMap.entries()].sort((a, b) => b[1].count - a[1].count);
+
+                // City list
+                const listEl = document.getElementById('city-list');
+                if (listEl) {
+                    listEl.innerHTML = cities.map(([key, d], i) => {
+                        const last = i === cities.length - 1;
+                        const areas = d.areas.slice(0, 2).join(', ');
+                        return `<div class="city-row flex justify-between items-center py-5 ${last ? '' : 'border-b border-stone'} group opacity-0">
+                            <div>
+                                <h4 class="font-condensed text-2xl group-hover:text-gold transition-colors">${d.name}</h4>
+                                <p class="text-[10px] text-stone tracking-widest uppercase mt-1">${i === 0 ? 'Primary Hub' : 'Active Zone'}${areas ? ' · ' + areas : ''}</p>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-xs text-gold tracking-widest">ACTIVE</div>
+                                <div class="text-[10px] text-stone tracking-widest mt-1">${d.count} OPERATION${d.count !== 1 ? 'S' : ''}</div>
+                            </div>
+                        </div>`;
+                    }).join('');
+                    gsap.utils.toArray('.city-row').forEach((row, i) => {
+                        gsap.fromTo(row, { opacity: 0, x: -20 }, { opacity: 1, x: 0, duration: 0.6, ease: 'power2.out', delay: i * 0.08, scrollTrigger: { trigger: row, start: 'top 88%' } });
+                    });
+                }
+
+                // SVG map
+                const linesEl = document.getElementById('map-lines');
+                const nodesEl = document.getElementById('map-nodes');
+                const mapEl   = document.getElementById('network-map');
+                if (!linesEl || !nodesEl) return;
+
+                const hub = COORDS[cities[0][0]] || COORDS['birmingham'];
+                let linesHtml = '', nodesHtml = '';
+
+                cities.forEach(([key, d], i) => {
+                    const pos = COORDS[key];
+                    if (!pos) return;
+                    if (i === 0) {
+                        nodesHtml += `<circle cx="${pos.x}" cy="${pos.y}" r="10" fill="#D4AF37"/>
+                            <circle cx="${pos.x}" cy="${pos.y}" r="22" fill="none" stroke="#D4AF37" stroke-width="1" opacity="0.3" class="hub-pulse"/>
+                            <text x="${pos.x}" y="${pos.y + 20}" text-anchor="middle" fill="#D4AF37" font-size="9" font-family="Oswald,sans-serif" letter-spacing="2">${pos.short}</text>`;
+                    } else {
+                        const len = Math.round(Math.hypot(pos.x - hub.x, pos.y - hub.y));
+                        linesHtml += `<line x1="${hub.x}" y1="${hub.y}" x2="${pos.x}" y2="${pos.y}" stroke="#2A2A2A" stroke-width="1" fill="none"/>
+                            <line x1="${hub.x}" y1="${hub.y}" x2="${pos.x}" y2="${pos.y}" stroke="#D4AF37" stroke-width="1.5" fill="none" class="net-draw" stroke-dasharray="${len}" stroke-dashoffset="${len}"/>`;
+                        const anchor = pos.x >= hub.x ? 'start' : 'end';
+                        const tx = pos.x >= hub.x ? pos.x + 12 : pos.x - 12;
+                        nodesHtml += `<circle cx="${pos.x}" cy="${pos.y}" r="6" fill="#2A2A2A" stroke="#D4AF37" stroke-width="1.5" class="net-node"/>
+                            <text x="${tx}" y="${pos.y + 4}" text-anchor="${anchor}" fill="#F5F2EB" font-size="8" font-family="Oswald,sans-serif" letter-spacing="1">${pos.short}</text>`;
+                    }
+                });
+
+                linesEl.innerHTML = linesHtml;
+                nodesEl.innerHTML = nodesHtml;
+
+                gsap.to('.net-draw', { strokeDashoffset: 0, duration: 1.5, ease: 'power2.inOut', stagger: 0.2, scrollTrigger: { trigger: mapEl, start: 'top 65%' } });
+                gsap.to('.hub-pulse', { r: 30, opacity: 0.1, repeat: -1, yoyo: true, duration: 2, ease: 'sine.inOut' });
+                gsap.utils.toArray('.net-node').forEach((node, i) => {
+                    gsap.fromTo(node, { scale: 0, transformOrigin: '50% 50%' }, { scale: 1, duration: 0.5, ease: 'back.out(1.7)', delay: 0.8 + i * 0.15, scrollTrigger: { trigger: mapEl, start: 'top 65%' } });
+                });
+            })();
 
             // Footer
             gsap.to(".final-line", { x: "0%", duration: 1.5, ease: "power2.out", scrollTrigger: { trigger: "footer", start: "top 80%" } });
