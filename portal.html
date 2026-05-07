@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Member Portal | FOREVER FAMILY</title>
     <meta name="description" content="Access the Forever Family Member Portal. Login to view your tier benefits, track operations, and access exclusive resources.">
+    <meta name="robots" content="noindex, nofollow">
     <link rel="icon" type="image/svg+xml" href="images/favicon.svg">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -110,8 +111,27 @@
         <div class="flex items-center gap-4">
             <div id="nav-tier-badge" class="hidden text-xs tracking-widest uppercase border px-3 py-1 badge-bronze">BRONZE</div>
             <button type="button" id="logout-btn" class="hidden text-xs tracking-widest uppercase text-stone hover:text-white transition-colors">LOG OUT</button>
+            <button type="button" id="portal-mob-btn" class="flex md:hidden flex-col justify-center items-center w-10 h-10 ml-2" aria-label="Open navigation">
+                <span class="block h-[1.5px] w-6 bg-white mb-1"></span>
+                <span class="block h-[1.5px] w-6 bg-white mb-1"></span>
+                <span class="block h-[1.5px] w-4 bg-white"></span>
+            </button>
         </div>
     </nav>
+
+    <!-- Mobile menu overlay -->
+    <div id="portal-mob-menu" style="opacity:0;pointer-events:none;transition:opacity 0.3s ease;" class="fixed inset-0 z-[200] bg-[#0d0d0d] flex flex-col px-8 pt-20 pb-12">
+        <button type="button" id="portal-mob-close" aria-label="Close navigation" class="absolute top-5 right-6 text-white text-2xl leading-none font-condensed tracking-widest">✕</button>
+        <nav class="flex flex-col gap-6 mt-6">
+            <a href="/" class="font-condensed text-[11vw] leading-none text-white hover:text-gold transition-colors uppercase">Home</a>
+            <a href="about" class="font-condensed text-[11vw] leading-none text-white hover:text-gold transition-colors uppercase">About</a>
+            <a href="programmes" class="font-condensed text-[11vw] leading-none text-white hover:text-gold transition-colors uppercase">Programmes</a>
+            <a href="membership" class="font-condensed text-[11vw] leading-none text-white hover:text-gold transition-colors uppercase">Membership</a>
+            <a href="steps" class="font-condensed text-[11vw] leading-none text-white hover:text-gold transition-colors uppercase">Tracker</a>
+            <a href="learn" class="font-condensed text-[11vw] leading-none text-white hover:text-gold transition-colors uppercase">Learn</a>
+        </nav>
+        <button type="button" id="portal-mob-logout" class="mt-auto text-left font-condensed text-[8vw] leading-none text-stone hover:text-white transition-colors uppercase tracking-widest">Log Out</button>
+    </div>
 
     <!-- ── LOGIN SCREEN ─────────────────────────────────────────────────────── -->
     <div id="login-screen" class="px-6 pt-20">
@@ -421,7 +441,7 @@
         }
 
         function saveSession(data) {
-            const payload = { email: data.email, tier: data.tier, exp: Date.now() + 86400000 };
+            const payload = { email: data.email, tier: data.tier, memberSince: data.memberSince || data.created_at || null, exp: Date.now() + 86400000 };
             localStorage.setItem('ff_session', btoa(JSON.stringify(payload)));
         }
 
@@ -432,7 +452,7 @@
         // ── Bootstrap ───────────────────────────────────────────────────────
         const session = getSession();
         if (session) {
-            showDashboard(session.email, session.tier);
+            showDashboard(session.email, session.tier, session.memberSince);
         }
 
         // ── Login form ──────────────────────────────────────────────────────
@@ -452,6 +472,7 @@
             const code = document.getElementById('login-code').value.trim();
 
             let tier = null;
+            let memberSince = null;
 
             try {
                 const res = await fetch('/api/portal-login', {
@@ -460,7 +481,7 @@
                     body: JSON.stringify({ email, code })
                 });
                 const data = await res.json();
-                if (data.success) tier = data.tier;
+                if (data.success) { tier = data.tier; memberSince = data.memberSince || null; }
             } catch (_) {
                 // Graceful degradation: validate locally if server isn't running
                 const LOCAL_CODES = {
@@ -483,8 +504,8 @@
                 return;
             }
 
-            saveSession({ email, tier });
-            showDashboard(email, tier);
+            saveSession({ email, tier, memberSince });
+            showDashboard(email, tier, memberSince);
         });
 
         // ── Logout ──────────────────────────────────────────────────────────
@@ -498,10 +519,19 @@
         });
 
         // ── Show dashboard ──────────────────────────────────────────────────
-        function showDashboard(email, tier) {
+        function showDashboard(email, tier, memberSince) {
             // Update UI elements
             document.getElementById('dash-tier-name').textContent = tier.toUpperCase();
             document.getElementById('dash-email-display').textContent = email;
+
+            const sinceEl = document.getElementById('stat-member-since');
+            if (sinceEl) {
+                if (memberSince) {
+                    sinceEl.textContent = new Date(memberSince).getFullYear();
+                } else {
+                    sinceEl.textContent = new Date().getFullYear();
+                }
+            }
 
             const badgeEl = document.getElementById('dash-tier-badge');
             badgeEl.textContent = TIER_LABELS[tier];
@@ -544,6 +574,28 @@
             });
         }
 
+        // ── Portal mobile nav ────────────────────────────────────────────────
+        const portalMobBtn = document.getElementById('portal-mob-btn');
+        const portalMobMenu = document.getElementById('portal-mob-menu');
+        if (portalMobBtn && portalMobMenu) {
+            portalMobBtn.addEventListener('click', () => {
+                portalMobMenu.style.opacity = '1';
+                portalMobMenu.style.pointerEvents = 'auto';
+            });
+            document.getElementById('portal-mob-close').addEventListener('click', () => {
+                portalMobMenu.style.opacity = '0';
+                portalMobMenu.style.pointerEvents = 'none';
+            });
+            const mobLogout = document.getElementById('portal-mob-logout');
+            if (mobLogout) {
+                mobLogout.addEventListener('click', () => {
+                    portalMobMenu.style.opacity = '0';
+                    portalMobMenu.style.pointerEvents = 'none';
+                    document.getElementById('logout-btn').click();
+                });
+            }
+        }
+
         // ── Portal G-Line form ───────────────────────────────────────────────
         document.getElementById('portal-gline-form').addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -557,15 +609,18 @@
             };
 
             try {
-                await fetch('/api/referral', {
+                const res = await fetch('/api/referral', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
                 });
-            } catch (_) { /* graceful degradation */ }
-
-            document.getElementById('pg-success').classList.remove('hidden');
-            e.target.reset();
+                if (!res.ok) throw new Error();
+                document.getElementById('pg-success').classList.remove('hidden');
+                e.target.reset();
+            } catch (_) {
+                const errEl = e.target.querySelector('[id$="-error"], .pg-error') || null;
+                if (errEl) errEl.classList.remove('hidden');
+            }
         });
 
     })();

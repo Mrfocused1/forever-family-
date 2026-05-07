@@ -758,7 +758,7 @@
             <a href="https://www.instagram.com/foreverfamilyuk/" target="_blank" rel="noopener" class="hover:text-gold transition-colors">Instagram</a>
             <a href="https://www.patreon.com/posts/forever-family-4-108978781" target="_blank" rel="noopener" class="hover:text-gold transition-colors">Patreon</a>
             <a href="#sec12" class="hover:text-gold transition-colors">Join</a>
-            <a href="#" class="hover:text-gold transition-colors" onclick="event.preventDefault(); alert('Coming soon')">Privacy</a>
+            <a href="privacy" class="hover:text-gold transition-colors">Privacy</a>
         </div>
 
         <div class="text-xs tracking-widest text-stone uppercase mb-8 z-10 relative text-center">
@@ -972,14 +972,19 @@
                 };
 
                 try {
-                    await fetch('/api/referral', {
+                    const res = await fetch('/api/referral', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify(payload)
                     });
-                } catch (_) { }
-
-                gsap.to('.gline-success', { y: '0%', duration: 0.8, ease: 'power4.out' });
+                    if (!res.ok) throw new Error();
+                    gsap.to('.gline-success', { y: '0%', duration: 0.8, ease: 'power4.out' });
+                } catch (_) {
+                    errorEl.classList.remove('hidden');
+                    btnText.classList.remove('hidden');
+                    btnLoading.classList.add('hidden');
+                    btn.disabled = false;
+                }
             });
 
             document.getElementById('join-form').addEventListener('submit', async (e) => {
@@ -1008,10 +1013,14 @@
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify(payload)
                     });
-                    if (!res.ok) throw new Error('Server error');
-                } catch (_) { }
-
-                gsap.to('.success-stamp', { y: '0%', duration: 0.8, ease: 'power4.out' });
+                    if (!res.ok) throw new Error();
+                    gsap.to('.success-stamp', { y: '0%', duration: 0.8, ease: 'power4.out' });
+                } catch (_) {
+                    errorEl.classList.remove('hidden');
+                    btnText.classList.remove('hidden');
+                    btnLoading.classList.add('hidden');
+                    btn.disabled = false;
+                }
             });
 
             let playHeroFn = null;

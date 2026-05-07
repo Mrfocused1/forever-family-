@@ -412,7 +412,7 @@
             <a href="https://www.instagram.com/foreverfamilyuk/" target="_blank" rel="noopener" class="hover:text-gold transition-colors">Instagram</a>
             <a href="https://www.patreon.com/posts/forever-family-4-108978781" target="_blank" rel="noopener" class="hover:text-gold transition-colors">Patreon</a>
             <a href="membership#join-form" class="hover:text-gold transition-colors">Join</a>
-            <a href="#" class="hover:text-gold transition-colors" onclick="event.preventDefault(); alert('Coming soon')">Privacy</a>
+            <a href="privacy" class="hover:text-gold transition-colors">Privacy</a>
         </div>
         <div class="text-xs tracking-widest text-stone uppercase mb-8 z-10 relative text-center">
             PIA — Public &nbsp;|&nbsp; FFCA — Confidential &nbsp;|&nbsp; SOS — Classified
@@ -571,9 +571,13 @@
             document.getElementById('gline-form').addEventListener('submit', async (e) => {
                 e.preventDefault();
                 const btn = e.target.querySelector('.gline-submit-btn');
-                btn.querySelector('.gline-btn-text').classList.add('hidden');
-                btn.querySelector('.gline-btn-loading').classList.remove('hidden');
+                const btnText = btn.querySelector('.gline-btn-text');
+                const btnLoading = btn.querySelector('.gline-btn-loading');
+                const errorEl = document.getElementById('gline-error');
+                btnText.classList.add('hidden');
+                btnLoading.classList.remove('hidden');
                 btn.disabled = true;
+                errorEl.classList.add('hidden');
                 const payload = {
                     name: document.getElementById('gline-your-name').value,
                     referralName: document.getElementById('gline-who').value,
@@ -581,8 +585,16 @@
                     urgency: document.getElementById('gline-urgency').value,
                     situation: document.getElementById('gline-situation').value,
                 };
-                try { await fetch('/api/referral', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }); } catch (_) {}
-                gsap.to('.gline-success', { y: '0%', duration: 0.8, ease: 'power4.out' });
+                try {
+                    const res = await fetch('/api/referral', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+                    if (!res.ok) throw new Error();
+                    gsap.to('.gline-success', { y: '0%', duration: 0.8, ease: 'power4.out' });
+                } catch (_) {
+                    errorEl.classList.remove('hidden');
+                    btnText.classList.remove('hidden');
+                    btnLoading.classList.add('hidden');
+                    btn.disabled = false;
+                }
             });
 
             // ─── PAGE ANIMATIONS ──────────────────────────────────────────────

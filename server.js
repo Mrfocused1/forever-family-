@@ -11,12 +11,25 @@ const supabase = createClient(
     process.env.SUPABASE_SERVICE_KEY
 );
 
+const _rl = new Map();
+function rateLimit(ip, max = 10, windowMs = 60000) {
+    const now = Date.now();
+    const e = _rl.get(ip) || { n: 0, t: now + windowMs };
+    if (now > e.t) { e.n = 0; e.t = now + windowMs; }
+    e.n++;
+    _rl.set(ip, e);
+    return e.n > max;
+}
+
 app.use(express.json());
 app.use('/images', express.static(path.join(__dirname, 'images')));
 app.use(express.static(__dirname));
 
 // ─── POST /api/join ─────────────────────────────────────────────────────────
 app.post('/api/join', async (req, res) => {
+    const ip = (req.headers['x-forwarded-for'] || req.socket.remoteAddress || '').split(',')[0].trim();
+    if (rateLimit(ip, 10)) return res.status(429).json({ error: 'Too many requests. Please try again later.' });
+
     const { name, email, phone, city, interest, message } = req.body;
     if (!name || !email || !city || !interest) {
         return res.status(400).json({ error: 'Required fields missing.' });
@@ -37,6 +50,9 @@ app.post('/api/join', async (req, res) => {
 
 // ─── POST /api/referral ──────────────────────────────────────────────────────
 app.post('/api/referral', async (req, res) => {
+    const ip = (req.headers['x-forwarded-for'] || req.socket.remoteAddress || '').split(',')[0].trim();
+    if (rateLimit(ip, 5)) return res.status(429).json({ error: 'Too many requests. Please try again later.' });
+
     const { name, referralName, relationship, urgency, situation } = req.body;
     if (!name || !referralName || !situation) {
         return res.status(400).json({ error: 'Required fields missing.' });
@@ -68,7 +84,7 @@ app.post('/api/portal-login', async (req, res) => {
 
     const { data, error } = await supabase
         .from('members')
-        .select('tier')
+        .select('tier, created_at')
         .eq('code', code.toUpperCase().trim())
         .single();
 
@@ -81,11 +97,11 @@ app.post('/api/portal-login', async (req, res) => {
     // Update email on the member record
     await supabase.from('members').update({ email }).eq('code', code.toUpperCase().trim());
 
-    const payload = JSON.stringify({ email, tier, issued: Date.now(), exp: Date.now() + 86400000 });
+    const payload = JSON.stringify({ email, tier, memberSince: data.created_at, issued: Date.now(), exp: Date.now() + 86400000 });
     const token = Buffer.from(payload).toString('base64');
 
     console.log(`[PORTAL] ${email} logged in as ${tier}`);
-    res.json({ success: true, tier, token });
+    res.json({ success: true, tier, memberSince: data.created_at, token });
 });
 
 // ─── GET /api/steps ──────────────────────────────────────────────────────────
@@ -176,6 +192,9 @@ app.get('/api/submissions', async (req, res) => {
 
 // ─── POST /api/quiz-results ───────────────────────────────────────────────────
 app.post('/api/quiz-results', async (req, res) => {
+    const ip = (req.headers['x-forwarded-for'] || req.socket.remoteAddress || '').split(',')[0].trim();
+    if (rateLimit(ip, 30)) return res.status(429).json({ error: 'Too many requests. Please try again later.' });
+
     const { sessionId, module, score, total, label } = req.body;
     if (!module || score === undefined || !label) {
         return res.status(400).json({ error: 'Required fields missing.' });
