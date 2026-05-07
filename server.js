@@ -139,9 +139,13 @@ app.put('/api/steps/:id', async (req, res) => {
         return res.status(403).json({ error: 'Forbidden.' });
     }
 
+    const allowed = ['title','description','location','date','status','image_url','media'];
+    const update = {};
+    allowed.forEach(k => { if (req.body[k] !== undefined) update[k] = req.body[k]; });
+
     const { data, error } = await supabase
         .from('steps')
-        .update(req.body)
+        .update(update)
         .eq('id', req.params.id)
         .select()
         .single();

@@ -511,7 +511,7 @@
                             const headerOffset = 80;
                             const elementPosition = target.getBoundingClientRect().top;
                             const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
-                            window.scrollTo({ top: offsetPosition, behavior: smooth });
+                            window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
                         }, 100);
                     }
                 }
@@ -552,14 +552,7 @@
                     link.addEventListener('click', (e) => {
                         const href = link.getAttribute('href');
                         const text = link.textContent.trim();
-                        // JOIN goes to top of page
-                        if (text === 'JOIN') {
-                            e.preventDefault();
-                            closeMenu();
-                            setTimeout(() => {
-                                window.scrollTo({ top: 0, behavior: 'smooth' });
-                            }, 300);
-                        } else if (href.startsWith('#')) {
+                        if (href.startsWith('#')) {
                             e.preventDefault();
                             closeMenu();
                             setTimeout(() => {
