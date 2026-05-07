@@ -713,7 +713,11 @@
                 try {
                     const r = await fetch('/api/steps');
                     steps = (await r.json()).steps || [];
-                } catch(e) { return; }
+                } catch(e) {
+                    const loadingEl = document.getElementById('map-loading');
+                    if (loadingEl) loadingEl.remove();
+                    return;
+                }
 
                 const cityMap = new Map();
                 steps.forEach(s => {
@@ -726,7 +730,13 @@
                     if (s.area && !e.areas.includes(s.area)) e.areas.push(s.area);
                 });
 
-                if (!cityMap.size) return;
+                if (!cityMap.size) {
+                    const loadingEl = document.getElementById('map-loading');
+                    if (loadingEl) loadingEl.remove();
+                    const listEl2 = document.getElementById('city-list');
+                    if (listEl2) listEl2.innerHTML = '<p class="text-stone text-sm tracking-widest uppercase py-8 text-center">No operations logged yet</p>';
+                    return;
+                }
                 const cities = [...cityMap.entries()].sort((a, b) => b[1].count - a[1].count);
 
                 // City list
