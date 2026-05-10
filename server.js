@@ -14,8 +14,10 @@ const supabase = createClient(
 
 // ── Email notifications (Resend) ─────────────────────────────────────────────
 const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
-const RESEND_FROM = process.env.RESEND_FROM || 'Forever Family <onboarding@resend.dev>';
-const RESEND_TO   = process.env.RESEND_TO   || '';
+// Trim defensively — env values pasted via the Vercel CLI sometimes carry a
+// trailing newline that breaks SMTP From/To parsing.
+const RESEND_FROM = (process.env.RESEND_FROM || 'Forever Family <onboarding@resend.dev>').trim();
+const RESEND_TO   = (process.env.RESEND_TO   || '').trim();
 
 // Fire-and-forget email helper. Never blocks or breaks the form response.
 function sendNotification({ subject, html, replyTo }) {
