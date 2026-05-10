@@ -10,56 +10,64 @@
 <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/tailwind.css">
 <style>
+    :root {
+        --page-bg: #F7F4EE;
+        --card:    #FFFFFF;
+        --text:    #111111;
+        --muted:   #6B6B6B;
+        --soft:    #9A9285;
+        --gold:    #D4AF37;
+        --border:  #E2DDD4;
+        --row-hover:#FBF8F1;
+        --header-bg:#F0ECE2;
+    }
     body {
-        background: #0d0d0d;
-        color: #ffffff;
+        background: var(--page-bg);
+        color: var(--text);
         font-family: 'Inter', sans-serif;
         min-height: 100vh;
     }
     .font-condensed { font-family: 'Oswald', sans-serif; }
-    .text-gold   { color: #D4AF37; }
-    .bg-gold     { background-color: #D4AF37; }
-    .border-gold { border-color: #D4AF37; }
-    .text-stone  { color: #2A2A2A; }
-    .bg-stone    { background-color: #2A2A2A; }
-    .border-stone{ border-color: #2A2A2A; }
+    .text-gold     { color: var(--gold); }
+    .bg-gold       { background-color: var(--gold); }
+    .border-gold   { border-color: var(--gold); }
+    .text-soft     { color: var(--soft); }
+    .text-muted    { color: var(--muted); }
+    .border-soft   { border-color: var(--border); }
 
-    input, textarea {
+    input {
         background: transparent;
+        color: var(--text);
     }
 
-    /* Autofill override (matches portal) */
+    /* Autofill — light theme */
     input:-webkit-autofill,
     input:-webkit-autofill:hover,
     input:-webkit-autofill:focus,
     input:-webkit-autofill:active {
-        -webkit-text-fill-color: #ffffff !important;
-        caret-color: #ffffff !important;
-        -webkit-box-shadow: 0 0 0 1000px #0d0d0d inset !important;
-        box-shadow: 0 0 0 1000px #0d0d0d inset !important;
+        -webkit-text-fill-color: var(--text) !important;
+        caret-color: var(--text) !important;
+        -webkit-box-shadow: 0 0 0 1000px var(--card) inset !important;
+        box-shadow: 0 0 0 1000px var(--card) inset !important;
         transition: background-color 9999s ease-out 0s;
     }
 
-    /* Floating-label fix (matches portal) */
+    /* Floating-label fix */
     .peer:not(:placeholder-shown) ~ label,
     .peer:-webkit-autofill ~ label {
         top: -1rem;
-        color: #D4AF37;
+        color: var(--gold);
         font-size: 10px;
     }
 
     .tab-btn {
         transition: color 0.2s, border-color 0.2s, background-color 0.2s;
     }
-    .tab-btn.active {
-        color: #D4AF37;
-        border-color: #D4AF37;
-    }
     .data-row {
         transition: background-color 0.15s;
     }
     .data-row:hover {
-        background-color: #141414;
+        background-color: var(--row-hover);
     }
     .pulse-dot {
         animation: pulse 2.4s infinite;
@@ -68,41 +76,43 @@
         0%, 100% { opacity: 1; }
         50%      { opacity: 0.35; }
     }
+
+    .ham-line { display:block; height:1.5px; width:24px; background:#111; margin:2px 0; }
 </style>
 </head>
 <body>
 
-<!-- ─── HEADER ────────────────────────────────────────────────────────────── -->
-<nav class="fixed top-0 left-0 w-full px-6 py-4 z-50 flex justify-between items-center border-b border-stone bg-[#0d0d0d] bg-opacity-95">
+<!-- ─── HEADER (light) ────────────────────────────────────────────────────── -->
+<nav class="fixed top-0 left-0 w-full h-20 z-50 flex justify-between items-center px-6 bg-[#F7F4EE] bg-opacity-95 backdrop-blur-md border-b border-soft">
     <a href="/" class="flex items-center self-center h-10">
-        <img src="images/logo.svg" alt="Forever Family" class="h-full w-auto" style="filter: brightness(0) invert(1);">
+        <img src="images/logo.svg" alt="Forever Family" class="h-full w-auto" style="filter: brightness(0);">
     </a>
-    <div class="flex items-center gap-4">
-        <span class="text-[10px] tracking-widest uppercase text-gold border border-gold px-3 py-1">ADMIN</span>
-        <button type="button" id="logout-btn" class="hidden text-[10px] tracking-widest uppercase text-stone hover:text-gold transition-colors px-3 py-1 border border-stone hover:border-gold">Log Out</button>
+    <div class="flex items-center gap-3">
+        <span class="text-[10px] tracking-widest uppercase text-gold border border-gold px-3 py-1.5 font-condensed">ADMIN</span>
+        <button type="button" id="logout-btn" class="hidden text-[10px] tracking-widest uppercase text-muted hover:text-[#111111] transition-colors px-3 py-1.5 border border-soft hover:border-[#111111]">Log Out</button>
     </div>
 </nav>
 
 <!-- ─── LOGIN SCREEN ──────────────────────────────────────────────────────── -->
-<div id="login-screen" class="min-h-screen flex items-center justify-center px-6 pt-20">
-    <div class="w-full max-w-md bg-[#111] border border-gold p-8 md:p-12 relative">
+<div id="login-screen" class="min-h-screen flex items-center justify-center px-6 pt-28 pb-12">
+    <div class="w-full max-w-md bg-[#FFFFFF] border border-soft p-8 md:p-12 relative shadow-sm">
         <div class="absolute top-0 left-0 w-6 h-6 border-t-2 border-l-2 border-gold m-3 pointer-events-none"></div>
         <div class="absolute top-0 right-0 w-6 h-6 border-t-2 border-r-2 border-gold m-3 pointer-events-none"></div>
         <div class="absolute bottom-0 left-0 w-6 h-6 border-b-2 border-l-2 border-gold m-3 pointer-events-none"></div>
         <div class="absolute bottom-0 right-0 w-6 h-6 border-b-2 border-r-2 border-gold m-3 pointer-events-none"></div>
 
         <div class="text-xs text-gold tracking-widest uppercase mb-2">RESTRICTED</div>
-        <h1 class="font-condensed text-4xl mb-2">ADMIN <span class="text-gold">CONSOLE</span></h1>
-        <p class="text-gray-400 text-sm mb-8">Enter your admin key to view signups, feedback, referrals and quiz results.</p>
+        <h1 class="font-condensed text-4xl mb-2 text-[#111111]">ADMIN <span class="text-gold">CONSOLE</span></h1>
+        <p class="text-muted text-sm mb-8">Enter your admin key to view signups, feedback, referrals and quiz results.</p>
 
         <form id="login-form" class="space-y-6">
             <div class="relative">
                 <input type="password" id="admin-key" required placeholder=" " autocomplete="off"
-                       class="w-full bg-transparent border-b border-stone py-3 text-white focus:outline-none focus:border-gold transition-colors peer uppercase tracking-widest font-condensed text-xl">
-                <label for="admin-key" class="absolute left-0 top-3 text-stone uppercase tracking-widest text-xs transition-all peer-focus:-top-4 peer-focus:text-gold peer-focus:text-[10px]">Admin Key</label>
+                       class="w-full bg-transparent border-b border-soft py-3 text-[#111111] focus:outline-none focus:border-gold transition-colors peer uppercase tracking-widest font-condensed text-xl">
+                <label for="admin-key" class="absolute left-0 top-3 text-soft uppercase tracking-widest text-xs transition-all peer-focus:-top-4 peer-focus:text-gold peer-focus:text-[10px]">Admin Key</label>
             </div>
-            <div id="login-error" class="hidden text-xs text-red-400 tracking-widest uppercase">Invalid key.</div>
-            <button type="submit" class="w-full py-4 bg-gold text-[#0d0d0d] font-condensed text-xl tracking-widest hover:bg-white transition-colors duration-300 disabled:opacity-60">
+            <div id="login-error" class="hidden text-xs text-red-600 tracking-widest uppercase">Invalid key.</div>
+            <button type="submit" class="w-full py-4 bg-gold text-[#111111] font-condensed text-xl tracking-widest hover:bg-[#C9A010] transition-colors duration-300 disabled:opacity-60">
                 <span class="login-btn-text">UNLOCK CONSOLE</span>
                 <span class="login-btn-loading hidden">VERIFYING...</span>
             </button>
@@ -111,56 +121,56 @@
 </div>
 
 <!-- ─── DASHBOARD ─────────────────────────────────────────────────────────── -->
-<main id="dashboard" class="hidden pt-24 pb-24 px-6 md:px-12 max-w-7xl mx-auto">
+<main id="dashboard" class="hidden pt-32 md:pt-36 pb-24 px-6 md:px-12 max-w-7xl mx-auto">
 
     <div class="flex items-center gap-4 mb-6">
         <div class="relative w-3 h-3 flex-shrink-0">
             <div class="pulse-dot w-3 h-3 rounded-full bg-gold"></div>
         </div>
         <span class="text-xs text-gold tracking-widest uppercase">Live data</span>
-        <span class="text-[10px] text-stone tracking-widest" id="last-updated">Updating...</span>
+        <span class="text-[10px] text-soft tracking-widest" id="last-updated">Updating...</span>
     </div>
 
-    <h1 class="font-condensed text-[10vw] md:text-[5vw] leading-none text-white mb-2">ADMIN<br><span class="text-gold">CONSOLE.</span></h1>
-    <p class="text-gray-400 max-w-2xl leading-relaxed mb-12">All public form submissions across the site. Auto-refreshes every 30 seconds.</p>
+    <h1 class="font-condensed text-5xl md:text-7xl leading-none text-[#111111] mb-3">ADMIN<br><span class="text-gold">CONSOLE.</span></h1>
+    <p class="text-muted max-w-2xl leading-relaxed mb-12">All public form submissions across the site. Auto-refreshes every 30 seconds.</p>
 
     <!-- Stat cards -->
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-0 border border-stone mb-10">
-        <button type="button" class="stat-card border-r border-b md:border-b-0 border-stone p-6 text-left tab-btn active" data-tab="signups">
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-0 border border-soft bg-[#FFFFFF] mb-10 shadow-sm">
+        <button type="button" class="stat-card border-r border-b md:border-b-0 border-soft p-6 text-left tab-btn-stat" data-tab="signups">
             <div class="font-condensed text-4xl text-gold" id="stat-signups">0</div>
-            <div class="text-[10px] tracking-widest text-stone uppercase mt-1">Signups</div>
+            <div class="text-[10px] tracking-widest text-soft uppercase mt-1">Signups</div>
         </button>
-        <button type="button" class="stat-card border-r border-b md:border-b-0 border-stone p-6 text-left tab-btn" data-tab="feedback">
+        <button type="button" class="stat-card border-r border-b md:border-b-0 border-soft p-6 text-left tab-btn-stat" data-tab="feedback">
             <div class="font-condensed text-4xl text-gold" id="stat-feedback">0</div>
-            <div class="text-[10px] tracking-widest text-stone uppercase mt-1">Feedback</div>
+            <div class="text-[10px] tracking-widest text-soft uppercase mt-1">Feedback</div>
         </button>
-        <button type="button" class="stat-card border-r border-stone p-6 text-left tab-btn" data-tab="referrals">
+        <button type="button" class="stat-card border-r border-soft p-6 text-left tab-btn-stat" data-tab="referrals">
             <div class="font-condensed text-4xl text-gold" id="stat-referrals">0</div>
-            <div class="text-[10px] tracking-widest text-stone uppercase mt-1">Referrals</div>
+            <div class="text-[10px] tracking-widest text-soft uppercase mt-1">Referrals</div>
         </button>
-        <button type="button" class="stat-card p-6 text-left tab-btn" data-tab="quiz">
+        <button type="button" class="stat-card p-6 text-left tab-btn-stat" data-tab="quiz">
             <div class="font-condensed text-4xl text-gold" id="stat-quiz">0</div>
-            <div class="text-[10px] tracking-widest text-stone uppercase mt-1">Quiz Attempts</div>
+            <div class="text-[10px] tracking-widest text-soft uppercase mt-1">Quiz Attempts</div>
         </button>
     </div>
 
     <!-- Tab bar -->
-    <div class="flex gap-2 md:gap-6 border-b border-stone mb-6 overflow-x-auto">
-        <button type="button" class="tab-btn active py-3 px-4 text-xs tracking-widest uppercase text-gold border-b-2 border-gold whitespace-nowrap" data-tab="signups">Signups</button>
-        <button type="button" class="tab-btn py-3 px-4 text-xs tracking-widest uppercase text-stone border-b-2 border-transparent hover:text-gold whitespace-nowrap" data-tab="feedback">Feedback</button>
-        <button type="button" class="tab-btn py-3 px-4 text-xs tracking-widest uppercase text-stone border-b-2 border-transparent hover:text-gold whitespace-nowrap" data-tab="referrals">Referrals</button>
-        <button type="button" class="tab-btn py-3 px-4 text-xs tracking-widest uppercase text-stone border-b-2 border-transparent hover:text-gold whitespace-nowrap" data-tab="quiz">Quiz Results</button>
+    <div class="flex gap-2 md:gap-6 border-b border-soft mb-6 overflow-x-auto">
+        <button type="button" class="tab-btn-bar py-3 px-4 text-xs tracking-widest uppercase whitespace-nowrap" data-tab="signups">Signups</button>
+        <button type="button" class="tab-btn-bar py-3 px-4 text-xs tracking-widest uppercase whitespace-nowrap" data-tab="feedback">Feedback</button>
+        <button type="button" class="tab-btn-bar py-3 px-4 text-xs tracking-widest uppercase whitespace-nowrap" data-tab="referrals">Referrals</button>
+        <button type="button" class="tab-btn-bar py-3 px-4 text-xs tracking-widest uppercase whitespace-nowrap" data-tab="quiz">Quiz Results</button>
     </div>
 
     <!-- Empty state -->
-    <div id="empty-state" class="hidden py-20 text-center border border-stone">
-        <p class="font-condensed text-2xl text-stone mb-2">NOTHING HERE YET</p>
-        <p class="text-xs text-stone tracking-widest uppercase">No entries in this section.</p>
+    <div id="empty-state" class="hidden py-20 text-center border border-soft bg-[#FFFFFF]">
+        <p class="font-condensed text-2xl text-soft mb-2">NOTHING HERE YET</p>
+        <p class="text-xs text-soft tracking-widest uppercase">No entries in this section.</p>
     </div>
 
     <!-- Loading -->
     <div id="loading-state" class="py-20 text-center">
-        <div class="text-stone text-xs tracking-widest uppercase">Loading...</div>
+        <div class="text-soft text-xs tracking-widest uppercase">Loading...</div>
     </div>
 
     <!-- Tab panels -->
@@ -172,12 +182,24 @@
 </main>
 
 <!-- ─── DETAIL MODAL ──────────────────────────────────────────────────────── -->
-<div id="detail-modal" class="fixed inset-0 z-[9998] bg-black bg-opacity-80 hidden items-center justify-center p-6">
-    <div class="bg-[#111] border border-gold max-w-2xl w-full max-h-[80vh] overflow-y-auto p-8 relative">
-        <button type="button" id="modal-close" class="absolute top-4 right-4 text-stone hover:text-gold text-2xl leading-none w-8 h-8 flex items-center justify-center">&times;</button>
+<div id="detail-modal" class="fixed inset-0 z-[9998] bg-black bg-opacity-40 hidden items-center justify-center p-6">
+    <div class="bg-[#FFFFFF] border border-gold max-w-2xl w-full max-h-[80vh] overflow-y-auto p-8 relative shadow-lg">
+        <button type="button" id="modal-close" class="absolute top-4 right-4 text-soft hover:text-[#111111] text-2xl leading-none w-8 h-8 flex items-center justify-center">&times;</button>
         <div id="modal-body"></div>
     </div>
 </div>
+
+<style>
+    /* Tab bar style (active vs inactive) */
+    .tab-btn-bar { color: var(--soft); border-bottom: 2px solid transparent; }
+    .tab-btn-bar:hover { color: var(--text); }
+    .tab-btn-bar.active { color: var(--gold); border-bottom-color: var(--gold); }
+
+    /* Stat cards: pressed/active state */
+    .tab-btn-stat { transition: background-color 0.2s; }
+    .tab-btn-stat:hover { background-color: var(--row-hover); }
+    .tab-btn-stat.active { background-color: var(--row-hover); }
+</style>
 
 <script>
     const KEY_STORAGE = 'ff_admin_key';
@@ -188,6 +210,26 @@
         const d = new Date(iso);
         return d.toLocaleDateString('en-GB', { day:'numeric', month:'short', year:'numeric' })
              + ' · ' + d.toLocaleTimeString('en-GB', { hour:'2-digit', minute:'2-digit' });
+    }
+
+    const MODULE_LABELS = {
+        'security-eq':  'Security & Emotional Intelligence',
+        'self-defence': 'Self-Defence',
+        'first-aid':    'First Aid',
+        'law':          'Law & Legal Rights',
+        'formations':   'Formations & Affirmations',
+        'mentorship':   'Mentorship'
+    };
+    function moduleLabel(id) {
+        return MODULE_LABELS[id] || (id || '').replace(/-/g, ' ');
+    }
+
+    function fmtDuration(sec) {
+        if (sec === null || sec === undefined || sec === '' || isNaN(sec)) return '—';
+        const s = Math.max(0, parseInt(sec));
+        const m = Math.floor(s / 60);
+        const r = s % 60;
+        return m > 0 ? `${m}m ${String(r).padStart(2, '0')}s` : `${r}s`;
     }
 
     function escapeHtml(s) {
@@ -242,15 +284,11 @@
     let currentTab = 'signups';
     function setTab(tab) {
         currentTab = tab;
-        document.querySelectorAll('.tab-btn').forEach(btn => {
-            const isActive = btn.dataset.tab === tab;
-            btn.classList.toggle('active', isActive);
-            if (btn.classList.contains('text-stone') || btn.classList.contains('text-gold')) {
-                btn.classList.toggle('text-gold', isActive);
-                btn.classList.toggle('text-stone', !isActive);
-                btn.classList.toggle('border-gold', isActive);
-                btn.classList.toggle('border-transparent', !isActive);
-            }
+        document.querySelectorAll('.tab-btn-bar').forEach(btn => {
+            btn.classList.toggle('active', btn.dataset.tab === tab);
+        });
+        document.querySelectorAll('.tab-btn-stat').forEach(btn => {
+            btn.classList.toggle('active', btn.dataset.tab === tab);
         });
         document.querySelectorAll('.tab-panel').forEach(p => p.classList.add('hidden'));
         const panel = document.getElementById('panel-' + tab);
@@ -263,7 +301,7 @@
         }
     }
 
-    document.querySelectorAll('.tab-btn').forEach(btn => {
+    document.querySelectorAll('.tab-btn-bar, .tab-btn-stat').forEach(btn => {
         btn.addEventListener('click', () => setTab(btn.dataset.tab));
     });
 
@@ -272,9 +310,9 @@
         const panel = document.getElementById('panel-signups');
         if (!rows.length) { panel.innerHTML = ''; return; }
         panel.innerHTML = `
-            <div class="border border-stone overflow-x-auto">
+            <div class="border border-soft bg-[#FFFFFF] overflow-x-auto shadow-sm">
                 <table class="w-full text-sm">
-                    <thead class="bg-[#0a0a0a] text-stone text-[10px] tracking-widest uppercase">
+                    <thead class="bg-[#F0ECE2] text-soft text-[10px] tracking-widest uppercase">
                         <tr>
                             <th class="text-left px-4 py-3">Date</th>
                             <th class="text-left px-4 py-3">Name</th>
@@ -286,13 +324,13 @@
                     </thead>
                     <tbody>
                         ${rows.map(r => `
-                            <tr class="data-row border-t border-stone cursor-pointer" data-payload='${escapeHtml(JSON.stringify(r))}'>
-                                <td class="px-4 py-3 text-stone text-xs whitespace-nowrap">${fmtDate(r.created_at)}</td>
-                                <td class="px-4 py-3 text-white">${escapeHtml(r.name || '')}</td>
+                            <tr class="data-row border-t border-soft cursor-pointer" data-payload='${escapeHtml(JSON.stringify(r))}'>
+                                <td class="px-4 py-3 text-soft text-xs whitespace-nowrap">${fmtDate(r.created_at)}</td>
+                                <td class="px-4 py-3 text-[#111111]">${escapeHtml(r.name || '')}</td>
                                 <td class="px-4 py-3 text-gold">${escapeHtml(r.email || '')}</td>
-                                <td class="px-4 py-3 text-gray-400">${escapeHtml(r.phone || '—')}</td>
-                                <td class="px-4 py-3 text-gray-400">${escapeHtml(r.city || '')}</td>
-                                <td class="px-4 py-3 text-gray-400">${escapeHtml(r.interest || '')}</td>
+                                <td class="px-4 py-3 text-muted">${escapeHtml(r.phone || '—')}</td>
+                                <td class="px-4 py-3 text-muted">${escapeHtml(r.city || '')}</td>
+                                <td class="px-4 py-3 text-muted">${escapeHtml(r.interest || '')}</td>
                             </tr>
                         `).join('')}
                     </tbody>
@@ -306,12 +344,12 @@
         const panel = document.getElementById('panel-feedback');
         if (!rows.length) { panel.innerHTML = ''; return; }
         panel.innerHTML = rows.map(r => `
-            <div class="data-row border border-stone p-6 mb-3 cursor-pointer" data-payload='${escapeHtml(JSON.stringify(r))}'>
+            <div class="data-row border border-soft bg-[#FFFFFF] p-6 mb-3 cursor-pointer shadow-sm" data-payload='${escapeHtml(JSON.stringify(r))}'>
                 <div class="flex justify-between items-start mb-2 flex-wrap gap-2">
-                    <div class="font-condensed text-xl text-white">${escapeHtml(r.name || 'Anonymous')}</div>
-                    <div class="text-[10px] tracking-widest text-stone uppercase">${fmtDate(r.created_at)}</div>
+                    <div class="font-condensed text-xl text-[#111111]">${escapeHtml(r.name || 'Anonymous')}</div>
+                    <div class="text-[10px] tracking-widest text-soft uppercase">${fmtDate(r.created_at)}</div>
                 </div>
-                <p class="text-gray-300 text-sm leading-relaxed">${escapeHtml(r.message || '')}</p>
+                <p class="text-[#111111] text-sm leading-relaxed">${escapeHtml(r.message || '')}</p>
             </div>
         `).join('');
         wireRowClicks(panel, 'Feedback');
@@ -320,37 +358,28 @@
     function renderReferrals(rows) {
         const panel = document.getElementById('panel-referrals');
         if (!rows.length) { panel.innerHTML = ''; return; }
-        const urgencyColor = (u) => u === 'urgent' ? 'text-red-400' : u === 'asap' ? 'text-gold' : 'text-stone';
+        const urgencyColor = (u) => u === 'urgent' ? 'text-red-600' : u === 'asap' ? 'text-gold' : 'text-soft';
         panel.innerHTML = rows.map(r => `
-            <div class="data-row border border-stone p-6 mb-3 cursor-pointer" data-payload='${escapeHtml(JSON.stringify(r))}'>
+            <div class="data-row border border-soft bg-[#FFFFFF] p-6 mb-3 cursor-pointer shadow-sm" data-payload='${escapeHtml(JSON.stringify(r))}'>
                 <div class="flex justify-between items-start mb-3 flex-wrap gap-2">
                     <div>
                         <div class="text-[10px] tracking-widest ${urgencyColor(r.urgency)} uppercase mb-1">${escapeHtml((r.urgency || 'unspecified'))}</div>
-                        <div class="font-condensed text-xl text-white">RE: ${escapeHtml(r.referral_name || '')}</div>
-                        <div class="text-xs text-stone mt-1">From ${escapeHtml(r.name || '')} · ${escapeHtml(r.relationship || '—')}</div>
+                        <div class="font-condensed text-xl text-[#111111]">RE: ${escapeHtml(r.referral_name || '')}</div>
+                        <div class="text-xs text-soft mt-1">From ${escapeHtml(r.name || '')} · ${escapeHtml(r.relationship || '—')}</div>
                     </div>
-                    <div class="text-[10px] tracking-widest text-stone uppercase">${fmtDate(r.created_at)}</div>
+                    <div class="text-[10px] tracking-widest text-soft uppercase">${fmtDate(r.created_at)}</div>
                 </div>
-                <p class="text-gray-300 text-sm leading-relaxed line-clamp-2">${escapeHtml(r.situation || '')}</p>
+                <p class="text-[#111111] text-sm leading-relaxed line-clamp-2">${escapeHtml(r.situation || '')}</p>
             </div>
         `).join('');
         wireRowClicks(panel, 'Referral');
-    }
-
-    function fmtDuration(sec) {
-        if (sec === null || sec === undefined || sec === '' || isNaN(sec)) return '—';
-        const s = Math.max(0, parseInt(sec));
-        const m = Math.floor(s / 60);
-        const r = s % 60;
-        return m > 0 ? `${m}m ${String(r).padStart(2, '0')}s` : `${r}s`;
     }
 
     function renderQuiz(rows) {
         const panel = document.getElementById('panel-quiz');
         if (!rows.length) { panel.innerHTML = ''; return; }
 
-        // Compute attempt # within each (session_id, module) — earliest = 1.
-        // Also count total attempts per session+module so we can show 'N of M'.
+        // Compute attempt # within each (session_id, module).
         const groups = {};
         const ascending = [...rows].sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
         ascending.forEach(r => {
@@ -365,9 +394,9 @@
         });
 
         panel.innerHTML = `
-            <div class="border border-stone overflow-x-auto">
+            <div class="border border-soft bg-[#FFFFFF] overflow-x-auto shadow-sm">
                 <table class="w-full text-sm">
-                    <thead class="bg-[#0a0a0a] text-stone text-[10px] tracking-widest uppercase">
+                    <thead class="bg-[#F0ECE2] text-soft text-[10px] tracking-widest uppercase">
                         <tr>
                             <th class="text-left px-4 py-3">Date</th>
                             <th class="text-left px-4 py-3">Module</th>
@@ -381,17 +410,17 @@
                     <tbody>
                         ${rows.map(r => {
                             const pct = r.total ? Math.round((r.score / r.total) * 100) : 0;
-                            const labelColor = r.label === 'Outstanding' || r.label === 'Good' ? 'text-gold' : r.label === 'Fair' ? 'text-white' : 'text-stone';
+                            const labelColor = r.label === 'Outstanding' || r.label === 'Good' ? 'text-gold' : r.label === 'Fair' ? 'text-[#111111]' : 'text-soft';
                             const att = attemptInfo.get(r) || { num: 1, total: 1 };
                             return `
-                                <tr class="data-row border-t border-stone">
-                                    <td class="px-4 py-3 text-stone text-xs whitespace-nowrap">${fmtDate(r.created_at)}</td>
-                                    <td class="px-4 py-3 text-white capitalize">${escapeHtml((r.module || '').replace(/-/g, ' '))}</td>
-                                    <td class="px-4 py-3 text-gold font-condensed">#${att.num} <span class="text-stone text-xs">of ${att.total}</span></td>
-                                    <td class="px-4 py-3 text-gold font-condensed">${r.score}/${r.total} <span class="text-stone text-xs">(${pct}%)</span></td>
+                                <tr class="data-row border-t border-soft">
+                                    <td class="px-4 py-3 text-soft text-xs whitespace-nowrap">${fmtDate(r.created_at)}</td>
+                                    <td class="px-4 py-3 text-[#111111]">${escapeHtml(moduleLabel(r.module))}</td>
+                                    <td class="px-4 py-3 text-gold font-condensed">#${att.num} <span class="text-soft text-xs">of ${att.total}</span></td>
+                                    <td class="px-4 py-3 text-gold font-condensed">${r.score}/${r.total} <span class="text-soft text-xs">(${pct}%)</span></td>
                                     <td class="px-4 py-3 ${labelColor} text-xs tracking-widest uppercase">${escapeHtml(r.label || '')}</td>
-                                    <td class="px-4 py-3 text-white font-condensed whitespace-nowrap">${fmtDuration(r.duration_seconds)}</td>
-                                    <td class="px-4 py-3 text-stone text-xs">${escapeHtml((r.session_id || '').slice(0, 18))}</td>
+                                    <td class="px-4 py-3 text-[#111111] font-condensed whitespace-nowrap">${fmtDuration(r.duration_seconds)}</td>
+                                    <td class="px-4 py-3 text-soft text-xs">${escapeHtml((r.session_id || '').slice(0, 18))}</td>
                                 </tr>
                             `;
                         }).join('')}
@@ -416,14 +445,14 @@
         const rows = Object.entries(data)
             .filter(([k]) => k !== 'id')
             .map(([k, v]) => `
-                <div class="border-b border-stone py-3">
-                    <div class="text-[10px] tracking-widest text-stone uppercase mb-1">${escapeHtml(k.replace(/_/g, ' '))}</div>
-                    <div class="text-white text-sm break-words">${escapeHtml(v === null ? '—' : String(v))}</div>
+                <div class="border-b border-soft py-3">
+                    <div class="text-[10px] tracking-widest text-soft uppercase mb-1">${escapeHtml(k.replace(/_/g, ' '))}</div>
+                    <div class="text-[#111111] text-sm break-words">${escapeHtml(v === null ? '—' : String(v))}</div>
                 </div>
             `).join('');
         body.innerHTML = `
             <div class="text-[10px] tracking-widest text-gold uppercase mb-2">${escapeHtml(label)} · #${data.id ?? ''}</div>
-            <h2 class="font-condensed text-3xl text-white mb-6">FULL RECORD</h2>
+            <h2 class="font-condensed text-3xl text-[#111111] mb-6">FULL RECORD</h2>
             ${rows}
         `;
         const modal = document.getElementById('detail-modal');
