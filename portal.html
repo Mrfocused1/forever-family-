@@ -91,6 +91,19 @@
             background: transparent;
         }
 
+        /* Override Chrome / Safari autofill so the email field stays on-theme */
+        input:-webkit-autofill,
+        input:-webkit-autofill:hover,
+        input:-webkit-autofill:focus,
+        input:-webkit-autofill:active,
+        textarea:-webkit-autofill {
+            -webkit-text-fill-color: #ffffff !important;
+            caret-color: #ffffff !important;
+            -webkit-box-shadow: 0 0 0 1000px #0d0d0d inset !important;
+            box-shadow: 0 0 0 1000px #0d0d0d inset !important;
+            transition: background-color 9999s ease-out 0s;
+        }
+
         /* Login screen */
         #login-screen {
             min-height: 100vh;
