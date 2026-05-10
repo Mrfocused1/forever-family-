@@ -100,7 +100,7 @@ app.post('/api/portal-login', async (req, res) => {
         .single();
 
     if (error || !data) {
-        return res.status(401).json({ error: 'Invalid access code. Check your welcome email.' });
+        return res.status(401).json({ error: 'Invalid access code.' });
     }
 
     const { tier } = data;
