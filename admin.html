@@ -82,14 +82,14 @@
 </head>
 <body>
 
-<!-- ─── HEADER (light) ────────────────────────────────────────────────────── -->
-<nav class="fixed top-0 left-0 w-full h-20 z-50 flex justify-between items-center px-6 bg-[#F7F4EE] bg-opacity-95 backdrop-blur-md border-b border-soft">
-    <a href="/" class="flex items-center self-center h-10">
+<!-- ─── HEADER (light, fully opaque) ──────────────────────────────────────── -->
+<nav class="fixed top-0 left-0 w-full h-16 md:h-20 z-50 flex justify-between items-center px-4 md:px-6 bg-[#F7F4EE] border-b border-soft">
+    <a href="/" class="flex items-center self-center h-8 md:h-10">
         <img src="images/logo.svg" alt="Forever Family" class="h-full w-auto" style="filter: brightness(0);">
     </a>
-    <div class="flex items-center gap-3">
-        <span class="text-[10px] tracking-widest uppercase text-gold border border-gold px-3 py-1.5 font-condensed">ADMIN</span>
-        <button type="button" id="logout-btn" class="hidden text-[10px] tracking-widest uppercase text-muted hover:text-[#111111] transition-colors px-3 py-1.5 border border-soft hover:border-[#111111]">Log Out</button>
+    <div class="flex items-center gap-2 md:gap-3">
+        <span class="text-[9px] md:text-[10px] tracking-widest uppercase text-gold border border-gold px-2 md:px-3 py-1 md:py-1.5 font-condensed">ADMIN</span>
+        <button type="button" id="logout-btn" class="hidden text-[9px] md:text-[10px] tracking-widest uppercase text-muted hover:text-[#111111] transition-colors px-2 md:px-3 py-1 md:py-1.5 border border-soft hover:border-[#111111]">Log Out</button>
     </div>
 </nav>
 
@@ -134,7 +134,16 @@
     <h1 class="font-condensed text-5xl md:text-7xl leading-none text-[#111111] mb-3">ADMIN<br><span class="text-gold">CONSOLE.</span></h1>
     <p class="text-muted max-w-2xl leading-relaxed mb-12">All public form submissions across the site. Auto-refreshes every 30 seconds.</p>
 
-    <!-- Stat cards -->
+    <!-- Tab bar (primary nav for the dashboard) -->
+    <div class="flex gap-2 md:gap-6 border-b border-soft mb-6 overflow-x-auto">
+        <button type="button" class="tab-btn-bar py-3 px-3 md:px-4 text-xs tracking-widest uppercase whitespace-nowrap" data-tab="signups">Signups</button>
+        <button type="button" class="tab-btn-bar py-3 px-3 md:px-4 text-xs tracking-widest uppercase whitespace-nowrap" data-tab="feedback">Feedback</button>
+        <button type="button" class="tab-btn-bar py-3 px-3 md:px-4 text-xs tracking-widest uppercase whitespace-nowrap" data-tab="referrals">Referrals</button>
+        <button type="button" class="tab-btn-bar py-3 px-3 md:px-4 text-xs tracking-widest uppercase whitespace-nowrap" data-tab="quiz">Quiz Results</button>
+        <button type="button" class="tab-btn-bar py-3 px-3 md:px-4 text-xs tracking-widest uppercase whitespace-nowrap" data-tab="testimonials">Testimonials</button>
+    </div>
+
+    <!-- Stat cards (counts, also clickable as tabs) -->
     <div class="grid grid-cols-2 md:grid-cols-5 gap-0 border border-soft bg-[#FFFFFF] mb-10 shadow-sm">
         <button type="button" class="stat-card border-r border-b md:border-b-0 border-soft p-6 text-left tab-btn-stat" data-tab="signups">
             <div class="font-condensed text-4xl text-gold" id="stat-signups">0</div>
@@ -156,15 +165,6 @@
             <div class="font-condensed text-4xl text-gold" id="stat-testimonials">0</div>
             <div class="text-[10px] tracking-widest text-soft uppercase mt-1">Testimonials</div>
         </button>
-    </div>
-
-    <!-- Tab bar -->
-    <div class="flex gap-2 md:gap-6 border-b border-soft mb-6 overflow-x-auto">
-        <button type="button" class="tab-btn-bar py-3 px-4 text-xs tracking-widest uppercase whitespace-nowrap" data-tab="signups">Signups</button>
-        <button type="button" class="tab-btn-bar py-3 px-4 text-xs tracking-widest uppercase whitespace-nowrap" data-tab="feedback">Feedback</button>
-        <button type="button" class="tab-btn-bar py-3 px-4 text-xs tracking-widest uppercase whitespace-nowrap" data-tab="referrals">Referrals</button>
-        <button type="button" class="tab-btn-bar py-3 px-4 text-xs tracking-widest uppercase whitespace-nowrap" data-tab="quiz">Quiz Results</button>
-        <button type="button" class="tab-btn-bar py-3 px-4 text-xs tracking-widest uppercase whitespace-nowrap" data-tab="testimonials">Testimonials</button>
     </div>
 
     <!-- Empty state -->
@@ -260,6 +260,52 @@
 
 <script>
     const KEY_STORAGE = 'ff_admin_key';
+
+    // ── Demo data (used as a fallback when a section returns no real rows) ──
+    const DEMO = {
+        submissions: [
+            { id: 'd-s-1', name: 'Marcus Thompson', email: 'marcus.t@example.co.uk', phone: '07700 900142', city: 'London', interest: 'Become a Stepper', message: 'Saw the Croydon patrol. I want in.', created_at: '2026-05-09T18:42:11Z' },
+            { id: 'd-s-2', name: 'Aisha Okonkwo',   email: 'aisha.o@example.co.uk', phone: '07700 900289', city: 'Birmingham', interest: 'Member',  message: 'Family member helped after the Aston call. Joining as Bronze.', created_at: '2026-05-08T11:09:00Z' },
+            { id: 'd-s-3', name: 'James Reid',      email: 'jreid@example.co.uk',   phone: '07700 900377', city: 'Glasgow',    interest: 'Partner / Org', message: 'Pastor at Kingdom Faith Church. Want to coordinate Glasgow outreach.', created_at: '2026-05-07T20:14:38Z' },
+            { id: 'd-s-4', name: 'Sarah Lambert',   email: 'sarah.l@example.co.uk', phone: '07700 900101', city: 'Leicester',  interest: 'Volunteer',     message: 'Year-11 teacher. Available evenings + weekends.', created_at: '2026-05-06T09:21:55Z' },
+            { id: 'd-s-5', name: 'Daniel Adeyemi',  email: 'daniel.a@example.co.uk',phone: '07700 900533', city: 'Manchester', interest: 'Become a Stepper', message: 'Done two FFCA visits. Ready to commit.', created_at: '2026-05-05T16:48:02Z' },
+            { id: 'd-s-6', name: 'Rita Harris',     email: 'rita.h@example.co.uk',  phone: '07700 900618', city: 'Sheffield',  interest: 'Member',         message: 'Great work in Page Hall. Joining at Silver.', created_at: '2026-05-04T13:30:17Z' },
+            { id: 'd-s-7', name: 'Kwame Asante',    email: 'kwame.a@example.co.uk', phone: '07700 900744', city: 'Liverpool',  interest: 'Donor',          message: 'Quarterly contribution. Please send the receipt to my email.', created_at: '2026-05-03T08:11:44Z' },
+            { id: 'd-s-8', name: 'Nadia Hussain',   email: 'nadia.h@example.co.uk', phone: '07700 900812', city: 'London',     interest: 'Volunteer',      message: 'NHS nurse — happy to support First Aid sessions.', created_at: '2026-05-02T19:55:12Z' }
+        ],
+        feedback: [
+            { id: 'd-f-1', name: 'Jordan B.',  message: 'The Tracker page is a great touch. Real transparency about what the team actually does on the ground.', created_at: '2026-05-09T22:04:01Z' },
+            { id: 'd-f-2', name: 'Anonymous',  message: 'Please add a Welsh-language option on the Learn modules. Cardiff is asking.', created_at: '2026-05-08T15:38:22Z' },
+            { id: 'd-f-3', name: 'Chioma E.',  message: 'My nephew completed the First Aid module yesterday and stopped a nosebleed at school today. Thank you.', created_at: '2026-05-07T17:13:09Z' },
+            { id: 'd-f-4', name: 'Tom W.',     message: 'The site keeps signing me out of the portal between visits. Bug?', created_at: '2026-05-06T10:21:48Z' },
+            { id: 'd-f-5', name: 'Imani O.',   message: 'The testimonials page made my mum cry (in a good way). Keep them coming.', created_at: '2026-05-05T08:02:33Z' }
+        ],
+        referrals: [
+            { id: 'd-r-1', name: 'Anonymous Mother', referral_name: 'Tyrese Brown', relationship: 'Mother', urgency: 'urgent', situation: 'Son aged 16 missing for 36 hours. Last seen near East Croydon. Phone is off. He has been groomed by an older man on the estate. Need eyes and a calm presence today, please.', created_at: '2026-05-09T22:50:00Z' },
+            { id: 'd-r-2', name: 'Mr & Mrs Khan',    referral_name: 'Yasin Khan',   relationship: 'Parents', urgency: 'asap',   situation: 'Our daughter is 14. There is a group of older boys waiting outside her school every day. The school has not done enough. We do not know who else to call.', created_at: '2026-05-08T19:14:00Z' },
+            { id: 'd-r-3', name: 'Ms Patel',         referral_name: 'Rohan Patel',  relationship: 'Aunt',    urgency: 'unspecified', situation: 'Nephew (19) just got out of YOI Brinsford. Wants to turn things around. Could really benefit from being walked through the FFCA programme by someone who has been where he is.', created_at: '2026-05-07T14:02:00Z' },
+            { id: 'd-r-4', name: 'Pastor Reid',      referral_name: 'Family of 4',  relationship: 'Friend',  urgency: 'asap',   situation: 'Family on Govanhill estate. Father lost in stabbing March. Two boys (12, 14) starting to get into the wrong crowd. Mum reaching out via the church.', created_at: '2026-05-06T11:30:00Z' }
+        ],
+        testimonials: [
+            { id:'d-t-1', name:'Marcus T.',     role_label:'Parent — Brixton',         date_label:'14 March 2025',    image_url:'images/activities/CPD-4ILgpRH_slide1.jpg', headline:'"They didn\'t just speak. They turned up."', body:'When my son got pulled into the wrong circle, I\'d run out of options. A friend told me about Forever Family. I sent a referral on the G-Line and within hours two of their certified Steppers were sitting at my kitchen table — calm, listening, no judgement. They didn\'t try to take over. They asked what I needed and worked around me.', pull_quote:'They gave us a structure.', position:1 },
+            { id:'d-t-2', name:'Aisha O.',      role_label:'Certified Stepper',        date_label:'02 February 2025', image_url:'images/activities/C-dgtIuoMUq_slide1.jpg', headline:'"The training rebuilt me before it ever sent me out."', body:'The 12-Point Programme is real — first aid, self-defence, law, formations, all of it. The most surprising part was the Emotional Intelligence module. I came in expecting tactics. I left understanding why I react the way I do.', pull_quote:'They prepare you — and they don\'t leave you alone afterwards.', position:2 },
+            { id:'d-t-3', name:'Pastor James',  role_label:'Community Leader — Glasgow', date_label:'19 December 2024', image_url:'images/activities/CLxmhUEBgtN.jpg',         headline:'"They came in winter. That\'s how I knew they were serious."', body:'Forever Family came up from London in the depth of January, with food, blankets, and certified responders. Within a week the rough sleepers in the city centre knew their faces. Within a month, three people we\'d been trying to reach for two years had moved into hostels.', pull_quote:'The most disciplined community group I have ever partnered with.', position:3 },
+            { id:'d-t-4', name:'Sarah L.',      role_label:'Educator — Leicester',     date_label:'28 November 2024', image_url:'images/activities/DSLPaTBCBOi_slide1.jpg', headline:'"My students started using their language by the end of the term."', body:'Forever Family ran two community sessions inside the school hall. They didn\'t preach, didn\'t moralise, didn\'t hand out flyers. They listened, took notes, and came back the following week with concrete actions.', pull_quote:'Whatever they\'re doing, the message lands.', position:4 },
+            { id:'d-t-5', name:'Daniel A.',     role_label:'Steppers Only Squad',      date_label:'07 October 2024',  image_url:'images/activities/CQEmNzHh8dv.jpg',         headline:'"I came in to learn self-defence. I left as a mentor."', body:'Eighteen months later I earned my Mentorship Badge. Now I help run the Tuesday session for the new intake. Watching them go through the same shift I did is the best thing I\'ve ever been part of.', pull_quote:'It turns people who needed something into people who can give something.', position:5 }
+        ]
+    };
+
+    function isDemoRow(r) {
+        return r && typeof r.id === 'string' && r.id.startsWith('d-');
+    }
+    function withDemoFallback(real, demo) {
+        return (real && real.length > 0) ? real : demo;
+    }
+    function demoBadge(showing) {
+        return showing
+            ? '<div class="mb-3 inline-block text-[9px] tracking-widest uppercase text-gold border border-gold px-2 py-1">DEMO DATA — replaced when real entries arrive</div>'
+            : '';
+    }
 
     // ── Helpers ───────────────────────────────────────────────────────────
     function fmtDate(iso) {
@@ -365,8 +411,10 @@
     // ── Render rows ───────────────────────────────────────────────────────
     function renderSignups(rows) {
         const panel = document.getElementById('panel-signups');
-        if (!rows.length) { panel.innerHTML = ''; return; }
+        const isDemo = !rows.length;
+        rows = withDemoFallback(rows, DEMO.submissions);
         panel.innerHTML = `
+            ${demoBadge(isDemo)}
             <div class="border border-soft bg-[#FFFFFF] overflow-x-auto shadow-sm">
                 <table class="w-full text-sm">
                     <thead class="bg-[#F0ECE2] text-soft text-[10px] tracking-widest uppercase">
@@ -399,8 +447,9 @@
 
     function renderFeedback(rows) {
         const panel = document.getElementById('panel-feedback');
-        if (!rows.length) { panel.innerHTML = ''; return; }
-        panel.innerHTML = rows.map(r => `
+        const isDemo = !rows.length;
+        rows = withDemoFallback(rows, DEMO.feedback);
+        panel.innerHTML = demoBadge(isDemo) + rows.map(r => `
             <div class="data-row border border-soft bg-[#FFFFFF] p-6 mb-3 cursor-pointer shadow-sm" data-payload='${escapeHtml(JSON.stringify(r))}'>
                 <div class="flex justify-between items-start mb-2 flex-wrap gap-2">
                     <div class="font-condensed text-xl text-[#111111]">${escapeHtml(r.name || 'Anonymous')}</div>
@@ -414,9 +463,10 @@
 
     function renderReferrals(rows) {
         const panel = document.getElementById('panel-referrals');
-        if (!rows.length) { panel.innerHTML = ''; return; }
+        const isDemo = !rows.length;
+        rows = withDemoFallback(rows, DEMO.referrals);
         const urgencyColor = (u) => u === 'urgent' ? 'text-red-600' : u === 'asap' ? 'text-gold' : 'text-soft';
-        panel.innerHTML = rows.map(r => `
+        panel.innerHTML = demoBadge(isDemo) + rows.map(r => `
             <div class="data-row border border-soft bg-[#FFFFFF] p-6 mb-3 cursor-pointer shadow-sm" data-payload='${escapeHtml(JSON.stringify(r))}'>
                 <div class="flex justify-between items-start mb-3 flex-wrap gap-2">
                     <div>
@@ -501,9 +551,10 @@
 
     function renderTestimonials(rows) {
         const panel = document.getElementById('panel-testimonials');
+        const isDemo = !rows || !rows.length;
+        rows = withDemoFallback(rows, DEMO.testimonials);
         testimonialsCache = rows;
-        const list = (rows && rows.length)
-            ? rows.map(t => `
+        const list = rows.map(t => `
                 <article class="border border-soft bg-[#FFFFFF] p-5 shadow-sm">
                     <div class="flex flex-col md:flex-row gap-5">
                         <div class="md:w-48 flex-shrink-0">
@@ -519,8 +570,10 @@
                                     <div class="text-xs text-soft mt-1">${escapeHtml(t.date_label || '')} · pos ${t.position ?? 0}</div>
                                 </div>
                                 <div class="flex gap-2 flex-shrink-0">
-                                    <button type="button" data-id="${t.id}" class="t-edit text-[10px] tracking-widest uppercase border border-soft px-3 py-1.5 hover:border-gold hover:text-gold transition-colors">Edit</button>
-                                    <button type="button" data-id="${t.id}" class="t-delete text-[10px] tracking-widest uppercase border border-soft px-3 py-1.5 hover:border-red-600 hover:text-red-600 transition-colors">Delete</button>
+                                    ${isDemoRow(t)
+                                        ? `<span class="text-[9px] tracking-widest uppercase text-soft border border-soft border-dashed px-3 py-1.5">Demo · read-only</span>`
+                                        : `<button type="button" data-id="${t.id}" class="t-edit text-[10px] tracking-widest uppercase border border-soft px-3 py-1.5 hover:border-gold hover:text-gold transition-colors">Edit</button>
+                                           <button type="button" data-id="${t.id}" class="t-delete text-[10px] tracking-widest uppercase border border-soft px-3 py-1.5 hover:border-red-600 hover:text-red-600 transition-colors">Delete</button>`}
                                 </div>
                             </div>
                             ${t.headline ? `<div class="font-condensed text-base text-[#111111] mb-2 leading-snug">${escapeHtml(t.headline)}</div>` : ''}
@@ -529,9 +582,10 @@
                     </div>
                 </article>
             `).join('')
-            : `<div class="text-center py-12 border border-soft bg-[#FFFFFF] text-soft text-xs tracking-widest uppercase">No testimonials yet — click 'New' to add the first.</div>`;
+            ;
 
         panel.innerHTML = `
+            ${demoBadge(isDemo)}
             <div class="flex justify-between items-center mb-4 flex-wrap gap-3">
                 <div class="text-xs text-soft tracking-widest uppercase">${rows.length} entr${rows.length === 1 ? 'y' : 'ies'}</div>
                 <button type="button" id="t-new" class="px-5 py-2.5 bg-gold text-[#111111] font-condensed text-sm tracking-widest hover:bg-[#C9A010] transition-colors">+ NEW TESTIMONIAL</button>
@@ -689,10 +743,13 @@
         document.getElementById('loading-state').classList.add('hidden');
 
         const stats = data.stats || {};
-        document.getElementById('stat-signups').textContent   = stats.submissions || 0;
-        document.getElementById('stat-feedback').textContent  = stats.feedback || 0;
-        document.getElementById('stat-referrals').textContent = stats.referrals || 0;
-        document.getElementById('stat-quiz').textContent      = stats.quiz || 0;
+        // Show real counts when present, otherwise show the count of demo rows
+        // shown in each tab (mirrors what the user actually sees).
+        const showCount = (real, demo) => (real && real > 0) ? real : demo.length;
+        document.getElementById('stat-signups').textContent   = showCount(stats.submissions, DEMO.submissions);
+        document.getElementById('stat-feedback').textContent  = showCount(stats.feedback,    DEMO.feedback);
+        document.getElementById('stat-referrals').textContent = showCount(stats.referrals,   DEMO.referrals);
+        document.getElementById('stat-quiz').textContent      = stats.quiz || 0; // real quiz attempts only
 
         renderSignups(data.submissions || []);
         renderFeedback(data.feedback || []);
@@ -701,7 +758,7 @@
 
         // Testimonials live on a separate public endpoint
         const tList = await fetchTestimonials();
-        document.getElementById('stat-testimonials').textContent = tList.length;
+        document.getElementById('stat-testimonials').textContent = showCount(tList.length, DEMO.testimonials);
         renderTestimonials(tList);
 
         setTab(currentTab);
