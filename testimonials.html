@@ -46,11 +46,26 @@
     @media (min-width: 768px) {
         .pull-quote { font-size: 1.875rem; padding-left: 2.5rem; }
     }
-    .avatar {
-        background: linear-gradient(135deg, #2A2A2A, #1a1a1a);
-        color: #D4AF37;
-        font-family: 'Oswald', sans-serif;
-        font-weight: 600;
+    .post-image {
+        aspect-ratio: 16 / 9;
+        background: #111;
+        border: 1px solid #2A2A2A;
+        overflow: hidden;
+    }
+    .post-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        filter: contrast(105%) brightness(108%) saturate(110%);
+        transition: transform 0.6s ease;
+    }
+    .post:hover .post-image img {
+        transform: scale(1.03);
+    }
+    .post-meta-card {
+        background: #111;
+        border: 1px solid #2A2A2A;
+        padding: 1.25rem;
     }
 </style>
 </head>
@@ -106,108 +121,8 @@
 </header>
 
 <!-- ─── POSTS ─────────────────────────────────────────────────────────────── -->
-<main class="px-6 md:px-12 max-w-5xl mx-auto pb-32">
-
-    <!-- Post 1 -->
-    <article class="post border-t border-stone pt-12 pb-16 mb-4">
-        <div class="flex flex-col md:flex-row md:items-start md:gap-10">
-            <aside class="flex-shrink-0 mb-6 md:mb-0 md:w-48">
-                <div class="avatar w-16 h-16 flex items-center justify-center text-2xl mb-4">M</div>
-                <div class="text-[10px] tracking-widest text-gold uppercase mb-1">Parent — Brixton</div>
-                <div class="font-condensed text-2xl text-white leading-tight">Marcus T.</div>
-                <div class="text-xs text-stone mt-2">14 March 2025</div>
-            </aside>
-            <div class="flex-grow">
-                <h2 class="font-condensed text-3xl md:text-4xl text-white leading-tight mb-4">"They didn't just speak. They turned up."</h2>
-                <div class="post-divider mb-8"></div>
-                <p class="text-gray-300 leading-relaxed mb-6">When my son got pulled into the wrong circle, I'd run out of options. The school had stopped calling. The police only showed up when something had already happened. I didn't know who to ring.</p>
-                <p class="text-gray-300 leading-relaxed mb-6">A friend told me about Forever Family. I sent a referral on the G-Line and within hours two of their certified Steppers were sitting at my kitchen table — calm, listening, no judgement. They didn't try to take over. They asked what I needed and worked around me.</p>
-                <p class="text-gray-300 leading-relaxed mb-8">Six months later my son is back in college. He still walks with one of the Steppers on a Tuesday. They didn't fix everything. But they gave us a structure — and that was the thing we'd been missing.</p>
-                <div class="pull-quote">"They gave us a structure. That was the thing we'd been missing."</div>
-            </div>
-        </div>
-    </article>
-
-    <!-- Post 2 -->
-    <article class="post border-t border-stone pt-12 pb-16 mb-4">
-        <div class="flex flex-col md:flex-row md:items-start md:gap-10">
-            <aside class="flex-shrink-0 mb-6 md:mb-0 md:w-48">
-                <div class="avatar w-16 h-16 flex items-center justify-center text-2xl mb-4">A</div>
-                <div class="text-[10px] tracking-widest text-gold uppercase mb-1">Certified Stepper</div>
-                <div class="font-condensed text-2xl text-white leading-tight">Aisha O.</div>
-                <div class="text-xs text-stone mt-2">02 February 2025</div>
-            </aside>
-            <div class="flex-grow">
-                <h2 class="font-condensed text-3xl md:text-4xl text-white leading-tight mb-4">"The training rebuilt me before it ever sent me out."</h2>
-                <div class="post-divider mb-8"></div>
-                <p class="text-gray-300 leading-relaxed mb-6">I joined FFCA thinking it would be a few weekend classes. I was wrong. The 12-Point Programme is real — first aid, self-defence, law, formations, all of it. By the time I earned my badges I knew things about my own community I had never been taught at school.</p>
-                <p class="text-gray-300 leading-relaxed mb-6">The most surprising part was the Emotional Intelligence module. I came in expecting tactics. I left understanding why I react the way I do — and how to stay level when the pressure is on.</p>
-                <p class="text-gray-300 leading-relaxed mb-8">When I deployed on my first SOS step in Hackney, I wasn't nervous. I was prepared. That's the difference between Forever Family and everything else I've tried. They prepare you, and then they don't leave you alone afterwards.</p>
-                <div class="pull-quote">"They prepare you — and they don't leave you alone afterwards."</div>
-            </div>
-        </div>
-    </article>
-
-    <!-- Post 3 -->
-    <article class="post border-t border-stone pt-12 pb-16 mb-4">
-        <div class="flex flex-col md:flex-row md:items-start md:gap-10">
-            <aside class="flex-shrink-0 mb-6 md:mb-0 md:w-48">
-                <div class="avatar w-16 h-16 flex items-center justify-center text-2xl mb-4">J</div>
-                <div class="text-[10px] tracking-widest text-gold uppercase mb-1">Community Leader — Glasgow</div>
-                <div class="font-condensed text-2xl text-white leading-tight">Pastor James</div>
-                <div class="text-xs text-stone mt-2">19 December 2024</div>
-            </aside>
-            <div class="flex-grow">
-                <h2 class="font-condensed text-3xl md:text-4xl text-white leading-tight mb-4">"They came in winter. That's how I knew they were serious."</h2>
-                <div class="post-divider mb-8"></div>
-                <p class="text-gray-300 leading-relaxed mb-6">My church has run outreach in Glasgow for fifteen years. We've seen organisations come and pose for photographs, then disappear. Forever Family came up from London in the depth of January, with food, blankets, and certified responders.</p>
-                <p class="text-gray-300 leading-relaxed mb-6">They didn't ask to lead. They asked how they could help. Within a week the rough sleepers in the city centre knew their faces. Within a month, three people we'd been trying to reach for two years had moved into hostels.</p>
-                <p class="text-gray-300 leading-relaxed mb-8">They are the most disciplined community group I have ever partnered with. I would tell any pastor, any council, any community lead — open the door for them. They will not waste the time you give them.</p>
-                <div class="pull-quote">"The most disciplined community group I have ever partnered with."</div>
-            </div>
-        </div>
-    </article>
-
-    <!-- Post 4 -->
-    <article class="post border-t border-stone pt-12 pb-16 mb-4">
-        <div class="flex flex-col md:flex-row md:items-start md:gap-10">
-            <aside class="flex-shrink-0 mb-6 md:mb-0 md:w-48">
-                <div class="avatar w-16 h-16 flex items-center justify-center text-2xl mb-4">S</div>
-                <div class="text-[10px] tracking-widest text-gold uppercase mb-1">Educator — Leicester</div>
-                <div class="font-condensed text-2xl text-white leading-tight">Sarah L.</div>
-                <div class="text-xs text-stone mt-2">28 November 2024</div>
-            </aside>
-            <div class="flex-grow">
-                <h2 class="font-condensed text-3xl md:text-4xl text-white leading-tight mb-4">"My students started asking what 'PIA' meant. That's when I knew it was working."</h2>
-                <div class="post-divider mb-8"></div>
-                <p class="text-gray-300 leading-relaxed mb-6">The Leicester University Safety Campaign was a turning point for our community. After the incident on campus, the mood in our school was tense — students didn't trust anything that looked official.</p>
-                <p class="text-gray-300 leading-relaxed mb-6">Forever Family ran two community sessions inside the school hall. They didn't preach, didn't moralise, didn't hand out flyers. They listened, took notes, and came back the following week with concrete actions. That's something we don't see often.</p>
-                <p class="text-gray-300 leading-relaxed mb-8">My year-11s started using their language by the end of the term — "respond, not react"; "be the calmest person in the room". Whatever they're doing, the message lands.</p>
-                <div class="pull-quote">"Whatever they're doing, the message lands."</div>
-            </div>
-        </div>
-    </article>
-
-    <!-- Post 5 -->
-    <article class="post border-t border-stone pt-12 pb-16 mb-4">
-        <div class="flex flex-col md:flex-row md:items-start md:gap-10">
-            <aside class="flex-shrink-0 mb-6 md:mb-0 md:w-48">
-                <div class="avatar w-16 h-16 flex items-center justify-center text-2xl mb-4">D</div>
-                <div class="text-[10px] tracking-widest text-gold uppercase mb-1">Steppers Only Squad</div>
-                <div class="font-condensed text-2xl text-white leading-tight">Daniel A.</div>
-                <div class="text-xs text-stone mt-2">07 October 2024</div>
-            </aside>
-            <div class="flex-grow">
-                <h2 class="font-condensed text-3xl md:text-4xl text-white leading-tight mb-4">"I came in to learn self-defence. I left as a mentor."</h2>
-                <div class="post-divider mb-8"></div>
-                <p class="text-gray-300 leading-relaxed mb-6">I was a quiet kid. Got pushed around. I joined Forever Family because I wanted to learn how to handle myself. What I didn't expect was that the older Steppers would treat me like a younger brother from day one.</p>
-                <p class="text-gray-300 leading-relaxed mb-6">Eighteen months later I earned my Mentorship Badge. Now I help run the Tuesday session for the new intake. Watching them go through the same shift I did — coming in stiff and leaving with their head up — is the best thing I've ever been part of.</p>
-                <p class="text-gray-300 leading-relaxed mb-8">This isn't a youth club. It isn't a gym. It's a structure that turns people who needed something into people who can give something. That's the whole point.</p>
-                <div class="pull-quote">"It turns people who needed something into people who can give something."</div>
-            </div>
-        </div>
-    </article>
-
+<main id="posts" class="px-6 md:px-12 max-w-5xl mx-auto pb-32">
+    <!-- Posts injected here by JS. -->
 </main>
 
 <!-- ─── CTA ───────────────────────────────────────────────────────────────── -->
@@ -236,16 +151,134 @@
 </footer>
 
 <script>
-    // Reveal posts on scroll
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(e => {
-            if (e.isIntersecting) {
-                e.target.classList.add('visible');
-                observer.unobserve(e.target);
-            }
-        });
-    }, { threshold: 0.1 });
-    document.querySelectorAll('.post').forEach(el => observer.observe(el));
+    // Default seed posts. Used on first paint and as a fallback if the API
+    // returns no rows (e.g. testimonials table not yet created).
+    const SEED_POSTS = [
+        {
+            name: 'Marcus T.',
+            role_label: 'Parent — Brixton',
+            date_label: '14 March 2025',
+            image_url: 'images/activities/CPD-4ILgpRH_slide1.jpg',
+            headline: '"They didn\'t just speak. They turned up."',
+            body:
+                "When my son got pulled into the wrong circle, I'd run out of options. The school had stopped calling. The police only showed up when something had already happened. I didn't know who to ring.\n\n" +
+                "A friend told me about Forever Family. I sent a referral on the G-Line and within hours two of their certified Steppers were sitting at my kitchen table — calm, listening, no judgement. They didn't try to take over. They asked what I needed and worked around me.\n\n" +
+                "Six months later my son is back in college. He still walks with one of the Steppers on a Tuesday. They didn't fix everything. But they gave us a structure — and that was the thing we'd been missing.",
+            pull_quote: 'They gave us a structure. That was the thing we\'d been missing.'
+        },
+        {
+            name: 'Aisha O.',
+            role_label: 'Certified Stepper',
+            date_label: '02 February 2025',
+            image_url: 'images/activities/C-dgtIuoMUq_slide1.jpg',
+            headline: '"The training rebuilt me before it ever sent me out."',
+            body:
+                "I joined FFCA thinking it would be a few weekend classes. I was wrong. The 12-Point Programme is real — first aid, self-defence, law, formations, all of it. By the time I earned my badges I knew things about my own community I had never been taught at school.\n\n" +
+                "The most surprising part was the Emotional Intelligence module. I came in expecting tactics. I left understanding why I react the way I do — and how to stay level when the pressure is on.\n\n" +
+                "When I deployed on my first SOS step in Hackney, I wasn't nervous. I was prepared. That's the difference between Forever Family and everything else I've tried. They prepare you, and then they don't leave you alone afterwards.",
+            pull_quote: 'They prepare you — and they don\'t leave you alone afterwards.'
+        },
+        {
+            name: 'Pastor James',
+            role_label: 'Community Leader — Glasgow',
+            date_label: '19 December 2024',
+            image_url: 'images/activities/CLxmhUEBgtN.jpg',
+            headline: '"They came in winter. That\'s how I knew they were serious."',
+            body:
+                "My church has run outreach in Glasgow for fifteen years. We've seen organisations come and pose for photographs, then disappear. Forever Family came up from London in the depth of January, with food, blankets, and certified responders.\n\n" +
+                "They didn't ask to lead. They asked how they could help. Within a week the rough sleepers in the city centre knew their faces. Within a month, three people we'd been trying to reach for two years had moved into hostels.\n\n" +
+                "They are the most disciplined community group I have ever partnered with. I would tell any pastor, any council, any community lead — open the door for them. They will not waste the time you give them.",
+            pull_quote: 'The most disciplined community group I have ever partnered with.'
+        },
+        {
+            name: 'Sarah L.',
+            role_label: 'Educator — Leicester',
+            date_label: '28 November 2024',
+            image_url: 'images/activities/DSLPaTBCBOi_slide1.jpg',
+            headline: '"My students started asking what \'PIA\' meant. That\'s when I knew it was working."',
+            body:
+                "The Leicester University Safety Campaign was a turning point for our community. After the incident on campus, the mood in our school was tense — students didn't trust anything that looked official.\n\n" +
+                "Forever Family ran two community sessions inside the school hall. They didn't preach, didn't moralise, didn't hand out flyers. They listened, took notes, and came back the following week with concrete actions. That's something we don't see often.\n\n" +
+                "My year-11s started using their language by the end of the term — \"respond, not react\"; \"be the calmest person in the room\". Whatever they're doing, the message lands.",
+            pull_quote: 'Whatever they\'re doing, the message lands.'
+        },
+        {
+            name: 'Daniel A.',
+            role_label: 'Steppers Only Squad',
+            date_label: '07 October 2024',
+            image_url: 'images/activities/CQEmNzHh8dv.jpg',
+            headline: '"I came in to learn self-defence. I left as a mentor."',
+            body:
+                "I was a quiet kid. Got pushed around. I joined Forever Family because I wanted to learn how to handle myself. What I didn't expect was that the older Steppers would treat me like a younger brother from day one.\n\n" +
+                "Eighteen months later I earned my Mentorship Badge. Now I help run the Tuesday session for the new intake. Watching them go through the same shift I did — coming in stiff and leaving with their head up — is the best thing I've ever been part of.\n\n" +
+                "This isn't a youth club. It isn't a gym. It's a structure that turns people who needed something into people who can give something. That's the whole point.",
+            pull_quote: 'It turns people who needed something into people who can give something.'
+        }
+    ];
+
+    function escapeHtml(s) {
+        if (s === null || s === undefined) return '';
+        return String(s)
+            .replaceAll('&', '&amp;')
+            .replaceAll('<', '&lt;')
+            .replaceAll('>', '&gt;')
+            .replaceAll('"', '&quot;')
+            .replaceAll("'", '&#39;');
+    }
+
+    function renderPost(p) {
+        const initial = (p.name || '?').trim().charAt(0).toUpperCase();
+        const paragraphs = (p.body || '').split(/\n\s*\n/).map(par => `<p class="text-gray-300 leading-relaxed mb-6">${escapeHtml(par)}</p>`).join('');
+        const headlineHtml = p.headline ? `<h2 class="font-condensed text-3xl md:text-4xl text-white leading-tight mb-4">${escapeHtml(p.headline)}</h2>` : '';
+        const pullHtml = p.pull_quote ? `<div class="pull-quote">${escapeHtml(p.pull_quote)}</div>` : '';
+        const imgHtml = p.image_url
+            ? `<div class="post-image mb-8"><img src="${escapeHtml(p.image_url)}" alt="${escapeHtml(p.name)}" loading="lazy"></div>`
+            : '';
+
+        return `
+            <article class="post border-t border-stone pt-12 pb-16">
+                ${imgHtml}
+                <div class="flex flex-col md:flex-row md:items-start md:gap-10">
+                    <aside class="flex-shrink-0 mb-6 md:mb-0 md:w-56">
+                        <div class="post-meta-card">
+                            <div class="text-[10px] tracking-widest text-gold uppercase mb-1">${escapeHtml(p.role_label || '')}</div>
+                            <div class="font-condensed text-2xl text-white leading-tight">${escapeHtml(p.name || '')}</div>
+                            <div class="text-xs text-stone mt-2">${escapeHtml(p.date_label || '')}</div>
+                        </div>
+                    </aside>
+                    <div class="flex-grow">
+                        ${headlineHtml}
+                        <div class="post-divider mb-8"></div>
+                        ${paragraphs}
+                        ${pullHtml}
+                    </div>
+                </div>
+            </article>
+        `;
+    }
+
+    function renderAll(posts) {
+        const main = document.getElementById('posts');
+        main.innerHTML = posts.map(renderPost).join('');
+        // Trigger reveal animation
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(e => {
+                if (e.isIntersecting) {
+                    e.target.classList.add('visible');
+                    observer.unobserve(e.target);
+                }
+            });
+        }, { threshold: 0.1 });
+        document.querySelectorAll('.post').forEach(el => observer.observe(el));
+    }
+
+    // Render seeds immediately, then try to replace with API data.
+    renderAll(SEED_POSTS);
+    fetch('/api/testimonials').then(r => r.ok ? r.json() : null).then(data => {
+        if (data && Array.isArray(data.testimonials) && data.testimonials.length > 0) {
+            renderAll(data.testimonials);
+        }
+    }).catch(() => {});
 
     // Mobile menu
     const mobMenu = document.getElementById('mobile-menu');

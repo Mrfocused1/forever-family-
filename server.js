@@ -59,6 +59,69 @@ app.post('/api/join', async (req, res) => {
     res.json({ success: true });
 });
 
+// ─── GET /api/testimonials (public) ─────────────────────────────────────────
+app.get('/api/testimonials', async (req, res) => {
+    const { data, error } = await supabase
+        .from('testimonials')
+        .select('*')
+        .order('position', { ascending: true })
+        .order('created_at', { ascending: false });
+
+    if (error) {
+        // If the table isn't created yet, return empty list rather than 500
+        // so the page falls back to its static seed posts.
+        return res.json({ testimonials: [] });
+    }
+    res.json({ testimonials: data || [] });
+});
+
+// ─── POST /api/admin/testimonials (admin) ───────────────────────────────────
+app.post('/api/admin/testimonials', async (req, res) => {
+    const auth = req.headers['x-admin-key'];
+    if (auth !== process.env.ADMIN_KEY && process.env.NODE_ENV !== 'development') {
+        return res.status(403).json({ error: 'Forbidden.' });
+    }
+    const { name, role_label, date_label, image_url, headline, body, pull_quote, position } = req.body;
+    if (!name || !body) return res.status(400).json({ error: 'Name and body are required.' });
+
+    const { data, error } = await supabase.from('testimonials').insert({
+        name, role_label: role_label || '', date_label: date_label || '',
+        image_url: image_url || '', headline: headline || '', body,
+        pull_quote: pull_quote || '', position: parseInt(position) || 0
+    }).select().single();
+
+    if (error) return res.status(500).json({ error: error.message });
+    res.json({ success: true, testimonial: data });
+});
+
+// ─── PUT /api/admin/testimonials/:id (admin) ────────────────────────────────
+app.put('/api/admin/testimonials/:id', async (req, res) => {
+    const auth = req.headers['x-admin-key'];
+    if (auth !== process.env.ADMIN_KEY && process.env.NODE_ENV !== 'development') {
+        return res.status(403).json({ error: 'Forbidden.' });
+    }
+    const allowed = ['name','role_label','date_label','image_url','headline','body','pull_quote','position'];
+    const update = {};
+    allowed.forEach(k => { if (req.body[k] !== undefined) update[k] = req.body[k]; });
+
+    const { data, error } = await supabase.from('testimonials')
+        .update(update).eq('id', req.params.id).select().single();
+    if (error) return res.status(500).json({ error: error.message });
+    if (!data) return res.status(404).json({ error: 'Not found.' });
+    res.json({ success: true, testimonial: data });
+});
+
+// ─── DELETE /api/admin/testimonials/:id (admin) ─────────────────────────────
+app.delete('/api/admin/testimonials/:id', async (req, res) => {
+    const auth = req.headers['x-admin-key'];
+    if (auth !== process.env.ADMIN_KEY && process.env.NODE_ENV !== 'development') {
+        return res.status(403).json({ error: 'Forbidden.' });
+    }
+    const { error } = await supabase.from('testimonials').delete().eq('id', req.params.id);
+    if (error) return res.status(500).json({ error: error.message });
+    res.json({ success: true });
+});
+
 // ─── POST /api/feedback ─────────────────────────────────────────────────────
 app.post('/api/feedback', async (req, res) => {
     const ip = (req.headers['x-forwarded-for'] || req.socket.remoteAddress || '').split(',')[0].trim();
