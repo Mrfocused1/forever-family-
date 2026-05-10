@@ -47,10 +47,12 @@
         .pull-quote { font-size: 1.875rem; padding-left: 2.5rem; }
     }
     .post-image {
-        aspect-ratio: 16 / 9;
         background: #111;
         border: 1px solid #2A2A2A;
         overflow: hidden;
+        width: 100%;
+        max-width: 320px;
+        aspect-ratio: 4 / 3;
     }
     .post-image img {
         width: 100%;
@@ -61,6 +63,11 @@
     }
     .post:hover .post-image img {
         transform: scale(1.03);
+    }
+    @media (min-width: 768px) {
+        .post-image {
+            max-width: 220px;
+        }
     }
     .post-meta-card {
         background: #111;
@@ -158,7 +165,7 @@
             name: 'Marcus T.',
             role_label: 'Parent — Brixton',
             date_label: '14 March 2025',
-            image_url: 'images/activities/CPD-4ILgpRH_slide1.jpg',
+            image_url: 'https://images.pexels.com/photos/1707828/pexels-photo-1707828.jpeg?auto=compress&cs=tinysrgb&w=600',
             headline: '"They didn\'t just speak. They turned up."',
             body:
                 "When my son got pulled into the wrong circle, I'd run out of options. The school had stopped calling. The police only showed up when something had already happened. I didn't know who to ring.\n\n" +
@@ -170,7 +177,7 @@
             name: 'Aisha O.',
             role_label: 'Certified Stepper',
             date_label: '02 February 2025',
-            image_url: 'images/activities/C-dgtIuoMUq_slide1.jpg',
+            image_url: 'https://images.pexels.com/photos/3184418/pexels-photo-3184418.jpeg?auto=compress&cs=tinysrgb&w=600',
             headline: '"The training rebuilt me before it ever sent me out."',
             body:
                 "I joined FFCA thinking it would be a few weekend classes. I was wrong. The 12-Point Programme is real — first aid, self-defence, law, formations, all of it. By the time I earned my badges I knew things about my own community I had never been taught at school.\n\n" +
@@ -182,7 +189,7 @@
             name: 'Pastor James',
             role_label: 'Community Leader — Glasgow',
             date_label: '19 December 2024',
-            image_url: 'images/activities/CLxmhUEBgtN.jpg',
+            image_url: 'https://images.pexels.com/photos/7551759/pexels-photo-7551759.jpeg?auto=compress&cs=tinysrgb&w=600',
             headline: '"They came in winter. That\'s how I knew they were serious."',
             body:
                 "My church has run outreach in Glasgow for fifteen years. We've seen organisations come and pose for photographs, then disappear. Forever Family came up from London in the depth of January, with food, blankets, and certified responders.\n\n" +
@@ -194,7 +201,7 @@
             name: 'Sarah L.',
             role_label: 'Educator — Leicester',
             date_label: '28 November 2024',
-            image_url: 'images/activities/DSLPaTBCBOi_slide1.jpg',
+            image_url: 'https://images.pexels.com/photos/1267347/pexels-photo-1267347.jpeg?auto=compress&cs=tinysrgb&w=600',
             headline: '"My students started asking what \'PIA\' meant. That\'s when I knew it was working."',
             body:
                 "The Leicester University Safety Campaign was a turning point for our community. After the incident on campus, the mood in our school was tense — students didn't trust anything that looked official.\n\n" +
@@ -206,7 +213,7 @@
             name: 'Daniel A.',
             role_label: 'Steppers Only Squad',
             date_label: '07 October 2024',
-            image_url: 'images/activities/CQEmNzHh8dv.jpg',
+            image_url: 'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=600',
             headline: '"I came in to learn self-defence. I left as a mentor."',
             body:
                 "I was a quiet kid. Got pushed around. I joined Forever Family because I wanted to learn how to handle myself. What I didn't expect was that the older Steppers would treat me like a younger brother from day one.\n\n" +
@@ -227,19 +234,18 @@
     }
 
     function renderPost(p) {
-        const initial = (p.name || '?').trim().charAt(0).toUpperCase();
         const paragraphs = (p.body || '').split(/\n\s*\n/).map(par => `<p class="text-gray-300 leading-relaxed mb-6">${escapeHtml(par)}</p>`).join('');
         const headlineHtml = p.headline ? `<h2 class="font-condensed text-3xl md:text-4xl text-white leading-tight mb-4">${escapeHtml(p.headline)}</h2>` : '';
         const pullHtml = p.pull_quote ? `<div class="pull-quote">${escapeHtml(p.pull_quote)}</div>` : '';
         const imgHtml = p.image_url
-            ? `<div class="post-image mb-8"><img src="${escapeHtml(p.image_url)}" alt="${escapeHtml(p.name)}" loading="lazy"></div>`
+            ? `<div class="post-image mb-5"><img src="${escapeHtml(p.image_url)}" alt="${escapeHtml(p.name)}" loading="lazy"></div>`
             : '';
 
         return `
             <article class="post border-t border-stone pt-12 pb-16">
-                ${imgHtml}
                 <div class="flex flex-col md:flex-row md:items-start md:gap-10">
                     <aside class="flex-shrink-0 mb-6 md:mb-0 md:w-56">
+                        ${imgHtml}
                         <div class="post-meta-card">
                             <div class="text-[10px] tracking-widest text-gold uppercase mb-1">${escapeHtml(p.role_label || '')}</div>
                             <div class="font-condensed text-2xl text-white leading-tight">${escapeHtml(p.name || '')}</div>

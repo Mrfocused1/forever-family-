@@ -287,11 +287,11 @@
             { id: 'd-r-4', name: 'Pastor Reid',      referral_name: 'Family of 4',  relationship: 'Friend',  urgency: 'asap',   situation: 'Family on Govanhill estate. Father lost in stabbing March. Two boys (12, 14) starting to get into the wrong crowd. Mum reaching out via the church.', created_at: '2026-05-06T11:30:00Z' }
         ],
         testimonials: [
-            { id:'d-t-1', name:'Marcus T.',     role_label:'Parent — Brixton',         date_label:'14 March 2025',    image_url:'images/activities/CPD-4ILgpRH_slide1.jpg', headline:'"They didn\'t just speak. They turned up."', body:'When my son got pulled into the wrong circle, I\'d run out of options. A friend told me about Forever Family. I sent a referral on the G-Line and within hours two of their certified Steppers were sitting at my kitchen table — calm, listening, no judgement. They didn\'t try to take over. They asked what I needed and worked around me.', pull_quote:'They gave us a structure.', position:1 },
-            { id:'d-t-2', name:'Aisha O.',      role_label:'Certified Stepper',        date_label:'02 February 2025', image_url:'images/activities/C-dgtIuoMUq_slide1.jpg', headline:'"The training rebuilt me before it ever sent me out."', body:'The 12-Point Programme is real — first aid, self-defence, law, formations, all of it. The most surprising part was the Emotional Intelligence module. I came in expecting tactics. I left understanding why I react the way I do.', pull_quote:'They prepare you — and they don\'t leave you alone afterwards.', position:2 },
-            { id:'d-t-3', name:'Pastor James',  role_label:'Community Leader — Glasgow', date_label:'19 December 2024', image_url:'images/activities/CLxmhUEBgtN.jpg',         headline:'"They came in winter. That\'s how I knew they were serious."', body:'Forever Family came up from London in the depth of January, with food, blankets, and certified responders. Within a week the rough sleepers in the city centre knew their faces. Within a month, three people we\'d been trying to reach for two years had moved into hostels.', pull_quote:'The most disciplined community group I have ever partnered with.', position:3 },
-            { id:'d-t-4', name:'Sarah L.',      role_label:'Educator — Leicester',     date_label:'28 November 2024', image_url:'images/activities/DSLPaTBCBOi_slide1.jpg', headline:'"My students started using their language by the end of the term."', body:'Forever Family ran two community sessions inside the school hall. They didn\'t preach, didn\'t moralise, didn\'t hand out flyers. They listened, took notes, and came back the following week with concrete actions.', pull_quote:'Whatever they\'re doing, the message lands.', position:4 },
-            { id:'d-t-5', name:'Daniel A.',     role_label:'Steppers Only Squad',      date_label:'07 October 2024',  image_url:'images/activities/CQEmNzHh8dv.jpg',         headline:'"I came in to learn self-defence. I left as a mentor."', body:'Eighteen months later I earned my Mentorship Badge. Now I help run the Tuesday session for the new intake. Watching them go through the same shift I did is the best thing I\'ve ever been part of.', pull_quote:'It turns people who needed something into people who can give something.', position:5 }
+            { id:'d-t-1', name:'Marcus T.',     role_label:'Parent — Brixton',         date_label:'14 March 2025',    image_url:'https://images.pexels.com/photos/1707828/pexels-photo-1707828.jpeg?auto=compress&cs=tinysrgb&w=400', headline:'"They didn\'t just speak. They turned up."', body:'When my son got pulled into the wrong circle, I\'d run out of options. A friend told me about Forever Family. I sent a referral on the G-Line and within hours two of their certified Steppers were sitting at my kitchen table — calm, listening, no judgement.', pull_quote:'They gave us a structure.', position:1 },
+            { id:'d-t-2', name:'Aisha O.',      role_label:'Certified Stepper',        date_label:'02 February 2025', image_url:'https://images.pexels.com/photos/3184418/pexels-photo-3184418.jpeg?auto=compress&cs=tinysrgb&w=400', headline:'"The training rebuilt me before it ever sent me out."', body:'The 12-Point Programme is real — first aid, self-defence, law, formations, all of it. The most surprising part was the Emotional Intelligence module.', pull_quote:'They prepare you — and they don\'t leave you alone afterwards.', position:2 },
+            { id:'d-t-3', name:'Pastor James',  role_label:'Community Leader — Glasgow', date_label:'19 December 2024', image_url:'https://images.pexels.com/photos/7551759/pexels-photo-7551759.jpeg?auto=compress&cs=tinysrgb&w=400', headline:'"They came in winter. That\'s how I knew they were serious."', body:'Forever Family came up from London in the depth of January, with food, blankets, and certified responders. Within a week the rough sleepers in the city centre knew their faces.', pull_quote:'The most disciplined community group I have ever partnered with.', position:3 },
+            { id:'d-t-4', name:'Sarah L.',      role_label:'Educator — Leicester',     date_label:'28 November 2024', image_url:'https://images.pexels.com/photos/1267347/pexels-photo-1267347.jpeg?auto=compress&cs=tinysrgb&w=400', headline:'"My students started using their language by the end of the term."', body:'Forever Family ran two community sessions inside the school hall. They didn\'t preach, didn\'t moralise, didn\'t hand out flyers. They listened, took notes, and came back the following week with concrete actions.', pull_quote:'Whatever they\'re doing, the message lands.', position:4 },
+            { id:'d-t-5', name:'Daniel A.',     role_label:'Steppers Only Squad',      date_label:'07 October 2024',  image_url:'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=400', headline:'"I came in to learn self-defence. I left as a mentor."', body:'Eighteen months later I earned my Mentorship Badge. Now I help run the Tuesday session for the new intake. Watching them go through the same shift I did is the best thing I\'ve ever been part of.', pull_quote:'It turns people who needed something into people who can give something.', position:5 }
         ]
     };
 
@@ -555,29 +555,28 @@
         rows = withDemoFallback(rows, DEMO.testimonials);
         testimonialsCache = rows;
         const list = rows.map(t => `
-                <article class="border border-soft bg-[#FFFFFF] p-5 shadow-sm">
-                    <div class="flex flex-col md:flex-row gap-5">
-                        <div class="md:w-48 flex-shrink-0">
+                <article class="border border-soft bg-[#FFFFFF] shadow-sm">
+                    <div class="flex items-stretch gap-0">
+                        <div class="w-20 h-20 md:w-28 md:h-28 flex-shrink-0 overflow-hidden border-r border-soft bg-[#F0ECE2]">
                             ${t.image_url
-                                ? `<div class="aspect-[4/3] overflow-hidden border border-soft"><img src="${escapeHtml(t.image_url)}" alt="${escapeHtml(t.name)}" loading="lazy" class="w-full h-full object-cover"></div>`
-                                : `<div class="aspect-[4/3] flex items-center justify-center bg-[#F0ECE2] text-soft text-xs tracking-widest uppercase">No image</div>`}
+                                ? `<img src="${escapeHtml(t.image_url)}" alt="${escapeHtml(t.name)}" loading="lazy" class="w-full h-full object-cover">`
+                                : `<div class="w-full h-full flex items-center justify-center text-soft text-[9px] tracking-widest uppercase">No image</div>`}
                         </div>
-                        <div class="flex-grow min-w-0">
-                            <div class="flex justify-between items-start gap-3 mb-2 flex-wrap">
-                                <div>
-                                    <div class="text-[10px] tracking-widest text-gold uppercase mb-1">${escapeHtml(t.role_label || '—')}</div>
-                                    <div class="font-condensed text-xl text-[#111111]">${escapeHtml(t.name || '')}</div>
-                                    <div class="text-xs text-soft mt-1">${escapeHtml(t.date_label || '')} · pos ${t.position ?? 0}</div>
+                        <div class="flex-grow min-w-0 p-3 md:p-4">
+                            <div class="flex justify-between items-start gap-3 mb-1 flex-wrap">
+                                <div class="min-w-0">
+                                    <div class="text-[9px] tracking-widest text-gold uppercase mb-0.5">${escapeHtml(t.role_label || '—')}</div>
+                                    <div class="font-condensed text-base md:text-lg text-[#111111] leading-tight">${escapeHtml(t.name || '')}</div>
+                                    <div class="text-[10px] text-soft mt-0.5">${escapeHtml(t.date_label || '')} · pos ${t.position ?? 0}</div>
                                 </div>
-                                <div class="flex gap-2 flex-shrink-0">
+                                <div class="flex gap-1.5 flex-shrink-0">
                                     ${isDemoRow(t)
-                                        ? `<span class="text-[9px] tracking-widest uppercase text-soft border border-soft border-dashed px-3 py-1.5">Demo · read-only</span>`
-                                        : `<button type="button" data-id="${t.id}" class="t-edit text-[10px] tracking-widest uppercase border border-soft px-3 py-1.5 hover:border-gold hover:text-gold transition-colors">Edit</button>
-                                           <button type="button" data-id="${t.id}" class="t-delete text-[10px] tracking-widest uppercase border border-soft px-3 py-1.5 hover:border-red-600 hover:text-red-600 transition-colors">Delete</button>`}
+                                        ? `<span class="text-[9px] tracking-widest uppercase text-soft border border-soft border-dashed px-2 py-1">Demo</span>`
+                                        : `<button type="button" data-id="${t.id}" class="t-edit text-[9px] tracking-widest uppercase border border-soft px-2 py-1 hover:border-gold hover:text-gold transition-colors">Edit</button>
+                                           <button type="button" data-id="${t.id}" class="t-delete text-[9px] tracking-widest uppercase border border-soft px-2 py-1 hover:border-red-600 hover:text-red-600 transition-colors">Del</button>`}
                                 </div>
                             </div>
-                            ${t.headline ? `<div class="font-condensed text-base text-[#111111] mb-2 leading-snug">${escapeHtml(t.headline)}</div>` : ''}
-                            <p class="text-sm text-muted leading-relaxed line-clamp-3 whitespace-pre-line">${escapeHtml(t.body || '')}</p>
+                            <p class="text-xs text-muted leading-snug line-clamp-2 mt-1">${escapeHtml(t.headline || t.body || '')}</p>
                         </div>
                     </div>
                 </article>
