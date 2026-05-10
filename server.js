@@ -93,6 +93,8 @@ app.post('/api/portal-login', async (req, res) => {
         return res.status(400).json({ error: 'Email and access code required.' });
     }
 
+    const submittedEmail = email.toLowerCase().trim();
+
     const { data, error } = await supabase
         .from('members')
         .select('*')
@@ -103,15 +105,21 @@ app.post('/api/portal-login', async (req, res) => {
         return res.status(401).json({ error: 'Invalid access code.' });
     }
 
+    // If the row already has an email bound to this code, require it to match.
+    // Otherwise (first login for that code) bind the supplied email to the row.
+    if (data.email && data.email.toLowerCase().trim() !== submittedEmail) {
+        return res.status(401).json({ error: 'Email and access code do not match.' });
+    }
+
+    if (!data.email) {
+        await supabase.from('members').update({ email: submittedEmail }).eq('code', code.toUpperCase().trim());
+    }
+
     const { tier } = data;
-
-    // Update email on the member record
-    await supabase.from('members').update({ email }).eq('code', code.toUpperCase().trim());
-
-    const payload = JSON.stringify({ email, tier, memberSince: data.created_at, issued: Date.now(), exp: Date.now() + 86400000 });
+    const payload = JSON.stringify({ email: submittedEmail, tier, memberSince: data.created_at, issued: Date.now(), exp: Date.now() + 86400000 });
     const token = Buffer.from(payload).toString('base64');
 
-    console.log(`[PORTAL] ${email} logged in as ${tier}`);
+    console.log(`[PORTAL] ${submittedEmail} logged in as ${tier}`);
     res.json({ success: true, tier, memberSince: data.created_at, token });
 });
 
