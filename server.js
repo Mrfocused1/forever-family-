@@ -95,7 +95,7 @@ app.post('/api/portal-login', async (req, res) => {
 
     const { data, error } = await supabase
         .from('members')
-        .select('tier, created_at')
+        .select('*')
         .eq('code', code.toUpperCase().trim())
         .single();
 
