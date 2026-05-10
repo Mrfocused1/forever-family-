@@ -233,6 +233,40 @@ app.get('/api/submissions', async (req, res) => {
     res.json({ submissions: submissions || [], referrals: referrals || [] });
 });
 
+// ─── GET /api/admin/data (one-shot dashboard fetch) ─────────────────────────
+app.get('/api/admin/data', async (req, res) => {
+    const auth = req.headers['x-admin-key'];
+    if (auth !== process.env.ADMIN_KEY && process.env.NODE_ENV !== 'development') {
+        return res.status(403).json({ error: 'Forbidden.' });
+    }
+
+    // Each query is allowed to fail independently (e.g. the feedback table may
+    // not have been created yet) — we surface what we can and report the rest as empty.
+    const safe = async (p) => {
+        try {
+            const { data, error } = await p;
+            return error ? [] : (data || []);
+        } catch (_) { return []; }
+    };
+
+    const [submissions, referrals, feedback, quiz] = await Promise.all([
+        safe(supabase.from('submissions').select('*').order('created_at', { ascending: false })),
+        safe(supabase.from('referrals').select('*').order('created_at', { ascending: false })),
+        safe(supabase.from('feedback').select('*').order('created_at', { ascending: false })),
+        safe(supabase.from('quiz_results').select('*').order('created_at', { ascending: false }))
+    ]);
+
+    res.json({
+        submissions, referrals, feedback, quiz,
+        stats: {
+            submissions: submissions.length,
+            referrals: referrals.length,
+            feedback: feedback.length,
+            quiz: quiz.length
+        }
+    });
+});
+
 // ─── POST /api/quiz-results ───────────────────────────────────────────────────
 app.post('/api/quiz-results', async (req, res) => {
     const ip = (req.headers['x-forwarded-for'] || req.socket.remoteAddress || '').split(',')[0].trim();
