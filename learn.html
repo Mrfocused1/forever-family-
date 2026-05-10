@@ -770,6 +770,7 @@ let _learnPrev = null;
 function openModal(i) {
     currentIdx  = i;
     submitted   = false;
+    quizStartTime = null;
     const m = MODULES[i];
     document.getElementById('modal-label').textContent = `Module ${m.number} — ${m.subtitle}`;
     document.getElementById('modal-title').textContent = m.title;
@@ -795,12 +796,19 @@ document.getElementById('learn-modal-overlay').addEventListener('click', e => {
 });
 
 // ─── Tabs ─────────────────────────────────────────────────────────────────────
+let quizStartTime = null;
 function switchTab(tab) {
     document.getElementById('panel-study').classList.toggle('hidden', tab !== 'study');
     document.getElementById('panel-quiz').classList.toggle('hidden',  tab !== 'quiz');
     document.getElementById('tab-study').classList.toggle('active',   tab === 'study');
     document.getElementById('tab-quiz').classList.toggle('active',    tab === 'quiz');
     document.getElementById('panel-' + tab).scrollTop = 0;
+
+    // Start the timer the first time the user enters the quiz tab for this attempt.
+    // The user never sees this; admin only.
+    if (tab === 'quiz' && quizStartTime === null && !submitted) {
+        quizStartTime = Date.now();
+    }
 }
 
 // ─── Study panel ─────────────────────────────────────────────────────────────
@@ -876,15 +884,18 @@ function submitQuiz() {
     document.getElementById('quiz-footer').style.display = 'none';
     document.getElementById('panel-quiz').scrollTop = 0;
 
+    const durationSeconds = quizStartTime ? Math.max(0, Math.round((Date.now() - quizStartTime) / 1000)) : null;
+
     fetch('/api/quiz-results', {
         method:'POST',
         headers:{'Content-Type':'application/json'},
-        body: JSON.stringify({ sessionId, module: m.id, score, total:10, label: lbl })
+        body: JSON.stringify({ sessionId, module: m.id, score, total:10, label: lbl, durationSeconds })
     }).catch(()=>{});
 }
 
 // ─── Retake ───────────────────────────────────────────────────────────────────
 function retakeQuiz() {
+    quizStartTime = Date.now();
     renderQuiz(MODULES[currentIdx]);
     document.getElementById('panel-quiz').scrollTop = 0;
 }

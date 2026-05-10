@@ -272,18 +272,28 @@ app.post('/api/quiz-results', async (req, res) => {
     const ip = (req.headers['x-forwarded-for'] || req.socket.remoteAddress || '').split(',')[0].trim();
     if (rateLimit(ip, 30)) return res.status(429).json({ error: 'Too many requests. Please try again later.' });
 
-    const { sessionId, module, score, total, label } = req.body;
+    const { sessionId, module, score, total, label, durationSeconds } = req.body;
     if (!module || score === undefined || !label) {
         return res.status(400).json({ error: 'Required fields missing.' });
     }
 
-    const { error } = await supabase.from('quiz_results').insert({
+    const row = {
         session_id: sessionId || null,
         module,
         score: parseInt(score) || 0,
         total: parseInt(total) || 10,
         label
-    });
+    };
+    const dur = parseInt(durationSeconds);
+    if (Number.isFinite(dur) && dur >= 0) row.duration_seconds = dur;
+
+    let { error } = await supabase.from('quiz_results').insert(row);
+    // If the duration_seconds column hasn't been added yet, retry without it
+    // so the rest of the row still saves.
+    if (error && /duration_seconds/.test(error.message)) {
+        delete row.duration_seconds;
+        ({ error } = await supabase.from('quiz_results').insert(row));
+    }
 
     if (error) {
         console.error('[QUIZ] Supabase error:', error.message);

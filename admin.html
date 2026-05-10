@@ -337,6 +337,14 @@
         wireRowClicks(panel, 'Referral');
     }
 
+    function fmtDuration(sec) {
+        if (sec === null || sec === undefined || sec === '' || isNaN(sec)) return '—';
+        const s = Math.max(0, parseInt(sec));
+        const m = Math.floor(s / 60);
+        const r = s % 60;
+        return m > 0 ? `${m}m ${String(r).padStart(2, '0')}s` : `${r}s`;
+    }
+
     function renderQuiz(rows) {
         const panel = document.getElementById('panel-quiz');
         if (!rows.length) { panel.innerHTML = ''; return; }
@@ -349,6 +357,7 @@
                             <th class="text-left px-4 py-3">Module</th>
                             <th class="text-left px-4 py-3">Score</th>
                             <th class="text-left px-4 py-3">Result</th>
+                            <th class="text-left px-4 py-3">Time Taken</th>
                             <th class="text-left px-4 py-3">Session</th>
                         </tr>
                     </thead>
@@ -362,6 +371,7 @@
                                     <td class="px-4 py-3 text-white capitalize">${escapeHtml((r.module || '').replace(/-/g, ' '))}</td>
                                     <td class="px-4 py-3 text-gold font-condensed">${r.score}/${r.total} <span class="text-stone text-xs">(${pct}%)</span></td>
                                     <td class="px-4 py-3 ${labelColor} text-xs tracking-widest uppercase">${escapeHtml(r.label || '')}</td>
+                                    <td class="px-4 py-3 text-white font-condensed whitespace-nowrap">${fmtDuration(r.duration_seconds)}</td>
                                     <td class="px-4 py-3 text-stone text-xs">${escapeHtml((r.session_id || '').slice(0, 18))}</td>
                                 </tr>
                             `;
