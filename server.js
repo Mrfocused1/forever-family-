@@ -59,6 +59,30 @@ app.post('/api/join', async (req, res) => {
     res.json({ success: true });
 });
 
+// ─── POST /api/feedback ─────────────────────────────────────────────────────
+app.post('/api/feedback', async (req, res) => {
+    const ip = (req.headers['x-forwarded-for'] || req.socket.remoteAddress || '').split(',')[0].trim();
+    if (rateLimit(ip, 10)) return res.status(429).json({ error: 'Too many requests. Please try again later.' });
+
+    const { name, message } = req.body;
+    if (!name || !message) {
+        return res.status(400).json({ error: 'Name and message are required.' });
+    }
+
+    const { error } = await supabase.from('feedback').insert({
+        name: String(name).trim().slice(0, 120),
+        message: String(message).trim().slice(0, 2000)
+    });
+
+    if (error) {
+        console.error('[FEEDBACK] Supabase error:', error.message);
+        return res.status(500).json({ error: 'Failed to save feedback.' });
+    }
+
+    console.log(`[FEEDBACK] ${name}: ${String(message).slice(0, 80)}`);
+    res.json({ success: true });
+});
+
 // ─── POST /api/referral ──────────────────────────────────────────────────────
 app.post('/api/referral', async (req, res) => {
     const ip = (req.headers['x-forwarded-for'] || req.socket.remoteAddress || '').split(',')[0].trim();

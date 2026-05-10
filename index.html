@@ -562,6 +562,44 @@
         </div>
     </section>
 
+    <!-- COMMUNITY FEEDBACK -->
+    <section id="feedback" class="py-32 px-6 md:px-12 bg-[#0d0d0d] border-t border-stone">
+        <div class="max-w-3xl mx-auto">
+            <div class="text-xs text-gold tracking-widest uppercase mb-6 border-b border-stone pb-4 inline-block">YOUR VOICE</div>
+            <h2 class="font-condensed text-5xl md:text-6xl mb-4">SHARE YOUR<br><span class="text-gold">FEEDBACK.</span></h2>
+            <p class="text-gray-400 leading-relaxed mb-12 max-w-xl">Tell us what we're doing well, where we can do better, or what you'd like to see next. Every message reaches the team.</p>
+
+            <form id="feedback-form" class="space-y-8 bg-[#111] border border-stone p-8 md:p-12 relative">
+                <div class="absolute top-0 left-0 w-6 h-6 border-t-2 border-l-2 border-gold m-3 pointer-events-none"></div>
+                <div class="absolute top-0 right-0 w-6 h-6 border-t-2 border-r-2 border-gold m-3 pointer-events-none"></div>
+                <div class="absolute bottom-0 left-0 w-6 h-6 border-b-2 border-l-2 border-gold m-3 pointer-events-none"></div>
+                <div class="absolute bottom-0 right-0 w-6 h-6 border-b-2 border-r-2 border-gold m-3 pointer-events-none"></div>
+
+                <div class="relative">
+                    <input type="text" id="fb-name" required maxlength="120" placeholder=" " class="w-full bg-transparent border-b border-stone py-3 text-white focus:outline-none focus:border-gold transition-colors peer">
+                    <label for="fb-name" class="absolute left-0 top-3 text-stone uppercase tracking-widest text-xs transition-all peer-focus:-top-4 peer-focus:text-gold peer-focus:text-[10px]">Your Name</label>
+                </div>
+
+                <div class="relative">
+                    <textarea id="fb-message" required rows="4" maxlength="2000" placeholder=" " class="w-full bg-transparent border-b border-stone py-3 text-white focus:outline-none focus:border-gold transition-colors peer resize-none"></textarea>
+                    <label for="fb-message" class="absolute left-0 top-3 text-stone uppercase tracking-widest text-xs transition-all peer-focus:-top-4 peer-focus:text-gold peer-focus:text-[10px]">Your Message</label>
+                </div>
+
+                <div id="feedback-error" class="hidden text-xs text-red-400 tracking-widest uppercase">Could not send. Try again.</div>
+
+                <button type="submit" class="feedback-submit w-full py-4 bg-gold text-[#0d0d0d] font-condensed text-xl tracking-widest hover:bg-white transition-colors duration-300 disabled:opacity-60">
+                    <span class="fb-btn-text">SEND FEEDBACK</span>
+                    <span class="fb-btn-loading hidden">SENDING...</span>
+                </button>
+
+                <div id="feedback-success" class="hidden text-center py-4">
+                    <div class="text-xs text-gold tracking-widest uppercase mb-2">RECEIVED</div>
+                    <p class="text-gray-300 text-sm">Thank you. The team has your message.</p>
+                </div>
+            </form>
+        </div>
+    </section>
+
     <!-- SEC 08: PINNED CHAPTER - IMPACT NUMBERS -->
     <section id="sec08-pin" class="h-screen w-full bg-[#0d0d0d] relative overflow-hidden flex flex-col items-center justify-center border-t border-b border-stone">
 
@@ -1029,6 +1067,43 @@
                     });
                     if (!res.ok) throw new Error();
                     gsap.to('.success-stamp', { y: '0%', duration: 0.8, ease: 'power4.out' });
+                } catch (_) {
+                    errorEl.classList.remove('hidden');
+                    btnText.classList.remove('hidden');
+                    btnLoading.classList.add('hidden');
+                    btn.disabled = false;
+                }
+            });
+
+            document.getElementById('feedback-form').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const form = e.target;
+                const btn = form.querySelector('.feedback-submit');
+                const btnText = btn.querySelector('.fb-btn-text');
+                const btnLoading = btn.querySelector('.fb-btn-loading');
+                const errorEl = document.getElementById('feedback-error');
+                const successEl = document.getElementById('feedback-success');
+                btnText.classList.add('hidden');
+                btnLoading.classList.remove('hidden');
+                btn.disabled = true;
+                errorEl.classList.add('hidden');
+
+                const payload = {
+                    name: document.getElementById('fb-name').value.trim(),
+                    message: document.getElementById('fb-message').value.trim()
+                };
+
+                try {
+                    const res = await fetch('/api/feedback', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                    if (!res.ok) throw new Error();
+                    form.querySelector('#fb-name').closest('.relative').classList.add('hidden');
+                    form.querySelector('#fb-message').closest('.relative').classList.add('hidden');
+                    btn.classList.add('hidden');
+                    successEl.classList.remove('hidden');
                 } catch (_) {
                     errorEl.classList.remove('hidden');
                     btnText.classList.remove('hidden');
