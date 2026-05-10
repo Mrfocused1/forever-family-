@@ -2,6 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const path = require('path');
 const { createClient } = require('@supabase/supabase-js');
+const { Resend } = require('resend');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -10,6 +11,34 @@ const supabase = createClient(
     process.env.SUPABASE_URL,
     process.env.SUPABASE_SERVICE_KEY
 );
+
+// ── Email notifications (Resend) ─────────────────────────────────────────────
+const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
+const RESEND_FROM = process.env.RESEND_FROM || 'Forever Family <onboarding@resend.dev>';
+const RESEND_TO   = process.env.RESEND_TO   || '';
+
+// Fire-and-forget email helper. Never blocks or breaks the form response.
+function sendNotification({ subject, html, replyTo }) {
+    if (!resend || !RESEND_TO) return;
+    const payload = { from: RESEND_FROM, to: [RESEND_TO], subject, html };
+    if (replyTo) payload.reply_to = replyTo;
+    Promise.resolve().then(async () => {
+        try {
+            const { error } = await resend.emails.send(payload);
+            if (error) console.error('[EMAIL] Resend error:', error.message || error);
+        } catch (e) {
+            console.error('[EMAIL] Send failed:', e.message);
+        }
+    });
+}
+
+function escapeHtml(s) {
+    if (s === null || s === undefined) return '';
+    return String(s)
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;').replace(/'/g, '&#39;')
+        .replace(/\n/g, '<br>');
+}
 
 const _rl = new Map();
 function rateLimit(ip, max = 10, windowMs = 60000) {
@@ -54,6 +83,20 @@ app.post('/api/join', async (req, res) => {
         console.error('[JOIN] Supabase error:', error.message);
         return res.status(500).json({ error: 'Failed to save submission.' });
     }
+
+    sendNotification({
+        subject: `[Forever Family] New signup — ${name}`,
+        replyTo: email,
+        html: `
+            <h2 style="font-family:sans-serif">New signup</h2>
+            <p style="font-family:sans-serif"><strong>Name:</strong> ${escapeHtml(name)}<br>
+            <strong>Email:</strong> ${escapeHtml(email)}<br>
+            <strong>Phone:</strong> ${escapeHtml(phone || '—')}<br>
+            <strong>City:</strong> ${escapeHtml(city)}<br>
+            <strong>Interest:</strong> ${escapeHtml(interest)}</p>
+            <p style="font-family:sans-serif"><strong>Message:</strong><br>${escapeHtml(message || '—')}</p>
+        `
+    });
 
     console.log(`[JOIN] ${name} <${email}> — ${interest}`);
     res.json({ success: true });
@@ -142,6 +185,15 @@ app.post('/api/feedback', async (req, res) => {
         return res.status(500).json({ error: 'Failed to save feedback.' });
     }
 
+    sendNotification({
+        subject: `[Forever Family] Feedback from ${name}`,
+        html: `
+            <h2 style="font-family:sans-serif">New feedback</h2>
+            <p style="font-family:sans-serif"><strong>From:</strong> ${escapeHtml(name)}</p>
+            <p style="font-family:sans-serif"><strong>Message:</strong><br>${escapeHtml(message)}</p>
+        `
+    });
+
     console.log(`[FEEDBACK] ${name}: ${String(message).slice(0, 80)}`);
     res.json({ success: true });
 });
@@ -168,6 +220,19 @@ app.post('/api/referral', async (req, res) => {
         console.error('[G-LINE] Supabase error:', error.message);
         return res.status(500).json({ error: 'Failed to save referral.' });
     }
+
+    const urgencyLabel = (urgency === 'urgent') ? '🚨 URGENT' : (urgency === 'asap' ? '⚠️ ASAP' : 'Standard');
+    sendNotification({
+        subject: `[Forever Family · G-LINE · ${urgencyLabel}] Referral re: ${referralName}`,
+        html: `
+            <h2 style="font-family:sans-serif">G-Line referral — ${urgencyLabel}</h2>
+            <p style="font-family:sans-serif"><strong>Reported by:</strong> ${escapeHtml(name)}<br>
+            <strong>Concerning:</strong> ${escapeHtml(referralName)}<br>
+            <strong>Relationship:</strong> ${escapeHtml(relationship || '—')}<br>
+            <strong>Urgency:</strong> ${escapeHtml(urgency || 'unspecified')}</p>
+            <p style="font-family:sans-serif"><strong>Situation:</strong><br>${escapeHtml(situation)}</p>
+        `
+    });
 
     console.log(`[G-LINE] ${name} → re: ${referralName} (${urgency})`);
     res.json({ success: true });
