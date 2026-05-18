@@ -162,7 +162,7 @@
     // returns no rows (e.g. testimonials table not yet created).
     const SEED_POSTS = [
         {
-            name: 'Anonymous',
+            name: '',
             role_label: 'Member — 2 Years',
             date_label: '',
             image_url: '',
@@ -178,7 +178,7 @@
             pull_quote: 'It\'s been a real blessing meeting Raspect and everyone else at Forever Family.'
         },
         {
-            name: 'Anonymous',
+            name: '',
             role_label: 'FFCA Member',
             date_label: '',
             image_url: '',
@@ -216,7 +216,7 @@
                         ${imgHtml}
                         <div class="post-meta-card">
                             <div class="text-[10px] tracking-widest text-gold uppercase mb-1">${escapeHtml(p.role_label || '')}</div>
-                            <div class="font-condensed text-2xl text-white leading-tight">${escapeHtml(p.name || '')}</div>
+                            ${p.name ? `<div class="font-condensed text-2xl text-white leading-tight">${escapeHtml(p.name)}</div>` : ''}
                             ${p.date_label ? `<div class="text-xs text-stone mt-2">${escapeHtml(p.date_label)}</div>` : ''}
                         </div>
                     </aside>
