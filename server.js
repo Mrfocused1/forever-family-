@@ -94,6 +94,16 @@ const fs = require('fs');
 app.use(express.json());
 app.use(cookieParser());
 app.use('/images', express.static(path.join(__dirname, 'images')));
+
+app.get('/learn', (req, res, next) => {
+    const token = req.cookies && req.cookies[COOKIE_NAME];
+    const payload = token && verifySession(token);
+    if (!payload) {
+        return res.redirect(302, '/portal?next=/learn');
+    }
+    next();
+});
+
 app.use(express.static(__dirname));
 
 // Explicit route ensures tailwind.css is served with correct MIME type
@@ -360,43 +370,6 @@ app.post('/api/referral', async (req, res) => {
     res.json({ success: true });
 });
 
-// ─── POST /api/portal-login ──────────────────────────────────────────────────
-app.post('/api/portal-login', async (req, res) => {
-    const { email, code } = req.body;
-    if (!email || !code) {
-        return res.status(400).json({ error: 'Email and access code required.' });
-    }
-
-    const submittedEmail = email.toLowerCase().trim();
-
-    const { data, error } = await supabase
-        .from('members')
-        .select('*')
-        .eq('code', code.toUpperCase().trim())
-        .single();
-
-    if (error || !data) {
-        return res.status(401).json({ error: 'Invalid access code.' });
-    }
-
-    // If the row already has an email bound to this code, require it to match.
-    // Otherwise (first login for that code) bind the supplied email to the row.
-    if (data.email && data.email.toLowerCase().trim() !== submittedEmail) {
-        return res.status(401).json({ error: 'Email and access code do not match.' });
-    }
-
-    if (!data.email) {
-        await supabase.from('members').update({ email: submittedEmail }).eq('code', code.toUpperCase().trim());
-    }
-
-    const { tier } = data;
-    const payload = JSON.stringify({ email: submittedEmail, tier, memberSince: data.created_at, issued: Date.now(), exp: Date.now() + 86400000 });
-    const token = Buffer.from(payload).toString('base64');
-
-    console.log(`[PORTAL] ${submittedEmail} logged in as ${tier}`);
-    res.json({ success: true, tier, memberSince: data.created_at, token });
-});
-
 // ─── AUTH ROUTES ─────────────────────────────────────────────────────────────
 app.post('/api/auth/request-otp', async (req, res) => {
     const email = (req.body && req.body.email || '').toLowerCase().trim();
@@ -487,6 +460,23 @@ app.post('/api/auth/verify-otp', async (req, res) => {
     });
 
     res.json({ success: true, member: { email: member.email, tier: member.tier, memberSince: member.created_at } });
+});
+
+app.get('/api/auth/me', requireMember, (req, res) => {
+    res.json({ member: {
+        email: req.member.email,
+        tier: req.member.tier,
+        memberSince: req.member.created_at,
+        lastLoginAt: req.member.last_login_at
+    }});
+});
+
+app.post('/api/auth/logout', async (req, res) => {
+    const token = req.cookies && req.cookies[COOKIE_NAME];
+    const payload = token && verifySession(token);
+    clearSessionCookie(res);
+    if (payload) await logAuthEvent({ type: 'logout', email: payload.email, memberId: payload.sub, req });
+    res.json({ success: true });
 });
 
 // ─── GET /api/steps ──────────────────────────────────────────────────────────
