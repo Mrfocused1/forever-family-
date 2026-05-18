@@ -104,6 +104,21 @@ app.get('/learn', (req, res, next) => {
     next();
 });
 
+// Admin page is gated to ADMIN_EMAIL only. No session → /portal?next=/admin.
+// Wrong email → /portal?error=not_admin (don't reveal valid admin identity).
+app.get('/admin', (req, res, next) => {
+    const token = req.cookies && req.cookies[COOKIE_NAME];
+    const payload = token && verifySession(token);
+    if (!payload) {
+        return res.redirect(302, '/portal?next=/admin');
+    }
+    const sessionEmail = (payload.email || '').toLowerCase().trim();
+    if (!ADMIN_EMAIL || sessionEmail !== ADMIN_EMAIL) {
+        return res.redirect(302, '/portal?error=not_admin');
+    }
+    next();
+});
+
 app.use(express.static(__dirname));
 
 // Explicit route ensures tailwind.css is served with correct MIME type
@@ -118,6 +133,9 @@ app.get('/tailwind.css', (req, res) => {
 // ─── AUTH HELPERS ────────────────────────────────────────────────────────────
 const JWT_SECRET = process.env.AUTH_JWT_SECRET;
 if (!JWT_SECRET) console.warn('[AUTH] AUTH_JWT_SECRET is not set — auth will fail.');
+
+const ADMIN_EMAIL = (process.env.ADMIN_EMAIL || '').toLowerCase().trim();
+if (!ADMIN_EMAIL) console.warn('[ADMIN] ADMIN_EMAIL not set — admin access will be denied to everyone.');
 
 const COOKIE_NAME = 'ff_session';
 const SESSION_TTL_SECONDS = 60 * 60 * 24 * 30; // 30 days
@@ -211,6 +229,18 @@ async function requireMember(req, res, next) {
     next();
 }
 
+// Admin gate. Single allowlisted email (ADMIN_EMAIL env var). Reads the
+// session cookie; rejects anyone whose email doesn't match exactly.
+function requireAdmin(req, res, next) {
+    const token = req.cookies && req.cookies[COOKIE_NAME];
+    const payload = token && verifySession(token);
+    const sessionEmail = ((payload && payload.email) || '').toLowerCase().trim();
+    if (!payload || !ADMIN_EMAIL || sessionEmail !== ADMIN_EMAIL) {
+        return res.status(403).json({ error: 'Forbidden.' });
+    }
+    next();
+}
+
 // ─── POST /api/join ─────────────────────────────────────────────────────────
 app.post('/api/join', async (req, res) => {
     const ip = (req.headers['x-forwarded-for'] || req.socket.remoteAddress || '').split(',')[0].trim();
@@ -265,11 +295,7 @@ app.get('/api/testimonials', async (req, res) => {
 });
 
 // ─── POST /api/admin/testimonials (admin) ───────────────────────────────────
-app.post('/api/admin/testimonials', async (req, res) => {
-    const auth = req.headers['x-admin-key'];
-    if (auth !== process.env.ADMIN_KEY && process.env.NODE_ENV !== 'development') {
-        return res.status(403).json({ error: 'Forbidden.' });
-    }
+app.post('/api/admin/testimonials', requireAdmin, async (req, res) => {
     const { name, role_label, date_label, image_url, headline, body, pull_quote, position } = req.body;
     if (!name || !body) return res.status(400).json({ error: 'Name and body are required.' });
 
@@ -284,11 +310,7 @@ app.post('/api/admin/testimonials', async (req, res) => {
 });
 
 // ─── PUT /api/admin/testimonials/:id (admin) ────────────────────────────────
-app.put('/api/admin/testimonials/:id', async (req, res) => {
-    const auth = req.headers['x-admin-key'];
-    if (auth !== process.env.ADMIN_KEY && process.env.NODE_ENV !== 'development') {
-        return res.status(403).json({ error: 'Forbidden.' });
-    }
+app.put('/api/admin/testimonials/:id', requireAdmin, async (req, res) => {
     const allowed = ['name','role_label','date_label','image_url','headline','body','pull_quote','position'];
     const update = {};
     allowed.forEach(k => { if (req.body[k] !== undefined) update[k] = req.body[k]; });
@@ -301,11 +323,7 @@ app.put('/api/admin/testimonials/:id', async (req, res) => {
 });
 
 // ─── DELETE /api/admin/testimonials/:id (admin) ─────────────────────────────
-app.delete('/api/admin/testimonials/:id', async (req, res) => {
-    const auth = req.headers['x-admin-key'];
-    if (auth !== process.env.ADMIN_KEY && process.env.NODE_ENV !== 'development') {
-        return res.status(403).json({ error: 'Forbidden.' });
-    }
+app.delete('/api/admin/testimonials/:id', requireAdmin, async (req, res) => {
     const { error } = await supabase.from('testimonials').delete().eq('id', req.params.id);
     if (error) return res.status(500).json({ error: error.message });
     res.json({ success: true });
@@ -509,12 +527,7 @@ app.get('/api/steps', async (req, res) => {
 });
 
 // ─── POST /api/steps (admin only) ────────────────────────────────────────────
-app.post('/api/steps', async (req, res) => {
-    const auth = req.headers['x-admin-key'];
-    if (auth !== process.env.ADMIN_KEY && process.env.NODE_ENV !== 'development') {
-        return res.status(403).json({ error: 'Forbidden.' });
-    }
-
+app.post('/api/steps', requireAdmin, async (req, res) => {
     const { location, city, area, steppers, status, startTime, endTime, purpose, outcome, coordinatedBy } = req.body;
 
     const { data, error } = await supabase.from('steps').insert({
@@ -538,12 +551,7 @@ app.post('/api/steps', async (req, res) => {
 });
 
 // ─── PUT /api/steps/:id (admin only) ─────────────────────────────────────────
-app.put('/api/steps/:id', async (req, res) => {
-    const auth = req.headers['x-admin-key'];
-    if (auth !== process.env.ADMIN_KEY && process.env.NODE_ENV !== 'development') {
-        return res.status(403).json({ error: 'Forbidden.' });
-    }
-
+app.put('/api/steps/:id', requireAdmin, async (req, res) => {
     const allowed = ['title','description','location','date','status','image_url','media'];
     const update = {};
     allowed.forEach(k => { if (req.body[k] !== undefined) update[k] = req.body[k]; });
@@ -565,12 +573,7 @@ app.put('/api/steps/:id', async (req, res) => {
 });
 
 // ─── GET /api/submissions (admin view) ───────────────────────────────────────
-app.get('/api/submissions', async (req, res) => {
-    const auth = req.headers['x-admin-key'];
-    if (auth !== process.env.ADMIN_KEY && process.env.NODE_ENV !== 'development') {
-        return res.status(403).json({ error: 'Forbidden.' });
-    }
-
+app.get('/api/submissions', requireAdmin, async (req, res) => {
     const [{ data: submissions }, { data: referrals }] = await Promise.all([
         supabase.from('submissions').select('*').order('created_at', { ascending: false }),
         supabase.from('referrals').select('*').order('created_at', { ascending: false })
@@ -580,12 +583,7 @@ app.get('/api/submissions', async (req, res) => {
 });
 
 // ─── GET /api/admin/data (one-shot dashboard fetch) ─────────────────────────
-app.get('/api/admin/data', async (req, res) => {
-    const auth = req.headers['x-admin-key'];
-    if (auth !== process.env.ADMIN_KEY && process.env.NODE_ENV !== 'development') {
-        return res.status(403).json({ error: 'Forbidden.' });
-    }
-
+app.get('/api/admin/data', requireAdmin, async (req, res) => {
     // Each query is allowed to fail independently (e.g. the feedback table may
     // not have been created yet) — we surface what we can and report the rest as empty.
     const safe = async (p) => {
@@ -614,14 +612,6 @@ app.get('/api/admin/data', async (req, res) => {
 });
 
 // ─── ADMIN: members + auth events ────────────────────────────────────────────
-function requireAdmin(req, res, next) {
-    const auth = req.headers['x-admin-key'];
-    if (auth !== process.env.ADMIN_KEY && process.env.NODE_ENV !== 'development') {
-        return res.status(403).json({ error: 'Forbidden.' });
-    }
-    next();
-}
-
 app.get('/api/admin/members', requireAdmin, async (req, res) => {
     const { data, error } = await supabase
         .from('members')

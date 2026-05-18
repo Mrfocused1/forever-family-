@@ -91,39 +91,18 @@
     </a>
     <div class="flex items-center gap-2 md:gap-3">
         <span class="text-[9px] md:text-[10px] tracking-widest uppercase text-gold border border-gold px-2 md:px-3 py-1 md:py-1.5 font-condensed">ADMIN</span>
-        <button type="button" id="logout-btn" class="hidden text-[9px] md:text-[10px] tracking-widest uppercase text-muted hover:text-[#111111] transition-colors px-2 md:px-3 py-1 md:py-1.5 border border-soft hover:border-[#111111]">Log Out</button>
+        <button type="button" id="logout-btn" class="text-[9px] md:text-[10px] tracking-widest uppercase text-muted hover:text-[#111111] transition-colors px-2 md:px-3 py-1 md:py-1.5 border border-soft hover:border-[#111111]">Log Out</button>
     </div>
 </nav>
 
-<!-- ─── LOGIN SCREEN ──────────────────────────────────────────────────────── -->
-<div id="login-screen" class="min-h-screen flex items-center justify-center px-6 pt-28 pb-12">
-    <div class="w-full max-w-md bg-[#FFFFFF] border border-soft p-8 md:p-12 relative shadow-sm">
-        <div class="absolute top-0 left-0 w-6 h-6 border-t-2 border-l-2 border-gold m-3 pointer-events-none"></div>
-        <div class="absolute top-0 right-0 w-6 h-6 border-t-2 border-r-2 border-gold m-3 pointer-events-none"></div>
-        <div class="absolute bottom-0 left-0 w-6 h-6 border-b-2 border-l-2 border-gold m-3 pointer-events-none"></div>
-        <div class="absolute bottom-0 right-0 w-6 h-6 border-b-2 border-r-2 border-gold m-3 pointer-events-none"></div>
-
-        <div class="text-xs text-gold tracking-widest uppercase mb-2">RESTRICTED</div>
-        <h1 class="font-condensed text-4xl mb-2 text-[#111111]">ADMIN <span class="text-gold">CONSOLE</span></h1>
-        <p class="text-muted text-sm mb-8">Enter your admin key to view signups, feedback, referrals and quiz results.</p>
-
-        <form id="login-form" class="space-y-6">
-            <div class="relative">
-                <input type="password" id="admin-key" required placeholder=" " autocomplete="off"
-                       class="w-full bg-transparent border-b border-soft py-3 text-[#111111] focus:outline-none focus:border-gold transition-colors peer uppercase tracking-widest font-condensed text-xl">
-                <label for="admin-key" class="absolute left-0 top-3 text-soft uppercase tracking-widest text-xs transition-all peer-focus:-top-4 peer-focus:text-gold peer-focus:text-[10px]">Admin Key</label>
-            </div>
-            <div id="login-error" class="hidden text-xs text-red-600 tracking-widest uppercase">Invalid key.</div>
-            <button type="submit" class="w-full py-4 bg-gold text-[#111111] font-condensed text-xl tracking-widest hover:bg-[#C9A010] transition-colors duration-300 disabled:opacity-60">
-                <span class="login-btn-text">UNLOCK CONSOLE</span>
-                <span class="login-btn-loading hidden">VERIFYING...</span>
-            </button>
-        </form>
-    </div>
-</div>
-
 <!-- ─── DASHBOARD ─────────────────────────────────────────────────────────── -->
-<main id="dashboard" class="hidden pt-40 md:pt-48 pb-24 px-6 md:px-12 max-w-7xl mx-auto">
+<!--
+  Auth note: /admin is gated server-side. The Express handler in server.js
+  validates the ff_session cookie + checks the member email against
+  ADMIN_EMAIL. Unauthorised visits never reach this HTML — they get
+  302-redirected to /portal first. No client-side login form needed.
+-->
+<main id="dashboard" class="pt-40 md:pt-48 pb-24 px-6 md:px-12 max-w-7xl mx-auto">
 
     <div class="flex items-center gap-4 mb-6">
         <div class="relative w-3 h-3 flex-shrink-0">
@@ -273,7 +252,6 @@
 </style>
 
 <script>
-    const KEY_STORAGE = 'ff_admin_key';
 
     // ── Demo data (used as a fallback when a section returns no real rows) ──
     const DEMO = {
@@ -359,42 +337,11 @@
             .replaceAll("'", '&#39;');
     }
 
-    function getKey()  { return sessionStorage.getItem(KEY_STORAGE); }
-    function setKey(k) { sessionStorage.setItem(KEY_STORAGE, k); }
-    function clearKey(){ sessionStorage.removeItem(KEY_STORAGE); }
-
-    // ── Login ─────────────────────────────────────────────────────────────
-    document.getElementById('login-form').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const btn = e.target.querySelector('button[type="submit"]');
-        const btnText = btn.querySelector('.login-btn-text');
-        const btnLoading = btn.querySelector('.login-btn-loading');
-        const errorEl = document.getElementById('login-error');
-        const key = document.getElementById('admin-key').value.trim();
-
-        btnText.classList.add('hidden');
-        btnLoading.classList.remove('hidden');
-        btn.disabled = true;
-        errorEl.classList.add('hidden');
-
-        try {
-            const res = await fetch('/api/admin/data', { headers: { 'x-admin-key': key } });
-            if (res.status === 403) throw new Error('forbidden');
-            if (!res.ok) throw new Error('server');
-            const data = await res.json();
-            setKey(key);
-            showDashboard(data);
-        } catch (_) {
-            errorEl.classList.remove('hidden');
-            btnText.classList.remove('hidden');
-            btnLoading.classList.add('hidden');
-            btn.disabled = false;
-        }
-    });
-
-    document.getElementById('logout-btn').addEventListener('click', () => {
-        clearKey();
-        location.reload();
+    // Auth handled by the ff_session cookie set by /api/auth/verify-otp.
+    // Server-side /admin route ensures only ADMIN_EMAIL reaches this script.
+    document.getElementById('logout-btn').addEventListener('click', async () => {
+        try { await fetch('/api/auth/logout', { method: 'POST' }); } catch {}
+        location.href = '/portal';
     });
 
     // ── Tabs ──────────────────────────────────────────────────────────────
@@ -668,13 +615,12 @@
             pull_quote: document.getElementById('t-pull').value.trim(),
             position:   parseInt(document.getElementById('t-position').value) || 0
         };
-        const key = getKey();
         const url = id ? `/api/admin/testimonials/${id}` : '/api/admin/testimonials';
         const method = id ? 'PUT' : 'POST';
         try {
             const res = await fetch(url, {
                 method,
-                headers: { 'Content-Type': 'application/json', 'x-admin-key': key },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
             });
             if (!res.ok) {
@@ -694,11 +640,9 @@
     });
 
     async function deleteTestimonial(id) {
-        const key = getKey();
         try {
             const res = await fetch(`/api/admin/testimonials/${id}`, {
-                method: 'DELETE',
-                headers: { 'x-admin-key': key }
+                method: 'DELETE'
             });
             if (!res.ok) { alert('Delete failed.'); return; }
             const fresh = await fetchTestimonials();
@@ -709,10 +653,9 @@
 
     // ── Members + Auth Activity ───────────────────────────────────────────
     async function loadMembersAndAuth() {
-        const key = getKey() || '';
         const [mRes, eRes] = await Promise.all([
-            fetch('/api/admin/members', { headers: { 'x-admin-key': key } }),
-            fetch('/api/admin/auth-events?limit=300', { headers: { 'x-admin-key': key } })
+            fetch('/api/admin/members', { }),
+            fetch('/api/admin/auth-events?limit=300', { })
         ]);
         const mData = mRes.ok ? await mRes.json() : { members: [] };
         const eData = eRes.ok ? await eRes.json() : { events: [] };
@@ -750,10 +693,9 @@
             const id = tr.dataset.memberId;
             const current = tr.querySelector('.tier-pill').textContent.toLowerCase().trim();
             const next = tiers[(tiers.indexOf(current) + 1) % tiers.length];
-            const key = getKey() || '';
             const r = await fetch(`/api/admin/members/${id}`, {
                 method: 'PUT',
-                headers: { 'Content-Type': 'application/json', 'x-admin-key': key },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ tier: next })
             });
             if (r.ok) tr.querySelector('.tier-pill').textContent = next.toUpperCase();
@@ -821,10 +763,9 @@
 
     // ── Show dashboard ────────────────────────────────────────────────────
     async function showDashboard(data) {
-        document.getElementById('login-screen').style.display = 'none';
-        document.getElementById('dashboard').classList.remove('hidden');
-        document.getElementById('logout-btn').classList.remove('hidden');
-        document.getElementById('loading-state').classList.add('hidden');
+        // (No login-screen to hide anymore — auth is handled by the server.)
+        const loading = document.getElementById('loading-state');
+        if (loading) loading.classList.add('hidden');
 
         const stats = data.stats || {};
         // Show real counts when present, otherwise show the count of demo rows
@@ -856,11 +797,10 @@
 
     // ── Refresh data ──────────────────────────────────────────────────────
     async function refresh() {
-        const key = getKey();
         if (!key) return;
         try {
-            const res = await fetch('/api/admin/data', { headers: { 'x-admin-key': key } });
-            if (res.status === 403) { clearKey(); location.reload(); return; }
+            const res = await fetch('/api/admin/data', { });
+            if (res.status === 403) { location.href = '/portal?error=not_admin'; return; }
             if (!res.ok) return;
             const data = await res.json();
             showDashboard(data);
@@ -869,10 +809,8 @@
     }
 
     // ── Bootstrap ─────────────────────────────────────────────────────────
-    if (getKey()) {
-        refresh();
-        setInterval(refresh, 30000);
-    }
+    refresh();
+    setInterval(refresh, 30000);
 </script>
 
 </body>

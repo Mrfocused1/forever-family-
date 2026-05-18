@@ -508,10 +508,20 @@
                 if (login) login.style.display = 'none';
                 const portal = document.getElementById('dashboard');
                 if (portal) portal.style.display = 'block';
-                const next = new URLSearchParams(location.search).get('next');
+                const params = new URLSearchParams(location.search);
+                const next = params.get('next');
                 if (next === '/learn') location.replace('/learn');
+                if (next === '/admin') location.replace('/admin'); // server rechecks email
                 showDashboard(member.email, member.tier, member.memberSince || member.created_at || null);
             }
+
+            // Surface server-side redirects that landed back here with an error.
+            (function showLoginError() {
+                const err = new URLSearchParams(location.search).get('error');
+                if (err === 'not_admin') {
+                    showError(emailError, 'That account does not have admin access.');
+                }
+            })();
 
             document.getElementById('login-form').addEventListener('submit', async (e) => {
                 e.preventDefault();
