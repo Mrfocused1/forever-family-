@@ -173,20 +173,35 @@
             <p class="text-gray-400 text-sm mb-8">Enter your email and your access code to continue. New member? <a href="index.html#sec12" class="text-gold hover:text-white transition-colors">Join the movement.</a></p>
 
             <form id="login-form" class="space-y-6">
-                <div class="relative">
-                    <input type="email" id="login-email" required class="w-full bg-transparent border-b border-stone py-3 text-white focus:outline-none focus:border-gold transition-colors peer" placeholder=" ">
-                    <label for="login-email" class="absolute left-0 top-3 text-stone uppercase tracking-widest text-xs transition-all peer-focus:-top-4 peer-focus:text-gold peer-focus:text-[10px] peer-not-placeholder-shown:-top-4 peer-not-placeholder-shown:text-gold peer-not-placeholder-shown:text-[10px]">Email Address</label>
+                <!-- Step 1: Email -->
+                <div id="step-email">
+                    <div class="relative">
+                        <input type="email" id="login-email" required class="w-full bg-transparent border-b border-stone py-3 text-white focus:outline-none focus:border-gold transition-colors peer" placeholder=" ">
+                        <label for="login-email" class="absolute left-0 top-3 text-stone uppercase tracking-widest text-xs transition-all peer-focus:-top-4 peer-focus:text-gold peer-focus:text-[10px] peer-not-placeholder-shown:-top-4 peer-not-placeholder-shown:text-gold peer-not-placeholder-shown:text-[10px]">Email Address</label>
+                    </div>
+                    <div id="email-error" class="hidden text-xs text-red-400 tracking-widest uppercase py-1"></div>
+                    <button type="submit" id="email-submit" class="w-full mt-6 py-4 bg-gold text-[#0d0d0d] font-condensed text-xl tracking-widest hover:bg-white transition-colors duration-300 disabled:opacity-60">
+                        <span class="email-btn-text">SEND CODE</span>
+                        <span class="email-btn-loading hidden">SENDING…</span>
+                    </button>
                 </div>
-                <div class="relative">
-                    <input type="text" id="login-code" required placeholder=" " autocomplete="off"
-                           class="w-full bg-transparent border-b border-stone py-3 text-white focus:outline-none focus:border-gold transition-colors peer uppercase tracking-widest font-condensed text-xl">
-                    <label for="login-code" class="absolute left-0 top-3 text-stone uppercase tracking-widest text-xs transition-all peer-focus:-top-4 peer-focus:text-gold peer-focus:text-[10px] peer-not-placeholder-shown:-top-4 peer-not-placeholder-shown:text-gold peer-not-placeholder-shown:text-[10px]">Access Code</label>
+                <!-- Step 2: Code -->
+                <div id="step-code" class="hidden space-y-6">
+                    <p class="text-stone text-sm">We sent a 6-digit code to <span id="code-email-display" class="text-gold"></span>. Check your inbox.</p>
+                    <div class="relative">
+                        <input type="text" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" id="login-code" required class="w-full bg-transparent border-b border-stone py-3 text-white text-center text-2xl tracking-[1em] focus:outline-none focus:border-gold transition-colors peer" placeholder=" " autocomplete="one-time-code">
+                        <label for="login-code" class="absolute left-0 top-3 text-stone uppercase tracking-widest text-xs transition-all peer-focus:-top-4 peer-focus:text-gold peer-focus:text-[10px] peer-not-placeholder-shown:-top-4 peer-not-placeholder-shown:text-gold peer-not-placeholder-shown:text-[10px]">Verification Code</label>
+                    </div>
+                    <div id="code-error" class="hidden text-xs text-red-400 tracking-widest uppercase py-1"></div>
+                    <button type="button" id="code-submit" class="w-full py-4 bg-gold text-[#0d0d0d] font-condensed text-xl tracking-widest hover:bg-white transition-colors duration-300 disabled:opacity-60">
+                        <span class="code-btn-text">VERIFY</span>
+                        <span class="code-btn-loading hidden">VERIFYING…</span>
+                    </button>
+                    <div class="flex justify-between text-[10px] tracking-widest uppercase pt-2">
+                        <button type="button" id="resend-code" class="text-stone hover:text-gold transition-colors">Resend code</button>
+                        <button type="button" id="change-email" class="text-stone hover:text-gold transition-colors">Use different email</button>
+                    </div>
                 </div>
-                <div id="login-error" class="hidden text-xs text-red-400 tracking-widest uppercase py-1">Invalid access code.</div>
-                <button type="submit" class="w-full py-4 bg-gold text-[#0d0d0d] font-condensed text-xl tracking-widest hover:bg-white transition-colors duration-300 login-btn disabled:opacity-60">
-                    <span class="login-btn-text">ACCESS PORTAL</span>
-                    <span class="login-btn-loading hidden">VERIFYING...</span>
-                </button>
             </form>
 
         </div>
@@ -482,68 +497,115 @@
             showDashboard(session.email, session.tier, session.memberSince);
         }
 
-        // ── Login form ──────────────────────────────────────────────────────
-        document.getElementById('login-form').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const btn = e.target.querySelector('.login-btn');
-            const btnText = btn.querySelector('.login-btn-text');
-            const btnLoading = btn.querySelector('.login-btn-loading');
-            const errorEl = document.getElementById('login-error');
+        // ── Auth flow (email → OTP) ─────────────────────────────────────────
+        (function authFlow() {
+            const stepEmail = document.getElementById('step-email');
+            const stepCode  = document.getElementById('step-code');
+            const emailInput = document.getElementById('login-email');
+            const codeInput  = document.getElementById('login-code');
+            const emailError = document.getElementById('email-error');
+            const codeError  = document.getElementById('code-error');
+            const emailBtn   = document.getElementById('email-submit');
+            const codeBtn    = document.getElementById('code-submit');
+            const codeEmailDisplay = document.getElementById('code-email-display');
 
-            btnText.classList.add('hidden');
-            btnLoading.classList.remove('hidden');
-            btn.disabled = true;
-            errorEl.classList.add('hidden');
+            function setBtnLoading(btn, on) {
+                btn.disabled = on;
+                btn.querySelector(`.${btn.id.split('-')[0]}-btn-text`)?.classList.toggle('hidden', on);
+                btn.querySelector(`.${btn.id.split('-')[0]}-btn-loading`)?.classList.toggle('hidden', !on);
+            }
+            function showError(el, msg) { el.textContent = msg; el.classList.remove('hidden'); }
+            function clearError(el) { el.classList.add('hidden'); }
 
-            const email = document.getElementById('login-email').value.trim();
-            const code = document.getElementById('login-code').value.trim();
-
-            let tier = null;
-            let memberSince = null;
-
-            try {
-                const res = await fetch('/api/portal-login', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email, code })
-                });
-                const data = await res.json();
-                if (data.success) { tier = data.tier; memberSince = data.memberSince || null; }
-            } catch (_) {
-                // Graceful degradation: validate locally if server isn't running
-                const LOCAL_CODES = {
-                    'FF-BRONZE-2025': 'bronze',
-                    'FF-SILVER-2025': 'silver',
-                    'FF-GOLD-2025': 'gold',
-                    'FF-PLATINUM-2025': 'platinum',
-                };
-                tier = LOCAL_CODES[code.toUpperCase()] || null;
+            async function checkExisting() {
+                try {
+                    const r = await fetch('/api/auth/me');
+                    if (r.ok) {
+                        const { member } = await r.json();
+                        window.__ffMember = member;
+                        renderPortal(member);
+                    }
+                } catch {}
             }
 
-            if (!tier) {
-                errorEl.classList.remove('hidden');
-                btnText.classList.remove('hidden');
-                btnLoading.classList.add('hidden');
-                btn.disabled = false;
-                gsap.fromTo('#login-panel', { x: -10 }, { x: 0, duration: 0.4, ease: 'elastic.out(1, 0.3)',
-                    keyframes: [{ x: -10 }, { x: 10 }, { x: -6 }, { x: 6 }, { x: 0 }]
-                });
-                return;
+            function renderPortal(member) {
+                const login = document.getElementById('login-screen');
+                if (login) login.style.display = 'none';
+                const portal = document.getElementById('dashboard');
+                if (portal) portal.style.display = 'block';
+                const next = new URLSearchParams(location.search).get('next');
+                if (next === '/learn') location.replace('/learn');
+                showDashboard(member.email, member.tier, member.memberSince || member.created_at || null);
             }
 
-            saveSession({ email, tier, memberSince });
-            showDashboard(email, tier, memberSince);
-        });
+            document.getElementById('login-form').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                clearError(emailError);
+                const email = emailInput.value.trim();
+                if (!email) return;
+                setBtnLoading(emailBtn, true);
+                try {
+                    const r = await fetch('/api/auth/request-otp', {
+                        method: 'POST', headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ email })
+                    });
+                    const data = await r.json();
+                    if (!r.ok) { showError(emailError, data.error || 'Could not send code.'); return; }
+                    codeEmailDisplay.textContent = email;
+                    stepEmail.classList.add('hidden');
+                    stepCode.classList.remove('hidden');
+                    codeInput.focus();
+                } catch { showError(emailError, 'Network error. Try again.'); }
+                finally { setBtnLoading(emailBtn, false); }
+            });
 
-        // ── Logout ──────────────────────────────────────────────────────────
-        document.getElementById('logout-btn').addEventListener('click', () => {
-            clearSession();
-            gsap.to('#dashboard', { opacity: 0, duration: 0.3, onComplete: () => {
-                document.getElementById('dashboard').style.display = 'none';
-                document.getElementById('login-screen').style.display = 'flex';
-                gsap.fromTo('#login-screen', { opacity: 0 }, { opacity: 1, duration: 0.4 });
-            }});
-        });
+            codeBtn.addEventListener('click', async () => {
+                clearError(codeError);
+                const email = emailInput.value.trim();
+                const code  = codeInput.value.trim();
+                if (!/^\d{6}$/.test(code)) { showError(codeError, 'Enter the 6-digit code.'); return; }
+                setBtnLoading(codeBtn, true);
+                try {
+                    const r = await fetch('/api/auth/verify-otp', {
+                        method: 'POST', headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ email, code })
+                    });
+                    const data = await r.json();
+                    if (!r.ok) { showError(codeError, data.error || 'Verification failed.'); return; }
+                    renderPortal(data.member);
+                } catch { showError(codeError, 'Network error. Try again.'); }
+                finally { setBtnLoading(codeBtn, false); }
+            });
+
+            document.getElementById('resend-code').addEventListener('click', async () => {
+                clearError(codeError);
+                const email = emailInput.value.trim();
+                await fetch('/api/auth/request-otp', {
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email })
+                });
+                showError(codeError, 'New code sent.');
+            });
+            document.getElementById('change-email').addEventListener('click', () => {
+                stepCode.classList.add('hidden');
+                stepEmail.classList.remove('hidden');
+                codeInput.value = '';
+                clearError(codeError);
+            });
+
+            const logoutBtn = document.getElementById('logout-btn');
+            if (logoutBtn) logoutBtn.addEventListener('click', async () => {
+                await fetch('/api/auth/logout', { method: 'POST' });
+                clearSession();
+                gsap.to('#dashboard', { opacity: 0, duration: 0.3, onComplete: () => {
+                    document.getElementById('dashboard').style.display = 'none';
+                    document.getElementById('login-screen').style.display = 'flex';
+                    gsap.fromTo('#login-screen', { opacity: 0 }, { opacity: 1, duration: 0.4 });
+                }});
+            });
+
+            checkExisting();
+        })();
 
         // ── Show dashboard ──────────────────────────────────────────────────
         function showDashboard(email, tier, memberSince) {
