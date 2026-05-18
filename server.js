@@ -465,7 +465,7 @@ app.post('/api/auth/verify-otp', async (req, res) => {
     let isSignup = false;
     if (!member) {
         const { data: created, error: createErr } = await supabase.from('members').insert({
-            email, tier: 'bronze', email_verified: true, last_login_at: nowIso, code: `MEMBER-${Date.now()}`
+            email, tier: 'bronze', email_verified: true, last_login_at: nowIso
         }).select('*').single();
         if (createErr) {
             console.error('[AUTH] create member failed:', createErr.message);
