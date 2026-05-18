@@ -807,7 +807,6 @@
 
     // ── Refresh data ──────────────────────────────────────────────────────
     async function refresh() {
-        if (!key) return;
         try {
             const res = await fetch('/api/admin/data', { });
             if (res.status === 403) { location.href = '/portal?error=not_admin'; return; }
