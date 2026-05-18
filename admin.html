@@ -117,7 +117,7 @@
 
     <!-- Tab bar (primary nav for the dashboard) -->
     <div class="flex gap-2 md:gap-6 border-b border-soft mb-6 overflow-x-auto">
-        <button type="button" class="tab-btn-bar py-3 px-3 md:px-4 text-xs tracking-widest uppercase whitespace-nowrap" data-tab="signups">Signups</button>
+        <button type="button" class="tab-btn-bar py-3 px-3 md:px-4 text-xs tracking-widest uppercase whitespace-nowrap" data-tab="signups">Interest Forms</button>
         <button type="button" class="tab-btn-bar py-3 px-3 md:px-4 text-xs tracking-widest uppercase whitespace-nowrap" data-tab="feedback">Feedback</button>
         <button type="button" class="tab-btn-bar py-3 px-3 md:px-4 text-xs tracking-widest uppercase whitespace-nowrap" data-tab="referrals">Referrals</button>
         <button type="button" class="tab-btn-bar py-3 px-3 md:px-4 text-xs tracking-widest uppercase whitespace-nowrap" data-tab="quiz">Quiz Results</button>
@@ -130,7 +130,7 @@
     <div class="grid grid-cols-2 md:grid-cols-5 gap-0 border border-soft bg-[#FFFFFF] mb-10 shadow-sm">
         <button type="button" class="stat-card border-r border-b md:border-b-0 border-soft p-6 text-left tab-btn-stat" data-tab="signups">
             <div class="font-condensed text-4xl text-gold" id="stat-signups">0</div>
-            <div class="text-[10px] tracking-widest text-soft uppercase mt-1">Signups</div>
+            <div class="text-[10px] tracking-widest text-soft uppercase mt-1">Interest Forms</div>
         </button>
         <button type="button" class="stat-card border-r border-b md:border-b-0 border-soft p-6 text-left tab-btn-stat" data-tab="feedback">
             <div class="font-condensed text-4xl text-gold" id="stat-feedback">0</div>
@@ -403,7 +403,7 @@
                 </table>
             </div>
         `;
-        wireRowClicks(panel, 'Signup');
+        wireRowClicks(panel, 'Interest Form');
     }
 
     function renderFeedback(rows) {
