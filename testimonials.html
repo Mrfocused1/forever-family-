@@ -181,7 +181,7 @@
             name: '',
             role_label: 'FFCA Member',
             date_label: '',
-            image_url: '',
+            image_url: '/images/testimonial-ffca-first-aid.jpg',
             headline: '"The 12-Point Programme has given me far more than I anticipated."',
             body:
                 "I joined FFCA unaware of what it is about and didn't know what to expect, but from the first sessions it was clear that it had a positive energy and the 12-Point Programme has given me far more than I anticipated. Through the training, first aid, law, and self-defence modules, I have developed many different skills and gained a lot of useful knowledge for the real world, becoming more disciplined, focused, and confident in myself.\n\n" +
@@ -205,8 +205,9 @@
         const paragraphs = (p.body || '').split(/\n\s*\n/).map(par => `<p class="text-gray-300 leading-relaxed mb-6">${escapeHtml(par)}</p>`).join('');
         const headlineHtml = p.headline ? `<h2 class="font-condensed text-3xl md:text-4xl text-white leading-tight mb-4">${escapeHtml(p.headline)}</h2>` : '';
         const pullHtml = p.pull_quote ? `<div class="pull-quote">${escapeHtml(p.pull_quote)}</div>` : '';
+        const imgAlt = p.name || p.role_label || 'Forever Family testimonial';
         const imgHtml = p.image_url
-            ? `<div class="post-image mb-5"><img src="${escapeHtml(p.image_url)}" alt="${escapeHtml(p.name)}" loading="lazy"></div>`
+            ? `<div class="post-image mb-5"><img src="${escapeHtml(p.image_url)}" alt="${escapeHtml(imgAlt)}" loading="lazy"></div>`
             : '';
 
         return `
