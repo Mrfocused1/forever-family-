@@ -599,6 +599,47 @@ app.get('/api/admin/data', async (req, res) => {
     });
 });
 
+// ─── ADMIN: members + auth events ────────────────────────────────────────────
+function requireAdmin(req, res, next) {
+    const auth = req.headers['x-admin-key'];
+    if (auth !== process.env.ADMIN_KEY && process.env.NODE_ENV !== 'development') {
+        return res.status(403).json({ error: 'Forbidden.' });
+    }
+    next();
+}
+
+app.get('/api/admin/members', requireAdmin, async (req, res) => {
+    const { data, error } = await supabase
+        .from('members')
+        .select('id, email, tier, email_verified, created_at, last_login_at')
+        .order('created_at', { ascending: false });
+    if (error) return res.status(500).json({ error: error.message });
+    res.json({ members: data || [] });
+});
+
+app.put('/api/admin/members/:id', requireAdmin, async (req, res) => {
+    const { tier } = req.body || {};
+    if (!['bronze','silver','gold','platinum'].includes(tier)) {
+        return res.status(400).json({ error: 'Invalid tier.' });
+    }
+    const { data, error } = await supabase
+        .from('members').update({ tier }).eq('id', req.params.id).select().single();
+    if (error) return res.status(500).json({ error: error.message });
+    if (!data) return res.status(404).json({ error: 'Not found.' });
+    res.json({ success: true, member: data });
+});
+
+app.get('/api/admin/auth-events', requireAdmin, async (req, res) => {
+    const limit = Math.min(parseInt(req.query.limit) || 200, 500);
+    const { data, error } = await supabase
+        .from('auth_events')
+        .select('id, event_type, email, member_id, ip, user_agent, metadata, created_at')
+        .order('created_at', { ascending: false })
+        .limit(limit);
+    if (error) return res.status(500).json({ error: error.message });
+    res.json({ events: data || [] });
+});
+
 // ─── POST /api/quiz-results ───────────────────────────────────────────────────
 app.post('/api/quiz-results', async (req, res) => {
     const ip = (req.headers['x-forwarded-for'] || req.socket.remoteAddress || '').split(',')[0].trim();
