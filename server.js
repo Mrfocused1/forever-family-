@@ -3,6 +3,9 @@ const express = require('express');
 const path = require('path');
 const { createClient } = require('@supabase/supabase-js');
 const { Resend } = require('resend');
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcryptjs');
+const cookieParser = require('cookie-parser');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -55,6 +58,7 @@ function rateLimit(ip, max = 10, windowMs = 60000) {
 const fs = require('fs');
 
 app.use(express.json());
+app.use(cookieParser());
 app.use('/images', express.static(path.join(__dirname, 'images')));
 app.use(express.static(__dirname));
 
@@ -66,6 +70,88 @@ app.get('/tailwind.css', (req, res) => {
     res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
     res.sendFile(cssPath);
 });
+
+// ─── AUTH HELPERS ────────────────────────────────────────────────────────────
+const JWT_SECRET = process.env.AUTH_JWT_SECRET;
+if (!JWT_SECRET) console.warn('[AUTH] AUTH_JWT_SECRET is not set — auth will fail.');
+
+const COOKIE_NAME = 'ff_session';
+const SESSION_TTL_SECONDS = 60 * 60 * 24 * 30; // 30 days
+const OTP_TTL_MS = 10 * 60 * 1000; // 10 minutes
+const OTP_MAX_ATTEMPTS = 6;
+const RATE_LIMIT_PER_EMAIL_PER_HOUR = 5;
+const RATE_LIMIT_PER_IP_PER_HOUR    = 20;
+
+function generateOtp() {
+    return String(require('crypto').randomInt(0, 1_000_000)).padStart(6, '0');
+}
+
+async function hashOtp(code) { return bcrypt.hash(code, 10); }
+async function verifyOtp(code, hash) { return bcrypt.compare(code, hash); }
+
+function signSession({ id, email, tier }) {
+    return jwt.sign({ sub: id, email, tier }, JWT_SECRET, { expiresIn: SESSION_TTL_SECONDS });
+}
+
+function verifySession(token) {
+    try { return jwt.verify(token, JWT_SECRET); } catch { return null; }
+}
+
+function setSessionCookie(res, token) {
+    res.cookie(COOKIE_NAME, token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+        maxAge: SESSION_TTL_SECONDS * 1000,
+        path: '/'
+    });
+}
+
+function clearSessionCookie(res) {
+    res.clearCookie(COOKIE_NAME, { path: '/' });
+}
+
+function getClientIp(req) {
+    return (req.headers['x-forwarded-for'] || '').split(',')[0].trim() || req.ip || '';
+}
+
+async function logAuthEvent({ type, email = null, memberId = null, req = null, metadata = null }) {
+    try {
+        await supabase.from('auth_events').insert({
+            event_type: type,
+            email: email ? email.toLowerCase().trim() : null,
+            member_id: memberId,
+            ip: req ? getClientIp(req) : null,
+            user_agent: req ? (req.headers['user-agent'] || '').slice(0, 500) : null,
+            metadata
+        });
+    } catch (e) { console.error('[AUTH] logAuthEvent failed:', e.message); }
+}
+
+async function rateLimitOtpRequest(email, ip) {
+    const sinceIso = new Date(Date.now() - 60 * 60 * 1000).toISOString();
+    const [{ count: emailCount }, { count: ipCount }] = await Promise.all([
+        supabase.from('auth_events').select('id', { count: 'exact', head: true })
+            .eq('event_type', 'otp_requested').eq('email', email).gte('created_at', sinceIso),
+        supabase.from('auth_events').select('id', { count: 'exact', head: true })
+            .eq('event_type', 'otp_requested').eq('ip', ip).gte('created_at', sinceIso)
+    ]);
+    if ((emailCount || 0) >= RATE_LIMIT_PER_EMAIL_PER_HOUR) return 'email';
+    if ((ipCount || 0) >= RATE_LIMIT_PER_IP_PER_HOUR) return 'ip';
+    return null;
+}
+
+async function requireMember(req, res, next) {
+    const token = req.cookies && req.cookies[COOKIE_NAME];
+    if (!token) return res.status(401).json({ error: 'Not authenticated.' });
+    const payload = verifySession(token);
+    if (!payload || !payload.sub) return res.status(401).json({ error: 'Session invalid.' });
+    // Re-read fresh tier from DB so admin edits take effect immediately.
+    const { data, error } = await supabase.from('members').select('id, email, tier, created_at, last_login_at').eq('id', payload.sub).single();
+    if (error || !data) return res.status(401).json({ error: 'Member not found.' });
+    req.member = data;
+    next();
+}
 
 // ─── POST /api/join ─────────────────────────────────────────────────────────
 app.post('/api/join', async (req, res) => {
