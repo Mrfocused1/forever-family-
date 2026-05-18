@@ -491,7 +491,14 @@ app.post('/api/auth/verify-otp', async (req, res) => {
         email, memberId: member.id, req
     });
 
-    res.json({ success: true, member: { email: member.email, tier: member.tier, memberSince: member.created_at } });
+    res.json({ success: true, member: {
+        email: member.email,
+        tier: member.tier,
+        name: member.name || '',
+        phone: member.phone || '',
+        profileComplete: !!(member.name && member.phone),
+        memberSince: member.created_at
+    }});
 });
 
 app.get('/api/auth/me', requireMember, (req, res) => {
