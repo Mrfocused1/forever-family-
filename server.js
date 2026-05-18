@@ -1,4 +1,4 @@
-require('dotenv').config();
+require('dotenv').config({ path: '.env.local' });
 const express = require('express');
 const path = require('path');
 const { createClient } = require('@supabase/supabase-js');
@@ -395,6 +395,40 @@ app.post('/api/portal-login', async (req, res) => {
 
     console.log(`[PORTAL] ${submittedEmail} logged in as ${tier}`);
     res.json({ success: true, tier, memberSince: data.created_at, token });
+});
+
+// ─── AUTH ROUTES ─────────────────────────────────────────────────────────────
+app.post('/api/auth/request-otp', async (req, res) => {
+    const email = (req.body && req.body.email || '').toLowerCase().trim();
+    if (!email || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
+        return res.status(400).json({ error: 'A valid email is required.' });
+    }
+    const ip = getClientIp(req);
+
+    const limited = await rateLimitOtpRequest(email, ip);
+    if (limited) {
+        await logAuthEvent({ type: 'login_failed', email, req, metadata: { reason: `rate_limit_${limited}` } });
+        return res.status(429).json({ error: 'Too many code requests. Try again later.' });
+    }
+
+    const code = generateOtp();
+    const codeHash = await hashOtp(code);
+    const expiresAt = new Date(Date.now() + OTP_TTL_MS).toISOString();
+
+    const { error } = await supabase.from('otp_codes').insert({
+        email, code_hash: codeHash, expires_at: expiresAt
+    });
+    if (error) {
+        console.error('[AUTH] insert otp_codes failed:', error.message);
+        return res.status(500).json({ error: 'Could not issue code. Try again.' });
+    }
+
+    await sendOtpEmail(email, code);
+    await logAuthEvent({ type: 'otp_requested', email, req });
+
+    const body = { success: true };
+    if (process.env.NODE_ENV === 'development') body.devCode = code; // only in dev for E2E tests
+    res.json(body);
 });
 
 // ─── GET /api/steps ──────────────────────────────────────────────────────────
