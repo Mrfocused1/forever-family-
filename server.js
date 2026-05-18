@@ -223,7 +223,7 @@ async function requireMember(req, res, next) {
     const payload = verifySession(token);
     if (!payload || !payload.sub) return res.status(401).json({ error: 'Session invalid.' });
     // Re-read fresh tier from DB so admin edits take effect immediately.
-    const { data, error } = await supabase.from('members').select('id, email, tier, created_at, last_login_at').eq('id', payload.sub).single();
+    const { data, error } = await supabase.from('members').select('id, email, tier, name, phone, created_at, last_login_at').eq('id', payload.sub).single();
     if (error || !data) return res.status(401).json({ error: 'Member not found.' });
     req.member = data;
     next();
@@ -498,9 +498,26 @@ app.get('/api/auth/me', requireMember, (req, res) => {
     res.json({ member: {
         email: req.member.email,
         tier: req.member.tier,
+        name: req.member.name || '',
+        phone: req.member.phone || '',
+        profileComplete: !!(req.member.name && req.member.phone),
         memberSince: req.member.created_at,
         lastLoginAt: req.member.last_login_at
     }});
+});
+
+// Update name + phone on the current member. Used by the one-time profile
+// form shown to new portal users.
+app.put('/api/auth/profile', requireSameOrigin, requireMember, async (req, res) => {
+    const name  = ((req.body && req.body.name)  || '').toString().trim().slice(0, 120);
+    const phone = ((req.body && req.body.phone) || '').toString().trim().slice(0, 40);
+    if (!name)  return res.status(400).json({ error: 'Name is required.' });
+    if (!phone) return res.status(400).json({ error: 'Phone is required.' });
+
+    const { error } = await supabase.from('members').update({ name, phone }).eq('id', req.member.id);
+    if (error) return res.status(500).json({ error: 'Could not save profile.' });
+
+    res.json({ success: true, member: { email: req.member.email, tier: req.member.tier, name, phone, profileComplete: true } });
 });
 
 app.post('/api/auth/logout', requireSameOrigin, async (req, res) => {
@@ -615,7 +632,7 @@ app.get('/api/admin/data', requireAdmin, async (req, res) => {
 app.get('/api/admin/members', requireAdmin, async (req, res) => {
     const { data, error } = await supabase
         .from('members')
-        .select('id, email, tier, email_verified, created_at, last_login_at')
+        .select('id, email, name, phone, tier, email_verified, created_at, last_login_at')
         .order('created_at', { ascending: false });
     if (error) return res.status(500).json({ error: error.message });
     res.json({ members: data || [] });
@@ -645,7 +662,7 @@ app.get('/api/admin/auth-events', requireAdmin, async (req, res) => {
 });
 
 // ─── POST /api/quiz-results ───────────────────────────────────────────────────
-app.post('/api/quiz-results', async (req, res) => {
+app.post('/api/quiz-results', requireMember, async (req, res) => {
     const ip = (req.headers['x-forwarded-for'] || req.socket.remoteAddress || '').split(',')[0].trim();
     if (rateLimit(ip, 30)) return res.status(429).json({ error: 'Too many requests. Please try again later.' });
 
@@ -659,7 +676,10 @@ app.post('/api/quiz-results', async (req, res) => {
         module,
         score: parseInt(score) || 0,
         total: parseInt(total) || 10,
-        label
+        label,
+        member_id: req.member.id,
+        member_email: req.member.email,
+        member_name: req.member.name || null
     };
     const dur = parseInt(durationSeconds);
     if (Number.isFinite(dur) && dur >= 0) row.duration_seconds = dur;

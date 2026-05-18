@@ -447,11 +447,12 @@
         const panel = document.getElementById('panel-quiz');
         if (!rows.length) { panel.innerHTML = ''; return; }
 
-        // Compute attempt # within each (session_id, module).
+        // Compute attempt # per (member_id|session_id fallback, module).
         const groups = {};
         const ascending = [...rows].sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
         ascending.forEach(r => {
-            const key = (r.session_id || 'anon') + '|' + (r.module || '');
+            const who = r.member_id ? `m:${r.member_id}` : `s:${r.session_id || 'anon'}`;
+            const key = who + '|' + (r.module || '');
             (groups[key] = groups[key] || []).push(r);
         });
         const attemptInfo = new Map();
@@ -467,12 +468,13 @@
                     <thead class="bg-[#F0ECE2] text-soft text-[10px] tracking-widest uppercase">
                         <tr>
                             <th class="text-left px-4 py-3">Date</th>
+                            <th class="text-left px-4 py-3">Candidate</th>
+                            <th class="text-left px-4 py-3">Email</th>
                             <th class="text-left px-4 py-3">Module</th>
                             <th class="text-left px-4 py-3">Attempt</th>
                             <th class="text-left px-4 py-3">Score</th>
                             <th class="text-left px-4 py-3">Result</th>
                             <th class="text-left px-4 py-3">Time Taken</th>
-                            <th class="text-left px-4 py-3">Session</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -483,12 +485,13 @@
                             return `
                                 <tr class="data-row border-t border-soft">
                                     <td class="px-4 py-3 text-soft text-xs whitespace-nowrap">${fmtDate(r.created_at)}</td>
+                                    <td class="px-4 py-3 text-[#111111]">${escapeHtml(r.member_name || '— (anon)')}</td>
+                                    <td class="px-4 py-3 text-gold text-xs">${escapeHtml(r.member_email || '—')}</td>
                                     <td class="px-4 py-3 text-[#111111]">${escapeHtml(moduleLabel(r.module))}</td>
                                     <td class="px-4 py-3 text-gold font-condensed">#${att.num} <span class="text-soft text-xs">of ${att.total}</span></td>
                                     <td class="px-4 py-3 text-gold font-condensed">${r.score}/${r.total} <span class="text-soft text-xs">(${pct}%)</span></td>
                                     <td class="px-4 py-3 ${labelColor} text-xs tracking-widest uppercase">${escapeHtml(r.label || '')}</td>
                                     <td class="px-4 py-3 text-[#111111] font-condensed whitespace-nowrap">${fmtDuration(r.duration_seconds)}</td>
-                                    <td class="px-4 py-3 text-soft text-xs">${escapeHtml((r.session_id || '').slice(0, 18))}</td>
                                 </tr>
                             `;
                         }).join('')}
@@ -674,12 +677,19 @@
         const tiers = ['bronze','silver','gold','platinum'];
         panel.innerHTML = `<div class="overflow-x-auto border border-soft bg-[#FFFFFF] shadow-sm"><table class="w-full text-sm">
           <thead><tr class="bg-[#F0ECE2] text-[10px] tracking-widest uppercase text-soft">
-            <th class="text-left px-4 py-3">Email</th><th class="text-left px-4 py-3">Tier</th>
-            <th class="text-left px-4 py-3">Verified</th><th class="text-left px-4 py-3">Signed Up</th>
-            <th class="text-left px-4 py-3">Last Login</th><th class="text-left px-4 py-3">Action</th>
+            <th class="text-left px-4 py-3">Name</th>
+            <th class="text-left px-4 py-3">Email</th>
+            <th class="text-left px-4 py-3">Phone</th>
+            <th class="text-left px-4 py-3">Tier</th>
+            <th class="text-left px-4 py-3">Verified</th>
+            <th class="text-left px-4 py-3">Signed Up</th>
+            <th class="text-left px-4 py-3">Last Login</th>
+            <th class="text-left px-4 py-3">Action</th>
           </tr></thead><tbody>
           ${members.map(m => `<tr class="data-row border-t border-soft" data-member-id="${escapeHtml(String(m.id))}">
+            <td class="px-4 py-3">${escapeHtml(m.name || '—')}</td>
             <td class="px-4 py-3 text-gold">${escapeHtml(m.email)}</td>
+            <td class="px-4 py-3 text-muted whitespace-nowrap">${escapeHtml(m.phone || '—')}</td>
             <td class="px-4 py-3"><span class="tier-pill">${escapeHtml((m.tier||'').toUpperCase())}</span></td>
             <td class="px-4 py-3 text-muted">${m.email_verified ? '✓' : '—'}</td>
             <td class="px-4 py-3 text-soft text-xs whitespace-nowrap">${m.created_at ? new Date(m.created_at).toLocaleDateString() : '—'}</td>

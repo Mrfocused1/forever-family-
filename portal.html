@@ -207,6 +207,36 @@
         </div>
     </div>
 
+    <!-- ── PROFILE FORM (shown once on first login if name+phone missing) ───── -->
+    <div id="profile-screen" class="hidden px-6 pt-20">
+        <div class="w-full max-w-md mx-auto bg-[#111] border border-gold p-8 md:p-12 relative">
+            <div class="absolute top-0 left-0 w-6 h-6 border-t-2 border-l-2 border-gold m-3 pointer-events-none"></div>
+            <div class="absolute top-0 right-0 w-6 h-6 border-t-2 border-r-2 border-gold m-3 pointer-events-none"></div>
+            <div class="absolute bottom-0 left-0 w-6 h-6 border-b-2 border-l-2 border-gold m-3 pointer-events-none"></div>
+            <div class="absolute bottom-0 right-0 w-6 h-6 border-b-2 border-r-2 border-gold m-3 pointer-events-none"></div>
+
+            <div class="text-xs text-gold tracking-widest uppercase mb-2">ONE MORE STEP</div>
+            <h1 class="font-condensed text-4xl mb-2">YOUR <span class="text-gold">DETAILS</span></h1>
+            <p class="text-gray-400 text-sm mb-8">So we know who's logged in when you take FFCA modules. Saved to your profile — you'll only see this once.</p>
+
+            <form id="profile-form" class="space-y-6">
+                <div class="relative">
+                    <input type="text" id="profile-name" required maxlength="120" autocomplete="name" class="w-full bg-transparent border-b border-stone py-3 text-white focus:outline-none focus:border-gold transition-colors peer" placeholder=" ">
+                    <label for="profile-name" class="absolute left-0 top-3 text-stone uppercase tracking-widest text-xs transition-all peer-focus:-top-4 peer-focus:text-gold peer-focus:text-[10px] peer-not-placeholder-shown:-top-4 peer-not-placeholder-shown:text-gold peer-not-placeholder-shown:text-[10px]">Full Name</label>
+                </div>
+                <div class="relative">
+                    <input type="tel" id="profile-phone" required maxlength="40" autocomplete="tel" class="w-full bg-transparent border-b border-stone py-3 text-white focus:outline-none focus:border-gold transition-colors peer" placeholder=" ">
+                    <label for="profile-phone" class="absolute left-0 top-3 text-stone uppercase tracking-widest text-xs transition-all peer-focus:-top-4 peer-focus:text-gold peer-focus:text-[10px] peer-not-placeholder-shown:-top-4 peer-not-placeholder-shown:text-gold peer-not-placeholder-shown:text-[10px]">Phone Number</label>
+                </div>
+                <div id="profile-error" class="hidden text-xs text-red-400 tracking-widest uppercase py-1"></div>
+                <button type="submit" id="profile-submit" class="w-full py-4 bg-gold text-[#0d0d0d] font-condensed text-xl tracking-widest hover:bg-white transition-colors duration-300 disabled:opacity-60">
+                    <span class="profile-btn-text">SAVE & CONTINUE</span>
+                    <span class="profile-btn-loading hidden">SAVING…</span>
+                </button>
+            </form>
+        </div>
+    </div>
+
     <!-- ── DASHBOARD ─────────────────────────────────────────────────────────── -->
     <div id="dashboard" class="pt-20">
 
@@ -506,6 +536,17 @@
                 window.__ffMember = member;
                 const login = document.getElementById('login-screen');
                 if (login) login.style.display = 'none';
+
+                // Profile gate: send first-time users to the name+phone form
+                // before they reach the dashboard.
+                if (!member.profileComplete) {
+                    document.getElementById('profile-screen').classList.remove('hidden');
+                    document.getElementById('dashboard').style.display = 'none';
+                    return;
+                }
+
+                const profile = document.getElementById('profile-screen');
+                if (profile) profile.classList.add('hidden');
                 const portal = document.getElementById('dashboard');
                 if (portal) portal.style.display = 'block';
                 const params = new URLSearchParams(location.search);
@@ -513,6 +554,37 @@
                 if (next === '/learn') location.replace('/learn');
                 if (next === '/admin') location.replace('/admin'); // server rechecks email
                 showDashboard(member.email, member.tier, member.memberSince || member.created_at || null);
+            }
+
+            // Profile form submit (one-time on first login).
+            const profileForm = document.getElementById('profile-form');
+            if (profileForm) {
+                profileForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    const errEl = document.getElementById('profile-error');
+                    const btn   = document.getElementById('profile-submit');
+                    const txt   = btn.querySelector('.profile-btn-text');
+                    const ld    = btn.querySelector('.profile-btn-loading');
+                    errEl.classList.add('hidden');
+                    txt.classList.add('hidden'); ld.classList.remove('hidden'); btn.disabled = true;
+                    const name  = document.getElementById('profile-name').value.trim();
+                    const phone = document.getElementById('profile-phone').value.trim();
+                    try {
+                        const r = await fetch('/api/auth/profile', {
+                            method: 'PUT', headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ name, phone })
+                        });
+                        const data = await r.json();
+                        if (!r.ok) { errEl.textContent = data.error || 'Could not save.'; errEl.classList.remove('hidden'); return; }
+                        // Re-render with the updated member object (profileComplete is now true).
+                        renderPortal(data.member);
+                    } catch {
+                        errEl.textContent = 'Network error. Try again.';
+                        errEl.classList.remove('hidden');
+                    } finally {
+                        txt.classList.remove('hidden'); ld.classList.add('hidden'); btn.disabled = false;
+                    }
+                });
             }
 
             // Surface server-side redirects that landed back here with an error.
