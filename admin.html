@@ -78,6 +78,7 @@
     }
 
     .ham-line { display:block; height:1.5px; width:24px; background:#111; margin:2px 0; }
+    .tier-pill { display:inline-block; font-size:10px; letter-spacing:.1em; padding:2px 6px; border:1px solid var(--border); color:var(--gold); }
 </style>
 </head>
 <body>
@@ -141,6 +142,8 @@
         <button type="button" class="tab-btn-bar py-3 px-3 md:px-4 text-xs tracking-widest uppercase whitespace-nowrap" data-tab="referrals">Referrals</button>
         <button type="button" class="tab-btn-bar py-3 px-3 md:px-4 text-xs tracking-widest uppercase whitespace-nowrap" data-tab="quiz">Quiz Results</button>
         <button type="button" class="tab-btn-bar py-3 px-3 md:px-4 text-xs tracking-widest uppercase whitespace-nowrap" data-tab="testimonials">Testimonials</button>
+        <button type="button" class="tab-btn-bar py-3 px-3 md:px-4 text-xs tracking-widest uppercase whitespace-nowrap" data-tab="members">Members</button>
+        <button type="button" class="tab-btn-bar py-3 px-3 md:px-4 text-xs tracking-widest uppercase whitespace-nowrap" data-tab="auth">Auth Activity</button>
     </div>
 
     <!-- Stat cards (counts, also clickable as tabs) -->
@@ -165,6 +168,14 @@
             <div class="font-condensed text-4xl text-gold" id="stat-testimonials">0</div>
             <div class="text-[10px] tracking-widest text-soft uppercase mt-1">Testimonials</div>
         </button>
+        <button type="button" class="stat-card border-l border-soft p-6 text-left tab-btn-stat" data-tab="members">
+            <div class="font-condensed text-4xl text-gold" data-count="members">—</div>
+            <div class="text-[10px] tracking-widest text-soft uppercase mt-1">Members</div>
+        </button>
+        <button type="button" class="stat-card border-l border-soft p-6 text-left tab-btn-stat" data-tab="auth">
+            <div class="font-condensed text-4xl text-gold" data-count="logins24h">—</div>
+            <div class="text-[10px] tracking-widest text-soft uppercase mt-1">Logins (24h)</div>
+        </button>
     </div>
 
     <!-- Empty state -->
@@ -184,6 +195,8 @@
     <div id="panel-referrals" class="tab-panel hidden"></div>
     <div id="panel-quiz" class="tab-panel hidden"></div>
     <div id="panel-testimonials" class="tab-panel hidden"></div>
+    <div id="panel-members" class="tab-panel hidden"></div>
+    <div id="panel-auth" class="tab-panel hidden"></div>
 
 </main>
 
@@ -693,6 +706,77 @@
         } catch (_) { alert('Network error.'); }
     }
 
+    // ── Members + Auth Activity ───────────────────────────────────────────
+    async function loadMembersAndAuth() {
+        const key = getKey() || '';
+        const [mRes, eRes] = await Promise.all([
+            fetch('/api/admin/members', { headers: { 'x-admin-key': key } }),
+            fetch('/api/admin/auth-events?limit=300', { headers: { 'x-admin-key': key } })
+        ]);
+        const mData = mRes.ok ? await mRes.json() : { members: [] };
+        const eData = eRes.ok ? await eRes.json() : { events: [] };
+        renderMembers(mData.members || []);
+        renderAuthEvents(eData.events || []);
+
+        document.querySelector('[data-count="members"]').textContent = (mData.members || []).length;
+        const since = Date.now() - 24 * 3600 * 1000;
+        const logins24 = (eData.events || []).filter(e => e.event_type === 'login' && new Date(e.created_at).getTime() >= since).length;
+        document.querySelector('[data-count="logins24h"]').textContent = logins24;
+    }
+
+    function renderMembers(members) {
+        const panel = document.getElementById('panel-members');
+        if (!members.length) { panel.innerHTML = '<div class="p-6 text-soft">No members yet.</div>'; return; }
+        const tiers = ['bronze','silver','gold','platinum'];
+        panel.innerHTML = `<div class="overflow-x-auto border border-soft bg-[#FFFFFF] shadow-sm"><table class="w-full text-sm">
+          <thead><tr class="bg-[#F0ECE2] text-[10px] tracking-widest uppercase text-soft">
+            <th class="text-left px-4 py-3">Email</th><th class="text-left px-4 py-3">Tier</th>
+            <th class="text-left px-4 py-3">Verified</th><th class="text-left px-4 py-3">Signed Up</th>
+            <th class="text-left px-4 py-3">Last Login</th><th class="text-left px-4 py-3">Action</th>
+          </tr></thead><tbody>
+          ${members.map(m => `<tr class="data-row border-t border-soft" data-member-id="${escapeHtml(String(m.id))}">
+            <td class="px-4 py-3 text-gold">${escapeHtml(m.email)}</td>
+            <td class="px-4 py-3"><span class="tier-pill">${escapeHtml((m.tier||'').toUpperCase())}</span></td>
+            <td class="px-4 py-3 text-muted">${m.email_verified ? '✓' : '—'}</td>
+            <td class="px-4 py-3 text-soft text-xs whitespace-nowrap">${m.created_at ? new Date(m.created_at).toLocaleDateString() : '—'}</td>
+            <td class="px-4 py-3 text-soft text-xs whitespace-nowrap">${m.last_login_at ? new Date(m.last_login_at).toLocaleString() : '—'}</td>
+            <td class="px-4 py-3"><button type="button" class="cycle-tier text-gold hover:underline text-xs tracking-widest uppercase">Cycle tier</button></td>
+          </tr>`).join('')}
+        </tbody></table></div>`;
+
+        panel.querySelectorAll('.cycle-tier').forEach(btn => btn.addEventListener('click', async (e) => {
+            const tr = e.target.closest('tr');
+            const id = tr.dataset.memberId;
+            const current = tr.querySelector('.tier-pill').textContent.toLowerCase().trim();
+            const next = tiers[(tiers.indexOf(current) + 1) % tiers.length];
+            const key = getKey() || '';
+            const r = await fetch(`/api/admin/members/${id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json', 'x-admin-key': key },
+                body: JSON.stringify({ tier: next })
+            });
+            if (r.ok) tr.querySelector('.tier-pill').textContent = next.toUpperCase();
+        }));
+    }
+
+    function renderAuthEvents(events) {
+        const panel = document.getElementById('panel-auth');
+        if (!events.length) { panel.innerHTML = '<div class="p-6 text-soft">No auth activity yet.</div>'; return; }
+        panel.innerHTML = `<div class="overflow-x-auto border border-soft bg-[#FFFFFF] shadow-sm"><table class="w-full text-sm">
+          <thead><tr class="bg-[#F0ECE2] text-[10px] tracking-widest uppercase text-soft">
+            <th class="text-left px-4 py-3">When</th><th class="text-left px-4 py-3">Event</th>
+            <th class="text-left px-4 py-3">Email</th><th class="text-left px-4 py-3">IP</th><th class="text-left px-4 py-3">UA</th>
+          </tr></thead><tbody>
+          ${events.map(ev => `<tr class="data-row border-t border-soft">
+            <td class="px-4 py-3 text-soft text-xs whitespace-nowrap">${new Date(ev.created_at).toLocaleString()}</td>
+            <td class="px-4 py-3 uppercase tracking-widest text-xs ${ev.event_type === 'login_failed' ? 'text-red-500' : 'text-[#111111]'}">${escapeHtml(ev.event_type)}</td>
+            <td class="px-4 py-3 text-gold">${escapeHtml(ev.email || '—')}</td>
+            <td class="px-4 py-3 text-muted">${escapeHtml(ev.ip || '—')}</td>
+            <td class="px-4 py-3 text-soft text-xs">${escapeHtml((ev.user_agent || '').slice(0, 60))}</td>
+          </tr>`).join('')}
+        </tbody></table></div>`;
+    }
+
     function wireRowClicks(panel, label) {
         panel.querySelectorAll('.data-row').forEach(row => {
             row.addEventListener('click', () => {
@@ -760,6 +844,9 @@
         document.getElementById('stat-testimonials').textContent = showCount(tList.length, DEMO.testimonials);
         renderTestimonials(tList);
 
+        // Members + Auth Activity
+        await loadMembersAndAuth();
+
         setTab(currentTab);
 
         document.getElementById('last-updated').textContent =
@@ -776,6 +863,7 @@
             if (!res.ok) return;
             const data = await res.json();
             showDashboard(data);
+            // Note: showDashboard already calls loadMembersAndAuth; no extra call needed here.
         } catch (_) {}
     }
 
