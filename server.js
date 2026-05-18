@@ -431,6 +431,64 @@ app.post('/api/auth/request-otp', async (req, res) => {
     res.json(body);
 });
 
+app.post('/api/auth/verify-otp', async (req, res) => {
+    const email = (req.body && req.body.email || '').toLowerCase().trim();
+    const code = (req.body && req.body.code || '').toString().trim();
+    if (!email || !/^\d{6}$/.test(code)) {
+        return res.status(400).json({ error: 'Email and 6-digit code required.' });
+    }
+
+    const nowIso = new Date().toISOString();
+    const { data: otpRow, error: findErr } = await supabase
+        .from('otp_codes')
+        .select('*')
+        .eq('email', email).eq('used', false).gt('expires_at', nowIso)
+        .order('created_at', { ascending: false }).limit(1).single();
+
+    if (findErr || !otpRow) {
+        await logAuthEvent({ type: 'login_failed', email, req, metadata: { reason: 'no_active_code' } });
+        return res.status(401).json({ error: 'Code expired or not found. Request a new one.' });
+    }
+
+    const match = await verifyOtp(code, otpRow.code_hash);
+    if (!match) {
+        const newAttempts = (otpRow.attempts || 0) + 1;
+        const burn = newAttempts >= OTP_MAX_ATTEMPTS;
+        await supabase.from('otp_codes').update({ attempts: newAttempts, used: burn }).eq('id', otpRow.id);
+        await logAuthEvent({ type: 'login_failed', email, req, metadata: { reason: 'bad_code', attempts: newAttempts } });
+        return res.status(401).json({ error: burn ? 'Too many attempts. Request a new code.' : 'Incorrect code.' });
+    }
+
+    await supabase.from('otp_codes').update({ used: true }).eq('id', otpRow.id);
+
+    let { data: member } = await supabase.from('members').select('*').eq('email', email).single();
+    let isSignup = false;
+    if (!member) {
+        const { data: created, error: createErr } = await supabase.from('members').insert({
+            email, tier: 'bronze', email_verified: true, last_login_at: nowIso, code: `MEMBER-${Date.now()}`
+        }).select('*').single();
+        if (createErr) {
+            console.error('[AUTH] create member failed:', createErr.message);
+            return res.status(500).json({ error: 'Could not create account.' });
+        }
+        member = created;
+        isSignup = true;
+    } else {
+        await supabase.from('members').update({
+            email_verified: true, last_login_at: nowIso
+        }).eq('id', member.id);
+    }
+
+    const token = signSession({ id: member.id, email: member.email, tier: member.tier });
+    setSessionCookie(res, token);
+    await logAuthEvent({
+        type: isSignup ? 'signup' : 'login',
+        email, memberId: member.id, req
+    });
+
+    res.json({ success: true, member: { email: member.email, tier: member.tier, memberSince: member.created_at } });
+});
+
 // ─── GET /api/steps ──────────────────────────────────────────────────────────
 app.get('/api/steps', async (req, res) => {
     const { data, error } = await supabase
