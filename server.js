@@ -159,6 +159,20 @@ function getClientIp(req) {
     return (req.headers['x-forwarded-for'] || '').split(',')[0].trim() || req.ip || '';
 }
 
+// Origin check: defence-in-depth against logout-CSRF and other authenticated
+// POSTs. SameSite=Lax already blocks top-level cross-site POSTs in modern
+// browsers, but the spec promised this and it costs nothing.
+function requireSameOrigin(req, res, next) {
+    const origin = req.headers.origin || req.headers.referer || '';
+    if (!origin) return next(); // server-to-server / curl with no origin: allow
+    const host = req.headers.host;
+    try {
+        const u = new URL(origin);
+        if (u.host === host) return next();
+    } catch { /* fall through */ }
+    return res.status(403).json({ error: 'Cross-origin POST blocked.' });
+}
+
 async function logAuthEvent({ type, email = null, memberId = null, req = null, metadata = null }) {
     try {
         await supabase.from('auth_events').insert({
@@ -471,7 +485,7 @@ app.get('/api/auth/me', requireMember, (req, res) => {
     }});
 });
 
-app.post('/api/auth/logout', async (req, res) => {
+app.post('/api/auth/logout', requireSameOrigin, async (req, res) => {
     const token = req.cookies && req.cookies[COOKIE_NAME];
     const payload = token && verifySession(token);
     clearSessionCookie(res);

@@ -471,32 +471,6 @@
             return TIER_ORDER.indexOf(tier);
         }
 
-        // ── Session handling ────────────────────────────────────────────────
-        function getSession() {
-            try {
-                const raw = localStorage.getItem('ff_session');
-                if (!raw) return null;
-                const sess = JSON.parse(atob(raw));
-                if (Date.now() > sess.exp) { localStorage.removeItem('ff_session'); return null; }
-                return sess;
-            } catch(_) { return null; }
-        }
-
-        function saveSession(data) {
-            const payload = { email: data.email, tier: data.tier, memberSince: data.memberSince || data.created_at || null, exp: Date.now() + 86400000 };
-            localStorage.setItem('ff_session', btoa(JSON.stringify(payload)));
-        }
-
-        function clearSession() {
-            localStorage.removeItem('ff_session');
-        }
-
-        // ── Bootstrap ───────────────────────────────────────────────────────
-        const session = getSession();
-        if (session) {
-            showDashboard(session.email, session.tier, session.memberSince);
-        }
-
         // ── Auth flow (email → OTP) ─────────────────────────────────────────
         (function authFlow() {
             const stepEmail = document.getElementById('step-email');
@@ -529,6 +503,7 @@
             }
 
             function renderPortal(member) {
+                window.__ffMember = member;
                 const login = document.getElementById('login-screen');
                 if (login) login.style.display = 'none';
                 const portal = document.getElementById('dashboard');
@@ -596,7 +571,7 @@
             const logoutBtn = document.getElementById('logout-btn');
             if (logoutBtn) logoutBtn.addEventListener('click', async () => {
                 await fetch('/api/auth/logout', { method: 'POST' });
-                clearSession();
+                window.__ffMember = null;
                 gsap.to('#dashboard', { opacity: 0, duration: 0.3, onComplete: () => {
                     document.getElementById('dashboard').style.display = 'none';
                     document.getElementById('login-screen').style.display = 'flex';
@@ -688,9 +663,9 @@
         // ── Portal G-Line form ───────────────────────────────────────────────
         document.getElementById('portal-gline-form').addEventListener('submit', async (e) => {
             e.preventDefault();
-            const session = getSession();
+            const member = window.__ffMember;
             const payload = {
-                name: session ? session.email : 'Member',
+                name: member ? member.email : 'Member',
                 referralName: document.getElementById('pg-who').value,
                 relationship: 'Member referral',
                 urgency: document.getElementById('pg-urgency').value,
