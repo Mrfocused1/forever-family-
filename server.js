@@ -37,6 +37,40 @@ function sendNotification({ subject, html, replyTo }) {
     });
 }
 
+async function sendOtpEmail(toEmail, code) {
+    if (!resend || !RESEND_FROM || !toEmail) {
+        console.warn('[AUTH] Resend not configured or no recipient; OTP not sent.');
+        return;
+    }
+    const html = `
+<!DOCTYPE html><html><head><meta charset="utf-8"></head>
+<body style="margin:0;padding:0;background:#0d0d0d;font-family:Arial,Helvetica,sans-serif;color:#F5F2EB;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#0d0d0d;">
+    <tr><td align="center" style="padding:40px 20px;">
+      <table role="presentation" width="100%" style="max-width:480px;background:#111;border:1px solid #2A2A2A;border-radius:4px;">
+        <tr><td style="padding:32px;">
+          <div style="font-size:11px;letter-spacing:3px;text-transform:uppercase;color:#D4AF37;margin-bottom:8px;">FOREVER FAMILY</div>
+          <h1 style="margin:0 0 24px;font-family:'Oswald','Arial Narrow',sans-serif;font-size:28px;letter-spacing:1px;text-transform:uppercase;color:#F5F2EB;">Your access code</h1>
+          <div style="background:#0d0d0d;border:1px solid #D4AF37;padding:24px;text-align:center;letter-spacing:14px;font-size:36px;font-weight:bold;color:#D4AF37;margin-bottom:24px;font-family:'Courier New',monospace;">${code}</div>
+          <p style="margin:0 0 12px;color:#cfcfcf;font-size:14px;line-height:1.6;">Enter this code on the Forever Family portal to sign in.</p>
+          <p style="margin:0 0 20px;color:#888;font-size:13px;">Expires in 10 minutes. If you didn't request this, you can safely ignore this email.</p>
+          <div style="border-top:1px solid #2A2A2A;padding-top:16px;color:#666;font-size:11px;text-transform:uppercase;letter-spacing:2px;">Forever Family — PIA · FFCA · SOS</div>
+        </td></tr>
+      </table>
+    </td></tr>
+  </table>
+</body></html>`;
+    const text = `Forever Family — Access Code\n\nYour code: ${code}\n\nEnter this on the Forever Family portal to sign in. Code expires in 10 minutes.\n\nIf you didn't request this, ignore this email.`;
+    try {
+        await resend.emails.send({
+            from: RESEND_FROM,
+            to: [toEmail],
+            subject: `Your Forever Family code: ${code}`,
+            html, text
+        });
+    } catch (e) { console.error('[AUTH] sendOtpEmail failed:', e.message); }
+}
+
 function escapeHtml(s) {
     if (s === null || s === undefined) return '';
     return String(s)
